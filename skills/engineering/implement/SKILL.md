@@ -1,0 +1,59 @@
+---
+name: implement
+description: Implement one approved FeatureKit issue or slice in a product repo using the repo's conventions, tests, and verification commands. Use explicitly when a PRD or issue is approved and ready to build. Requires a written plan or issue.
+disable-model-invocation: true
+---
+
+# Implement
+
+Implement exactly one approved issue or slice.
+
+## Preconditions
+
+Before coding, confirm:
+
+- there is a written PRD, plan, or issue,
+- the scope is one slice,
+- out-of-scope work is explicit,
+- verification commands are known.
+
+If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-issues`.
+
+## Process
+
+1. Read the PRD or issue.
+2. Read `AGENTS.md`, `docs/agents/`, and relevant code.
+3. Restate the slice in a few lines.
+4. For logic, data transformations, services, bug fixes, and boundary behavior, use `tdd`.
+5. Make the smallest change that satisfies the issue.
+6. Do not include unrelated refactors.
+7. Run the configured verification commands.
+8. Report the outcome and any divergence from the plan.
+
+## Implementation Rules
+
+- Follow the target repo's stack and architecture.
+- Ask before adding production dependencies.
+- Keep migrations and data changes explicit.
+- Handle missing or unavailable integrations gracefully where the PRD requires it.
+- Keep public behavior testable through public interfaces.
+- Do not silently change scope.
+
+## Output
+
+```markdown
+Implemented:
+<what changed>
+
+Verification:
+<commands run and results>
+
+Tests:
+<new or updated tests>
+
+Divergence:
+<none | what changed from the plan and why>
+
+Next:
+<review-change | next issue | handoff>
+```

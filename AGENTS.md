@@ -1,76 +1,54 @@
 # AGENTS.md
 
-Canonical project context for AI agents and humans. Keep this lean: **stable facts and rules only.** Step-by-step procedures live in `docs/ai-workflow/` and the skills in `.agents/skills/`. If you're tempted to add a process here, it belongs in a workflow doc instead.
+Canonical project context for FeatureKit. Keep this file lean: stable facts and rules only. Step-by-step usage belongs in `docs/ai-workflow/`; reusable agent behavior belongs in `skills/`.
 
 ## Project
 
-Angular + TypeScript frontend. Internal component library: **CUI**. Design-system direction: **BTLB** (Baseline, Tokens, Layouts, Behaviors).
+FeatureKit is a private, framework-agnostic agent skill harness for building real full-stack products with coding agents.
 
-## Architecture
+The goal is portable, plain Markdown skills that can be installed with the open `skills` CLI and used from Codex, Claude Code, OpenCode, generic agents, and local LLMs.
 
-Component → **Facade** (`*.facade.service.ts`) → **State** slice → **Repository** (interface + `InjectionToken` + impl + mock). Components talk to the facade only; the facade is the one boundary that translates domain terms into UI terms. New state lives in slices and is exposed as **Signals**.
+## Product Direction
 
-## Commands
+- FeatureKit v1 is private.
+- Do not build a custom FeatureKit CLI in v1.
+- Use `npx skills@latest add ...` as the install and update path.
+- Keep the core stack-neutral. Stack choices live in the target product repo's `AGENTS.md`, `CONTEXT.md`, ADRs, and `docs/agents/` setup docs.
+- Dogfood against real products first. The workflow must be useful for production apps, not toy demos.
+- Docs are part of the product. v1 is not complete unless someone can follow the guide from install through a complete feature workflow.
 
-- Install: `yarn install`
-- Dev server: `yarn start`
-- Lint: `yarn lint`
-- Typecheck: `yarn typecheck` (target addition, not present yet)
-- Test: `yarn test` (moving to Vitest with the Angular upgrade)
-- Build: `yarn build`
-- Storybook: `yarn storybook`
+## Repository Layout
 
-(Adjust to match this repo's actual scripts before committing.)
+- `skills/engineering/` contains product and engineering workflow skills.
+- `skills/productivity/` contains cross-cutting workflow skills.
+- `.claude-plugin/plugin.json` lists installable skill folders for Claude/plugin-compatible discovery.
+- `docs/ai-workflow/` is the canonical guide for using FeatureKit.
+- `prompts/local-llm-featurekit.md` is the compiled entry prompt for Gemma and other local LLMs.
+- `CLAUDE.md` points to this file. Do not duplicate rules there.
 
-## TypeScript rules
+## Skill Rules
 
-- **No `any`.** No `Record<string, any>` for backend response types. Type nullable fields, enums, and optionals correctly.
-- `type` by default for data shapes; `interface` only when the shape is intentionally extended (prop hierarchies, class contracts).
-- Strict equality only (`===`, `!==`).
-- Explicit parameter passing: `map(data => this.transform(data))`, not `map(this.transform)`.
+- Skills are small, composable, and written as plain `SKILL.md` files.
+- Skill names use lowercase hyphen-case.
+- Skill frontmatter must include `name` and `description`.
+- User-invoked skills orchestrate a workflow and should not auto-trigger unexpectedly.
+- Model-invoked skills hold reusable discipline such as TDD, bug diagnosis, review, domain modeling, and codebase design.
+- Prefer instructions over scripts unless deterministic execution is genuinely needed.
+- Do not hardcode a product stack, issue tracker, deployment platform, database, framework, or architecture into FeatureKit core.
+- If a skill needs repo-specific choices, it should read `docs/agents/` in the target repo.
 
-## Angular conventions
+## Core Workflow Rule
 
-- Components talk to the **facade** only; never reach past it to a repository or HTTP directly.
-- New state lives in a **state slice**, exposed as **Signals**. Reach for Signals over RxJS for new work; keep RxJS shallow.
-- Subscription cleanup for any remaining observables: `takeUntilDestroyed()` (no args) inside Angular-managed contexts; inject and pass `DestroyRef` outside them. Do **not** introduce new `destroy$` Subjects.
-- Use **CUI** components where they exist — don't rebuild what the library provides.
-- `OnPush` change detection and `trackBy` on lists where they still apply.
+No production code starts until there is a written plan. Small work gets a small written plan; larger work gets a PRD and sliced issues.
 
-## Styling / design system
+## Verification
 
-- We're moving off Bootstrap. New work is **CUI + BTLB**, never Bootstrap utilities.
-- Follow the styling hierarchy: CUI components/utilities first, then BTLB tokens, layouts, and behaviors; custom CSS is a last resort.
-- Use semantic tokens, not hardcoded colors/spacing/radii/shadows. Don't reference primitive tokens from components.
-- Express state with `data-state` + ARIA attributes, not state class names.
-- No inline styles. If `::ng-deep` is unavoidable, scope it with `:host`.
-- See the BTLB design-system docs for tokens, layout patterns (`stack`, `cluster`, `grid`, `sidebar`, `center`), and behavior contracts.
+Use these checks before shipping changes to FeatureKit:
 
-## Backend integration
+```bash
+npx skills@latest add . --list
+npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit -y
+npx skills@latest use . --skill ask-featurekit
+```
 
-- Endpoint base paths: no trailing slash (`/my-folder`, not `/my-folder/`).
-- Response types explicitly defined.
-- Frontend must degrade gracefully if an endpoint isn't available at deploy time.
-
-## PR expectations
-
-- Under 400 lines; split if larger. Single purpose per PR.
-- Screenshots for UI changes (mobile + desktop).
-- No commented-out code, no `console.log`.
-- Only commit `yarn.lock` when `package.json` changed.
-- Storybook updated for new/modified components.
-
-## Testing expectations
-
-- Tests run with `yarn test`; we're moving to **Vitest** with the Angular upgrade.
-- Test behavior through public interfaces, not implementation details.
-- Meaningful tests for business logic, data transformations, services, and bug fixes (a bug fix lands with a regression test).
-
-## Where things live
-
-- Workflow docs: `docs/ai-workflow/`
-- Agent skills and prompts: shipped by **BridgeKit** under `.agents/skills/` and `.agents/prompts/`. CUI stays the component library; BridgeKit is the home for agent tooling.
-
-## Core working rule
-
-**No code starts until there is a written, reviewed plan.** See `docs/ai-workflow/`.
+For documentation changes, follow the guide end to end in a scratch product repo and fix any confusing step.

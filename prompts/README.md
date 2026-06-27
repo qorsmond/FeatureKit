@@ -1,7 +1,5 @@
-# .agents/prompts
+# Prompts
 
-Reusable prompt snippets that aren't full skills — short, paste-ready text for recurring asks (e.g. "summarize this PR for the changelog", "draft Storybook stories for this component").
+Prompt entrypoints for environments that do not automatically discover Agent Skills.
 
-Keep them small and single-purpose. If a prompt grows into a multi-step procedure with rules and an output format, promote it to a skill in `../skills/`.
-
-This directory starts empty on purpose — add prompts as the team finds repeated needs.
+- `local-llm-featurekit.md` is the compiled prompt for Gemma and other local models. Use it when you need to manually paste context and a selected `SKILL.md` into a chat or local runner.
