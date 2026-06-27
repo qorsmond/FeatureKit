@@ -72,3 +72,9 @@ With local LLMs:
 - use fresh sessions often.
 
 The workflow still works because the skills are plain Markdown.
+
+## Series Navigation
+
+- Previous: [Working With Agents](./04-working-with-agents.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [End-to-End Example](./06-end-to-end-example.md)

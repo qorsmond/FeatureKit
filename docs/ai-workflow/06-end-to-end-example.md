@@ -258,3 +258,9 @@ Watch out for:
 ```
 
 This is the pattern to reuse for Blitza, FramerHub, or any other real product.
+
+## Series Navigation
+
+- Previous: [Local LLMs](./05-local-llms.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Troubleshooting](./07-troubleshooting.md)

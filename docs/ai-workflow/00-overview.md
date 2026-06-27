@@ -77,3 +77,8 @@ If FeatureKit is already set up and you do not know what to run, ask:
 ```text
 /ask-featurekit
 ```
+
+## Series Navigation
+
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Install](./01-install.md)

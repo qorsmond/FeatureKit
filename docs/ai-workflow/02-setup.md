@@ -63,3 +63,9 @@ Setup should not:
 Rerun `/setup-featurekit` only when the repo's workflow changes: a new issue tracker, new deployment platform, new verification commands, or a changed docs layout.
 
 For small edits, update `docs/agents/*.md` directly.
+
+## Series Navigation
+
+- Previous: [Install](./01-install.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Main Flow](./03-main-flow.md)

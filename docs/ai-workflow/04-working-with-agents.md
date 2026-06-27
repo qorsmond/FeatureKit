@@ -98,3 +98,9 @@ Put those rules in the target repo:
 - `CONTEXT.md` for domain language,
 - ADRs for durable technical decisions,
 - `docs/agents/*.md` for FeatureKit setup.
+
+## Series Navigation
+
+- Previous: [Main Flow](./03-main-flow.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Local LLMs](./05-local-llms.md)

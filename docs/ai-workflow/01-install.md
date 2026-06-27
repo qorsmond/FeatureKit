@@ -91,3 +91,9 @@ npx skills@latest update
 ```
 
 If a skill still looks stale, restart the coding agent.
+
+## Series Navigation
+
+- Previous: [Overview](./00-overview.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Setup](./02-setup.md)

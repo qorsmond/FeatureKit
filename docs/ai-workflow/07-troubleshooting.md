@@ -87,3 +87,8 @@ Use less context:
 - no full conversation transcript.
 
 Use `/handoff` to compress context before moving to a local model.
+
+## Series Navigation
+
+- Previous: [End-to-End Example](./06-end-to-end-example.md)
+- Index: [FeatureKit Guide](./README.md)

@@ -123,3 +123,9 @@ The handoff is a compact state file, not a transcript.
 ## Session Rules
 
 Keep grilling, PRD, and issue splitting in one continuous planning thread when possible. Start fresh for each implementation issue so the agent has a clean context and a narrow task.
+
+## Series Navigation
+
+- Previous: [Setup](./02-setup.md)
+- Index: [FeatureKit Guide](./README.md)
+- Next: [Working With Agents](./04-working-with-agents.md)
