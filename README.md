@@ -44,6 +44,17 @@ It routes you through the right flow for planning, PRDs, issues, implementation,
 7. Use `review-change` before human review.
 8. Use `/handoff` when a session needs to pause or continue elsewhere.
 
+## Optional Tooling Skills
+
+FeatureKit also includes misc skills for repo guardrails and specialized setup:
+
+- `git-guardrails-claude-code`
+- `setup-pre-commit`
+- `scaffold-exercises`
+- `migrate-to-shoehorn`
+
+These are useful when a product repo needs them, but they are not part of the default idea-to-ship flow.
+
 ## Full Guide
 
 The detailed usage guide is the source of truth:

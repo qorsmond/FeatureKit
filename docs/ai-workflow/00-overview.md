@@ -55,6 +55,15 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `review-change`
 - `codebase-design`
 
+`tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
+
+Optional misc tooling skills:
+
+- `git-guardrails-claude-code`
+- `setup-pre-commit`
+- `scaffold-exercises`
+- `migrate-to-shoehorn`
+
 ## Where To Start
 
 If this is a new repo, install FeatureKit and run:

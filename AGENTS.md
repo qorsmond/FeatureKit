@@ -21,6 +21,7 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 
 - `skills/engineering/` contains product and engineering workflow skills.
 - `skills/productivity/` contains cross-cutting workflow skills.
+- `skills/misc/` contains optional tooling skills that are useful in some repos but are not part of the default product-building flow.
 - `.claude-plugin/plugin.json` lists installable skill folders for Claude/plugin-compatible discovery.
 - `docs/ai-workflow/` is the canonical guide for using FeatureKit.
 - `prompts/local-llm-featurekit.md` is the compiled entry prompt for Gemma and other local LLMs.
@@ -33,6 +34,7 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 - Skill frontmatter must include `name` and `description`.
 - User-invoked skills orchestrate a workflow and should not auto-trigger unexpectedly.
 - Model-invoked skills hold reusable discipline such as TDD, bug diagnosis, review, domain modeling, and codebase design.
+- `tdd` must remain model-invoked so implementation and bug-fix skills can reach for it automatically. Do not add `disable-model-invocation: true` to it.
 - Prefer instructions over scripts unless deterministic execution is genuinely needed.
 - Do not hardcode a product stack, issue tracker, deployment platform, database, framework, or architecture into FeatureKit core.
 - If a skill needs repo-specific choices, it should read `docs/agents/` in the target repo.

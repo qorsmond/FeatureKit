@@ -92,6 +92,8 @@ Give the agent:
 
 The agent should implement only that issue, use TDD for logic and bug fixes, run the repo's checks, and report any divergence from the plan.
 
+`tdd` is model-invoked, so the implementation skill can use it automatically when the slice contains testable behavior.
+
 ## 7. Review
 
 Before human review, ask the agent to use `review-change`.

@@ -18,6 +18,7 @@ FeatureKit is inspired by these public ideas:
 - focused bug diagnosis,
 - compact handoffs,
 - context and domain documentation for agents.
+- optional misc tooling patterns such as git guardrails, pre-commit setup, exercise scaffolding, and test-data helper migrations.
 
 FeatureKit's wording, skill names, docs, and repo structure are written for this project and are not intended to redistribute another repo's files verbatim.
 

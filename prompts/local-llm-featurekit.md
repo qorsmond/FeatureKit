@@ -52,8 +52,9 @@ For a new product feature:
 3. `to-prd` if the work needs a durable spec.
 4. `to-issues` if it needs multiple implementation slices.
 5. `implement` for one issue at a time.
-6. `review-change` before human review.
-7. `handoff` when context needs to move to another session.
+6. `tdd` inside implementation whenever behavior can be tested.
+7. `review-change` before human review.
+8. `handoff` when context needs to move to another session.
 
 For a bug:
 
