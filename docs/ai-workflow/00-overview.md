@@ -57,11 +57,14 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `adr-guidance`
 - `domain-modeling`
 - `tdd`
+- `verify-tests`
 - `diagnosing-bugs`
 - `review-change`
 - `codebase-design`
 
 `tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
+
+`verify-tests` is also model-invoked. Agents should use it when generated or changed tests look weak, high-risk, or explicitly need mutation testing. It does not run expensive mutation tests by default.
 
 Optional misc tooling skills:
 

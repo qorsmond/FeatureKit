@@ -3,7 +3,7 @@ name: to-prd
 description: Turn a clarified product idea, plan, or conversation into a concise PRD for a full-stack product change. Use explicitly after grilling or when a durable spec is needed before implementation. Writes or drafts a PRD in the repo's configured workflow location.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # To PRD

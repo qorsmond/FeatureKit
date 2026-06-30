@@ -33,7 +33,7 @@ After setup, use:
 /ask-featurekit
 ```
 
-It routes you through the right flow for planning, PRDs, issues, implementation, review, prototyping, debugging, and handoff.
+It routes you through the right flow for planning, PRDs, issues, implementation, test verification, review, prototyping, debugging, and handoff.
 
 ## Confirm Version
 
@@ -52,8 +52,9 @@ rg "featurekit-version" .agents/skills
 5. Use `/to-prd` for work that needs a durable spec.
 6. Use `/to-issues` to split a PRD into small vertical implementation issues.
 7. Use `/implement` for one approved issue at a time.
-8. Use `review-change` before human review.
-9. Use `/handoff` when a session needs to pause or continue elsewhere.
+8. Use `verify-tests` when generated or changed tests need deeper proof.
+9. Use `review-change` before human review.
+10. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 ## Optional Tooling Skills
 

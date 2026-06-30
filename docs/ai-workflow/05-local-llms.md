@@ -63,6 +63,23 @@ Task:
 Implement only this issue. Ask for any file contents you need before editing.
 ```
 
+## Example: Test Verification
+
+```text
+Use FeatureKit with the verify-tests skill.
+
+Project context:
+<paste AGENTS.md>
+<paste docs/agents/verification.md>
+<paste relevant PRD or issue>
+
+Skill:
+<paste skills/engineering/verify-tests/SKILL.md>
+
+Task:
+Check whether these generated tests actually protect the intended behavior. Do not run mutation testing unless the skill's gate is met.
+```
+
 ## Limitations
 
 With local LLMs:

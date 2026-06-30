@@ -2,7 +2,7 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, issue, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # Review Change
@@ -19,7 +19,8 @@ Apply the target repo's `Agent Operating Principles` when checking scope, simpli
 4. Check spec match first.
 5. Check accepted ADRs and repo conventions from `AGENTS.md` and `docs/agents/`.
 6. Check tests and verification.
-7. Report findings ordered by severity.
+7. Use `verify-tests` when tests look weak, generated, assertion-light, high-risk, or mutation testing was requested.
+8. Report findings ordered by severity.
 
 ## Review Areas
 
@@ -29,6 +30,7 @@ Apply the target repo's `Agent Operating Principles` when checking scope, simpli
 - Are edge cases and error states handled?
 - Are data migrations or deployment steps safe?
 - Are tests meaningful and behavior-focused?
+- Would the tests fail if the protected behavior were wrong?
 - Are public interfaces typed and stable?
 - Are dependencies justified?
 - Did verification actually run?

@@ -60,15 +60,17 @@ For a new product feature:
 5. `to-issues` if it needs multiple implementation slices.
 6. `implement` for one issue at a time.
 7. `tdd` inside implementation whenever behavior can be tested.
-8. `adr-guidance` whenever planning, implementation, or review touches architecture.
-9. `review-change` before human review.
-10. `handoff` when context needs to move to another session.
+8. `verify-tests` when generated or changed tests need deeper proof.
+9. `adr-guidance` whenever planning, implementation, or review touches architecture.
+10. `review-change` before human review.
+11. `handoff` when context needs to move to another session.
 
 For a bug:
 
 1. `diagnosing-bugs`.
 2. `tdd` for the regression test and fix.
-3. `review-change`.
+3. `verify-tests` if the regression is high-risk or the test may pass for the wrong reason.
+4. `review-change`.
 
 For uncertainty:
 

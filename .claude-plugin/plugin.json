@@ -1,6 +1,6 @@
 {
   "name": "featurekit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "skills": [
     "./skills/engineering/ask-featurekit",
     "./skills/engineering/setup-featurekit",
@@ -14,6 +14,7 @@
     "./skills/engineering/adr-guidance",
     "./skills/engineering/domain-modeling",
     "./skills/engineering/tdd",
+    "./skills/engineering/verify-tests",
     "./skills/engineering/diagnosing-bugs",
     "./skills/engineering/review-change",
     "./skills/engineering/codebase-design",

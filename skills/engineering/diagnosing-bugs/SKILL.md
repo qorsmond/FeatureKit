@@ -2,7 +2,7 @@
 name: diagnosing-bugs
 description: Diagnose and fix hard, flaky, unclear, or production-impacting bugs. Use when the user reports broken behavior, cannot reproduce an issue, sees intermittent failures, or needs a root-cause-driven regression fix.
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # Diagnosing Bugs
@@ -20,7 +20,8 @@ Apply the target repo's `Agent Operating Principles` before coding, refactoring,
 5. Instrument only if needed, and remove temporary instrumentation.
 6. Write a failing regression test.
 7. Fix the smallest cause.
-8. Run verification.
+8. Use `verify-tests` for production-impacting regressions or when the regression test might not fail for the right reason.
+9. Run verification.
 
 ## Do Not
 
@@ -44,6 +45,9 @@ Fix:
 
 Regression test:
 <what fails before and passes after>
+
+Test verification:
+<verify-tests result | skipped and why>
 
 Verification:
 <commands run>

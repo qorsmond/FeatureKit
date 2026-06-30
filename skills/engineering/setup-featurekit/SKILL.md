@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when issue tracker, domain docs, stack commands, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # Setup FeatureKit

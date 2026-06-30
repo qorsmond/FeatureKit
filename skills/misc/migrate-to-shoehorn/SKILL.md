@@ -2,7 +2,7 @@
 name: migrate-to-shoehorn
 description: Migrate TypeScript test fixtures from unsafe `as` assertions to @total-typescript/shoehorn helpers. Use when tests need partial typed data, intentionally invalid typed input, or a cleanup of `as unknown as` in test files.
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # Migrate To Shoehorn

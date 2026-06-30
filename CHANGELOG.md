@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-06-30
+
+- Added the `verify-tests` skill for checking whether generated or changed tests protect the intended behavior.
+- Integrated `verify-tests` with TDD, implementation, bug diagnosis, review, router, docs, and local-LLM guidance.
+- Kept mutation testing gated so Stryker or equivalent tools run only when requested or justified by concrete risk.
+
 ## 0.1.1 - 2026-06-30
 
 - Added canonical Agent Operating Principles for thinking before coding, simplicity first, and surgical changes.

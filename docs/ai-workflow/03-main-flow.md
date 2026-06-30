@@ -112,6 +112,8 @@ Before coding, refactoring, or verification, the agent should apply the repo's A
 
 `tdd` is model-invoked, so the implementation skill can use it automatically when the slice contains testable behavior.
 
+`verify-tests` is model-invoked for deeper test checks. Use it when a generated or changed test might not protect the intended behavior, or when you explicitly want mutation testing such as Stryker. Mutation testing is gated because it can be slow.
+
 ## 8. Review
 
 Before human review, ask the agent to use `review-change`.
@@ -121,6 +123,7 @@ The review checks:
 - spec match,
 - scope drift,
 - missing tests,
+- weak tests that may pass for the wrong reason,
 - risky architecture,
 - poor typing,
 - weak error handling,
@@ -128,6 +131,8 @@ The review checks:
 - unclear product behavior,
 - conflicts with accepted ADRs,
 - verification gaps.
+
+For high-risk behavior or suspicious generated tests, ask for `verify-tests` before accepting the test coverage.
 
 ## 9. Handoff
 

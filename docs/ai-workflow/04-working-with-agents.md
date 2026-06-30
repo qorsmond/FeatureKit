@@ -76,9 +76,12 @@ Before opening a PR:
 - understand why each change exists,
 - confirm the diff matches the PRD or issue,
 - confirm the diff follows accepted ADRs,
+- confirm new or changed tests would fail if the intended behavior were wrong,
 - remove out-of-scope edits,
 - run the verification commands,
 - ask `review-change` to review the diff.
+
+Use `verify-tests` when test quality is uncertain, behavior is high-risk, or you explicitly want mutation testing such as Stryker. Do not make mutation testing part of every normal review.
 
 ## ADR Discipline
 

@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit issue or slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or issue is approved and ready to build. Requires a written plan or issue.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.1"
+  featurekit-version: "0.1.2"
 ---
 
 # Implement
@@ -32,8 +32,9 @@ Apply the target repo's `Agent Operating Principles` before coding, refactoring,
 4. For logic, data transformations, services, bug fixes, and boundary behavior, use `tdd`.
 5. Make the smallest change that satisfies the issue.
 6. Do not include unrelated refactors.
-7. Run the configured verification commands.
-8. Report the outcome and any divergence from the plan.
+7. Use `verify-tests` when new or changed tests look weak, high-risk, generated, or explicitly need proof.
+8. Run the configured verification commands.
+9. Report the outcome and any divergence from the plan.
 
 ## Implementation Rules
 
@@ -56,6 +57,9 @@ Verification:
 
 Tests:
 <new or updated tests>
+
+Test verification:
+<verify-tests result | skipped and why>
 
 ADRs:
 <governing ADRs followed | conflict or update needed>
