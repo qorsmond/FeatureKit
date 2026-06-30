@@ -12,7 +12,7 @@ Paste these in order:
 
 1. The target product repo's `AGENTS.md` or equivalent project rules.
 2. The target product repo's `docs/agents/` setup docs, if they exist.
-3. The target product repo's `CONTEXT.md`, accepted ADRs, PRD, or issue being worked on, if relevant.
+3. The target product repo's `CONTEXT.md`, accepted ADRs, PRD, or slice being worked on, if relevant.
 4. The selected FeatureKit `SKILL.md`.
 5. The user's current request.
 
@@ -57,8 +57,8 @@ For a new product feature:
 2. `grill-with-docs` to clarify the idea.
 3. `record-adr` if a durable architectural decision is made.
 4. `to-prd` if the work needs a durable spec.
-5. `to-issues` if it needs multiple implementation slices.
-6. `implement` for one issue at a time.
+5. `to-slices` if it needs multiple implementation slices.
+6. `implement` for one slice at a time.
 7. `tdd` inside implementation whenever behavior can be tested.
 8. `verify-tests` when generated or changed tests need deeper proof.
 9. `adr-guidance` whenever planning, implementation, or review touches architecture.

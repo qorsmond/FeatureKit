@@ -13,7 +13,7 @@ FeatureKit is inspired by these public ideas:
 - a router skill,
 - interview-driven planning,
 - PRD creation before implementation,
-- vertical issue slicing,
+- vertical slice planning,
 - TDD-oriented implementation,
 - focused bug diagnosis,
 - compact handoffs,

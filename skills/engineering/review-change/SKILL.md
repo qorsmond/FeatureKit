@@ -1,8 +1,8 @@
 ---
 name: review-change
-description: Review a code change, diff, PR, or implementation against the PRD, issue, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
+description: Review a code change, diff, PR, or implementation against the PRD, slice, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Review Change
@@ -13,7 +13,7 @@ Apply the target repo's `Agent Operating Principles` when checking scope, simpli
 
 ## Process
 
-1. Read the PRD, issue, or stated goal.
+1. Read the PRD, slice, or stated goal.
 2. Read relevant ADRs.
 3. Read the diff or changed files.
 4. Check spec match first.

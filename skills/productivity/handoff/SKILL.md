@@ -3,7 +3,7 @@ name: handoff
 description: Write a compact handoff note so work can continue in a fresh session, another agent, or another developer. Use when context is long, work is pausing, a prototype result needs to return to planning, or a task moves between tools.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Handoff
@@ -13,7 +13,7 @@ Capture the current state without dumping the whole conversation.
 ## Process
 
 1. Identify the active objective.
-2. Link to the PRD, issue, prototype, or plan.
+2. Link to the PRD, slice, prototype, or plan.
 3. Summarize what is done.
 4. List the next steps in order.
 5. Record changed files or areas.
@@ -30,7 +30,7 @@ Objective:
 <what we are trying to achieve>
 
 Plan:
-<link to PRD, issue, or plan>
+<link to PRD, slice, or plan>
 
 Done:
 - <completed item>

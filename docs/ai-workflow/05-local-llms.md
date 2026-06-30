@@ -16,7 +16,7 @@ For a local model, keep context tight:
 
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
-3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or issue.
+3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
 4. One FeatureKit `SKILL.md`.
 5. Your exact task.
 
@@ -53,14 +53,14 @@ Project context:
 Spec:
 <paste PRD>
 
-Issue:
-<paste one issue only>
+Slice:
+<paste one slice only>
 
 Skill:
 <paste skills/engineering/implement/SKILL.md>
 
 Task:
-Implement only this issue. Ask for any file contents you need before editing.
+Implement only this slice. Ask for any file contents you need before editing.
 ```
 
 ## Example: Test Verification
@@ -71,7 +71,7 @@ Use FeatureKit with the verify-tests skill.
 Project context:
 <paste AGENTS.md>
 <paste docs/agents/verification.md>
-<paste relevant PRD or issue>
+<paste relevant PRD or slice>
 
 Skill:
 <paste skills/engineering/verify-tests/SKILL.md>

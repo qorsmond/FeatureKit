@@ -1,9 +1,9 @@
 ---
 name: ask-featurekit
-description: Route a product or engineering request to the right FeatureKit skill or flow. Use explicitly when the user is unsure what to run, asks how to proceed, has a new idea, bug, PRD, issue, ADR, implementation task, test verification, mutation testing, review, prototype, or handoff need. User-invoked router; do not implement code from this skill.
+description: Route a product or engineering request to the right FeatureKit skill or flow. Use explicitly when the user is unsure what to run, asks how to proceed, has a new idea, bug, PRD, slice, ADR, implementation task, test verification, mutation testing, review, prototype, or handoff need. User-invoked router; do not implement code from this skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Ask FeatureKit
@@ -18,7 +18,7 @@ Route the user to the right FeatureKit flow.
    - raw product idea,
    - unclear plan,
    - PRD creation,
-   - issue slicing,
+   - slice planning,
    - implementation,
    - bug diagnosis,
    - review,
@@ -36,8 +36,8 @@ Route the user to the right FeatureKit flow.
 - New product idea without a codebase: use `grilling` manually and keep it stateless.
 - Durable spec needed: `/to-prd`.
 - Durable architectural decision to capture or update: `/record-adr`.
-- Multi-step implementation: `/to-issues`.
-- One approved issue ready to build: `/implement`.
+- Multi-step implementation: `/to-slices`.
+- One approved slice ready to build: `/implement`.
 - Hard bug or unclear cause: `diagnosing-bugs`.
 - Need proof that generated or changed tests protect the right behavior: `verify-tests`.
 - Mutation testing or Stryker request: `verify-tests`.

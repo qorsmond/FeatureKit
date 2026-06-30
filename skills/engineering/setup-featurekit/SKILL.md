@@ -1,9 +1,9 @@
 ---
 name: setup-featurekit
-description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when issue tracker, domain docs, stack commands, deployment notes, or workflow locations change. User-invoked setup skill.
+description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Setup FeatureKit
@@ -23,7 +23,7 @@ Inspect the repo before asking questions. Look for:
 - package manifests and scripts,
 - test, lint, typecheck, build, and CI config,
 - database, migration, auth, and deployment config,
-- existing docs, specs, issue folders, or scratch folders.
+- existing docs, specs, work folders, or scratch folders.
 
 If a fact is discoverable, do not ask the user for it.
 
@@ -33,7 +33,7 @@ Summarize:
 
 - what guidance files exist,
 - what stack and commands appear to be used,
-- what issue tracker appears likely,
+- what work tracker appears likely,
 - whether domain docs already exist,
 - where specs and handoffs seem to belong,
 - what is missing.
@@ -42,9 +42,9 @@ Summarize:
 
 Ask one section at a time. For each section, explain the choice, recommend a default, and wait for the answer.
 
-### Issue Tracker
+### Work Tracker
 
-Record where issues live:
+Record where work lives:
 
 - GitHub Issues,
 - GitLab Issues,
@@ -53,7 +53,7 @@ Record where issues live:
 - local Markdown,
 - other described workflow.
 
-For local Markdown, default to `.scratch/<feature>/issue-N.md`.
+For local Markdown, default to `.scratch/<feature>/slice-N.md`.
 
 ### Domain Docs
 
@@ -89,7 +89,7 @@ Record:
 Record where to save:
 
 - PRDs,
-- sliced issues,
+- implementation slices,
 - ADRs, including the ADR directory and filename/status convention,
 - prototypes,
 - handoffs.
@@ -107,7 +107,7 @@ Let the user correct it before writing.
 
 Write or update:
 
-- `docs/agents/issue-tracker.md`,
+- `docs/agents/work-tracker.md`,
 - `docs/agents/domain.md`,
 - `docs/agents/stack.md`,
 - `docs/agents/verification.md`,
@@ -127,7 +127,7 @@ Use this block:
 
 This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agents/`.
 
-- Issue tracker: see `docs/agents/issue-tracker.md`.
+- Work tracker: see `docs/agents/work-tracker.md`.
 - Domain docs: see `docs/agents/domain.md`.
 - Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.
 - Stack and commands: see `docs/agents/stack.md` and `docs/agents/verification.md`.

@@ -16,7 +16,7 @@ The agent checks the repo for:
 - existing `docs/agents/` files,
 - `CONTEXT.md` and ADRs,
 - package manifests and common verification commands,
-- issue tracker clues,
+- work tracker clues,
 - database, deployment, and runtime config,
 - existing docs, specs, or scratch folders.
 
@@ -26,11 +26,11 @@ If the answer is in the repo, the agent should discover it instead of asking you
 
 Setup walks through these one at a time:
 
-1. Where issues live: GitHub, GitLab, Linear, Jira, local Markdown, or another workflow.
+1. Where work lives: GitHub Issues, GitLab Issues, Linear, Jira, local Markdown, or another workflow.
 2. Where product/domain context lives: one `CONTEXT.md`, multiple contexts, or a new layout.
 3. Which stack and verification commands the repo uses.
 4. How deployment/runtime notes should be recorded.
-5. Where PRDs, issues, ADRs, prototypes, and handoffs should be saved.
+5. Where PRDs, slices, ADRs, prototypes, and handoffs should be saved.
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
@@ -40,7 +40,7 @@ The agent should recommend defaults based on what it found.
 
 By default, setup writes:
 
-- `docs/agents/issue-tracker.md`
+- `docs/agents/work-tracker.md`
 - `docs/agents/domain.md`
 - `docs/agents/stack.md`
 - `docs/agents/verification.md`
@@ -64,7 +64,7 @@ Setup should not:
 
 ## Rerunning Setup
 
-Rerun `/setup-featurekit` only when the repo's workflow changes: a new issue tracker, new deployment platform, new verification commands, or a changed docs layout.
+Rerun `/setup-featurekit` only when the repo's workflow changes: a new work tracker, new deployment platform, new verification commands, or a changed docs layout.
 
 For small edits, update `docs/agents/*.md` directly.
 

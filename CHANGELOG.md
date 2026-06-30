@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2026-06-30
+
+- Renamed the workflow work item from issues to slices.
+- Renamed the PRD splitting skill to `/to-slices`.
+- Renamed setup guidance to work tracker and switched new setup docs to `docs/agents/work-tracker.md`.
+
 ## 0.1.2 - 2026-06-30
 
 - Added the `verify-tests` skill for checking whether generated or changed tests protect the intended behavior.

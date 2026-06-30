@@ -68,20 +68,20 @@ Stop implementation. We need a written plan first. Use `/grill-with-docs` or `/t
 
 ## The Diff Drifted From The Plan
 
-Ask for a review against the PRD and issue:
+Ask for a review against the PRD and slice:
 
 ```text
-Use review-change. Check this diff against the PRD and the single issue. Flag scope drift first.
+Use review-change. Check this diff against the PRD and the single slice. Flag scope drift first.
 ```
 
-Pull unrelated changes into a separate issue or remove them.
+Pull unrelated changes into a separate slice or remove them.
 
 ## The Work Conflicts With An ADR
 
 Stop implementation and resolve the decision:
 
 ```text
-Use /record-adr to supersede the accepted ADR, or update the PRD/issue so the work follows it.
+Use /record-adr to supersede the accepted ADR, or update the PRD/slice so the work follows it.
 ```
 
 Accepted ADRs are governing context. Do not treat an ADR conflict as an implementation detail.
@@ -94,14 +94,14 @@ Record it before the next implementation session:
 /record-adr
 ```
 
-Include the context, decision, consequences, alternatives considered, and related PRD or issue.
+Include the context, decision, consequences, alternatives considered, and related PRD or slice.
 
 ## Local LLM Context Is Too Small
 
 Use less context:
 
 - one skill,
-- one issue,
+- one slice,
 - one or two relevant files,
 - the verification command,
 - no full conversation transcript.

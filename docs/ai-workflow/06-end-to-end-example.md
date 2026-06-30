@@ -26,7 +26,7 @@ Expected output shape:
 Setup complete.
 
 Configured:
-- Issue tracker: GitHub Issues
+- Work tracker: GitHub Issues
 - Domain docs: single-context `CONTEXT.md` plus `docs/adr/`
 - Verification: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`
 - PRDs: `docs/prd/`
@@ -51,7 +51,7 @@ Use `/grill-with-docs` first.
 
 Reason: this is a product feature with plan, billing, data model, and UX implications.
 
-Stay in this session for grilling, then use `/to-prd`. Split with `/to-issues` if the PRD touches multiple areas.
+Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` if the PRD touches multiple areas.
 ```
 
 ## Step 3: Grill The Idea
@@ -160,18 +160,18 @@ The PRD is saved in the configured PRD location, for example:
 docs/prd/workspace-project-usage-limits.md
 ```
 
-## Step 5: Split Into Issues
+## Step 5: Split Into Slices
 
 ```text
-/to-issues
+/to-slices
 
-Use docs/prd/workspace-project-usage-limits.md and split it into small vertical issues.
+Use docs/prd/workspace-project-usage-limits.md and split it into small vertical slices.
 ```
 
-Expected issue shape:
+Expected slice shape:
 
 ```markdown
-### Issue 1: Enforce project limit in the domain/API path
+### Slice 1: Enforce project limit in the domain/API path
 
 Acceptance criteria:
 - The create-project path checks the workspace plan limit.
@@ -183,32 +183,32 @@ Depends on: none
 ```
 
 ```markdown
-### Issue 2: Show limit-reached state in the create-project UI
+### Slice 2: Show limit-reached state in the create-project UI
 
 Acceptance criteria:
 - The create-project action is unavailable when the workspace is at the limit.
 - The user sees plan-aware copy explaining the limit.
 - The UI degrades cleanly if limit data is unavailable.
 
-Depends on: Issue 1
+Depends on: Slice 1
 ```
 
-## Step 6: Implement One Issue
+## Step 6: Implement One Slice
 
-Start a fresh session. Give the agent one issue only.
+Start a fresh session. Give the agent one slice only.
 
 ```text
 /implement
 
 Use docs/prd/workspace-project-usage-limits.md.
-Implement Issue 1 only: Enforce project limit in the domain/API path.
+Implement Slice 1 only: Enforce project limit in the domain/API path.
 Do not implement UI changes or billing changes.
 Run the verification commands from docs/agents/verification.md.
 ```
 
 Expected implementation behavior:
 
-- reads the PRD and issue,
+- reads the PRD and slice,
 - reads relevant accepted ADRs,
 - reads relevant code,
 - writes a failing test first for the limit rule,
@@ -221,7 +221,7 @@ Expected implementation behavior:
 After implementation:
 
 ```text
-Use review-change to review the diff against docs/prd/workspace-project-usage-limits.md and Issue 1.
+Use review-change to review the diff against docs/prd/workspace-project-usage-limits.md and Slice 1.
 ```
 
 Expected review shape:
@@ -266,10 +266,10 @@ Plan:
 docs/prd/workspace-project-usage-limits.md
 
 Done:
-- Issue 1 implemented and tested.
+- Slice 1 implemented and tested.
 
 Next:
-- Start fresh session for Issue 2 UI state.
+- Start fresh session for Slice 2 UI state.
 
 ADRs:
 - No ADR update pending.

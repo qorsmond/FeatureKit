@@ -33,7 +33,7 @@ After setup, use:
 /ask-featurekit
 ```
 
-It routes you through the right flow for planning, PRDs, issues, implementation, test verification, review, prototyping, debugging, and handoff.
+It routes you through the right flow for planning, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
 
 ## Confirm Version
 
@@ -50,8 +50,8 @@ rg "featurekit-version" .agents/skills
 3. Use `/grill-with-docs` to clarify an idea against the product context.
 4. Use `/record-adr` when a durable architectural decision is made or changed.
 5. Use `/to-prd` for work that needs a durable spec.
-6. Use `/to-issues` to split a PRD into small vertical implementation issues.
-7. Use `/implement` for one approved issue at a time.
+6. Use `/to-slices` to split a PRD into small vertical implementation slices.
+7. Use `/implement` for one approved slice at a time.
 8. Use `verify-tests` when generated or changed tests need deeper proof.
 9. Use `review-change` before human review.
 10. Use `/handoff` when a session needs to pause or continue elsewhere.

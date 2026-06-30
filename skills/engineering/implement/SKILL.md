@@ -1,36 +1,36 @@
 ---
 name: implement
-description: Implement one approved FeatureKit issue or slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or issue is approved and ready to build. Requires a written plan or issue.
+description: Implement one approved FeatureKit slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or slice is approved and ready to build. Requires a written plan or slice.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Implement
 
-Implement exactly one approved issue or slice.
+Implement exactly one approved slice.
 
 ## Preconditions
 
 Before coding, confirm:
 
-- there is a written PRD, plan, or issue,
+- there is a written PRD, plan, or slice,
 - the scope is one slice,
 - out-of-scope work is explicit,
 - relevant ADRs have been checked,
 - verification commands are known.
 
-If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-issues`.
+If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-slices`.
 
 Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
 
 ## Process
 
-1. Read the PRD or issue.
+1. Read the PRD or slice.
 2. Read `AGENTS.md`, `docs/agents/`, relevant ADRs, and relevant code.
 3. Restate the slice in a few lines.
 4. For logic, data transformations, services, bug fixes, and boundary behavior, use `tdd`.
-5. Make the smallest change that satisfies the issue.
+5. Make the smallest change that satisfies the slice.
 6. Do not include unrelated refactors.
 7. Use `verify-tests` when new or changed tests look weak, high-risk, generated, or explicitly need proof.
 8. Run the configured verification commands.
@@ -68,5 +68,5 @@ Divergence:
 <none | what changed from the plan and why>
 
 Next:
-<review-change | next issue | handoff>
+<review-change | next slice | handoff>
 ```

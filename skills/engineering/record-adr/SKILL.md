@@ -3,7 +3,7 @@ name: record-adr
 description: Record or update architectural decision records (ADRs) for durable technical decisions in a product repo. Use explicitly when a feature, PRD, prototype, design review, implementation, or migration chooses or changes architecture that future work must follow.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.2"
+  featurekit-version: "0.2.0"
 ---
 
 # Record ADR
@@ -13,12 +13,12 @@ Write durable architecture decisions so future agents and humans can follow them
 ## Process
 
 1. Read `docs/agents/workflow-locations.md` and use its ADR location. If missing, default to `docs/adr/`.
-2. Read relevant existing ADRs, `AGENTS.md`, `CONTEXT.md`, `docs/agents/`, PRDs, issues, prototypes, and handoffs.
+2. Read relevant existing ADRs, `AGENTS.md`, `CONTEXT.md`, `docs/agents/`, PRDs, slices, prototypes, and handoffs.
 3. Confirm the decision is durable architecture, not ordinary product scope or ticket-local implementation detail.
 4. If the decision is not settled, ask the smallest question needed or recommend `/prototype`.
 5. Create one ADR per decision, or update an existing ADR only for status, links, or minor correction.
 6. When changing an accepted decision, prefer a new ADR that supersedes the old one. Do not rewrite history casually.
-7. Report the ADR path and any PRD, issue, or implementation follow-ups.
+7. Report the ADR path and any PRD, slice, or implementation follow-ups.
 
 ## ADR Triggers
 
@@ -36,7 +36,7 @@ Do not create ADRs for copy, minor UI choices, local refactors, or reversible im
 ## Status Rules
 
 - `Proposed`: under discussion; informative but not governing.
-- `Accepted`: governing context for future plans, issues, implementation, and review.
+- `Accepted`: governing context for future plans, slices, implementation, and review.
 - `Superseded`: replaced by a newer ADR.
 - `Deprecated`: intentionally retired without a direct replacement.
 
@@ -61,7 +61,7 @@ Status: <Proposed | Accepted | Superseded | Deprecated>
 Date: <YYYY-MM-DD>
 Supersedes: <none | ADR path or title>
 Superseded by: <none | ADR path or title>
-Related: <PRD, issue, prototype, handoff, or none>
+Related: <PRD, slice, prototype, handoff, or none>
 
 ## Context
 <why the decision is needed>
@@ -89,5 +89,5 @@ Decision:
 <one-sentence summary>
 
 Follow-ups:
-<none | PRD, issue, implementation, or review updates needed>
+<none | PRD, slice, implementation, or review updates needed>
 ```

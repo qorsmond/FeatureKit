@@ -37,13 +37,13 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 - Model-invoked skills hold reusable discipline such as ADR guidance, TDD, bug diagnosis, review, domain modeling, and codebase design.
 - `tdd` must remain model-invoked so implementation and bug-fix skills can reach for it automatically. Do not add `disable-model-invocation: true` to it.
 - Prefer instructions over scripts unless deterministic execution is genuinely needed.
-- Do not hardcode a product stack, issue tracker, deployment platform, database, framework, or architecture into FeatureKit core.
+- Do not hardcode a product stack, work tracker, deployment platform, database, framework, or architecture into FeatureKit core.
 - If a skill needs repo-specific choices, it should read `docs/agents/` in the target repo.
 - When changing public workflow behavior, update `VERSION`, `CHANGELOG.md`, `.claude-plugin/plugin.json`, and each skill's `metadata.featurekit-version`.
 
 ## Core Workflow Rule
 
-No production code starts until there is a written plan. Small work gets a small written plan; larger work gets a PRD and sliced issues.
+No production code starts until there is a written plan. Small work gets a small written plan; larger work gets a PRD and implementation slices.
 
 ## Agent Operating Principles
 
@@ -78,7 +78,7 @@ Use these checks before shipping changes to FeatureKit:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance -y
+npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance --skill to-slices -y
 npx skills@latest use . --skill record-adr
 rg "featurekit-version: \"$(cat VERSION)\"" skills
 ```

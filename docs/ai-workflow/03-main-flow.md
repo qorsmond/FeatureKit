@@ -77,21 +77,21 @@ The PRD should reference accepted ADRs that constrain the feature and call out a
 
 Small work can skip a full PRD if the written plan is enough.
 
-## 6. Split Into Issues
+## 6. Split Into Slices
 
 For multi-step work:
 
 ```text
-/to-issues
+/to-slices
 ```
 
-Issues should be vertical slices. Each one should produce independently reviewable value and fit in a small PR.
+Slices should be vertical. Each one should produce independently reviewable value and fit in a small PR.
 
 Avoid horizontal slices like "add all types" or "build all UI". They hide integration risk until too late.
 
-## 7. Implement One Issue
+## 7. Implement One Slice
 
-Start a fresh session per implementation issue when possible:
+Start a fresh session per implementation slice when possible:
 
 ```text
 /implement
@@ -100,13 +100,13 @@ Start a fresh session per implementation issue when possible:
 Give the agent:
 
 - the PRD,
-- the single issue,
+- the single slice,
 - relevant project context,
 - the verification commands.
 
-The agent should implement only that issue, use TDD for logic and bug fixes, run the repo's checks, and report any divergence from the plan.
+The agent should implement only that slice, use TDD for logic and bug fixes, run the repo's checks, and report any divergence from the plan.
 
-The agent should also read relevant accepted ADRs. If the issue conflicts with an accepted ADR, stop and resolve the PRD, issue, or ADR before changing production code.
+The agent should also read relevant accepted ADRs. If the slice conflicts with an accepted ADR, stop and resolve the PRD, slice, or ADR before changing production code.
 
 Before coding, refactoring, or verification, the agent should apply the repo's Agent Operating Principles: state assumptions, name confusion, keep the change minimal, and avoid unrelated edits.
 
@@ -146,7 +146,7 @@ The handoff is a compact state file, not a transcript.
 
 ## Session Rules
 
-Keep grilling, PRD, and issue splitting in one continuous planning thread when possible. Start fresh for each implementation issue so the agent has a clean context and a narrow task.
+Keep grilling, PRD, and slice planning in one continuous planning thread when possible. Start fresh for each implementation slice so the agent has a clean context and a narrow task.
 
 Each fresh implementation, bug, refactor, review, or verification session should begin from the Agent Operating Principles in the repo instructions.
 

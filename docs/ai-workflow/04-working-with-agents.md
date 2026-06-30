@@ -8,7 +8,7 @@ Give the agent:
 
 - the goal,
 - the selected skill,
-- the relevant PRD or issue,
+- the relevant PRD or slice,
 - relevant accepted ADRs,
 - any constraints,
 - what is out of scope,
@@ -19,7 +19,7 @@ Example:
 ```text
 /implement
 
-Use docs/prd/usage-limits.md and issue 2 only.
+Use docs/prd/usage-limits.md and slice 2 only.
 Do not implement billing changes.
 Run the repo's verification commands from docs/agents/verification.md.
 ```
@@ -47,11 +47,11 @@ Use one planning thread for:
 - grilling,
 - domain terms,
 - PRD,
-- issues.
+- slices.
 
 Use fresh implementation sessions for:
 
-- one issue,
+- one slice,
 - one bug,
 - one refactor,
 - one review.
@@ -74,7 +74,7 @@ Before opening a PR:
 
 - read every changed file,
 - understand why each change exists,
-- confirm the diff matches the PRD or issue,
+- confirm the diff matches the PRD or slice,
 - confirm the diff follows accepted ADRs,
 - confirm new or changed tests would fail if the intended behavior were wrong,
 - remove out-of-scope edits,
