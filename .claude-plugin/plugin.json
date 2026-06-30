@@ -1,13 +1,15 @@
 {
   "name": "featurekit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "skills": [
+    "./skills/productivity/using-featurekit",
     "./skills/engineering/ask-featurekit",
     "./skills/engineering/setup-featurekit",
     "./skills/engineering/record-adr",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/to-prd",
     "./skills/engineering/to-slices",
+    "./skills/engineering/execute-slices",
     "./skills/engineering/implement",
     "./skills/engineering/prototype",
     "./skills/engineering/grilling",

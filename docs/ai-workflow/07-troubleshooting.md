@@ -25,6 +25,16 @@ npx skills@latest update
 
 Then restart the agent. Some agents load skills only at session start.
 
+## Bootstrap Does Not Run Automatically
+
+FeatureKit v1 does not install hook scripts. Add this sentence to your agent's session-start prompt, saved custom instructions, or first message:
+
+```text
+At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
+```
+
+If your harness cannot auto-run skills, invoke `using-featurekit` manually at the start of the session.
+
 ## Setup Picked The Wrong File
 
 If setup updated the wrong instruction file, edit the short `Agent skills` block manually.
@@ -75,6 +85,16 @@ Use review-change. Check this diff against the PRD and the single slice. Flag sc
 ```
 
 Pull unrelated changes into a separate slice or remove them.
+
+## Execute Slices Is Moving Too Broadly
+
+Stop it and narrow the queue:
+
+```text
+Stop `/execute-slices`. Continue with `/implement` for one approved slice only.
+```
+
+Use `/execute-slices` only after the PRD and ordered slices are approved.
 
 ## The Work Conflicts With An ADR
 

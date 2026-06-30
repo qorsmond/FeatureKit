@@ -2,6 +2,16 @@
 
 FeatureKit works best when you treat the agent like a fast engineer that needs clear context, small tasks, and hard feedback loops.
 
+## Session Bootstrap
+
+At the start of a FeatureKit session, tell the agent:
+
+```text
+Use `using-featurekit` before acting.
+```
+
+If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction.
+
 ## Good Prompts
 
 Give the agent:
@@ -55,6 +65,8 @@ Use fresh implementation sessions for:
 - one bug,
 - one refactor,
 - one review.
+
+Use `/execute-slices` only when the PRD and ordered slices are approved and you want the agent to run the slice queue autonomously with verification and review checkpoints.
 
 Use `/handoff` when moving between sessions.
 

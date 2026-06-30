@@ -36,7 +36,27 @@ Configured:
 
 The setup skill writes `docs/agents/*.md` so later skills know how this repo works.
 
-## Step 2: Ask For The Right Flow
+## Step 2: Bootstrap The Session
+
+At the start of the next FeatureKit session, use the bootstrap:
+
+```text
+using-featurekit
+
+I want to add usage limits to FramerHub so workspaces on different plans can only have a certain number of active client projects.
+```
+
+Expected output shape:
+
+```markdown
+FeatureKit route:
+`/grill-with-docs`
+
+Why:
+This is a product feature with plan, billing, data model, and UX implications.
+```
+
+## Step 3: Ask For The Right Flow
 
 ```text
 /ask-featurekit
@@ -54,7 +74,7 @@ Reason: this is a product feature with plan, billing, data model, and UX implica
 Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` if the PRD touches multiple areas.
 ```
 
-## Step 3: Grill The Idea
+## Step 4: Grill The Idea
 
 ```text
 /grill-with-docs
@@ -117,7 +137,7 @@ If the interview settles a durable architectural decision, record it before the 
 Record the decision that project-limit enforcement belongs in the domain/API path, not only in UI checks.
 ```
 
-## Step 4: Create A PRD
+## Step 5: Create A PRD
 
 ```text
 /to-prd
@@ -160,7 +180,7 @@ The PRD is saved in the configured PRD location, for example:
 docs/prd/workspace-project-usage-limits.md
 ```
 
-## Step 5: Split Into Slices
+## Step 6: Split Into Slices
 
 ```text
 /to-slices
@@ -193,7 +213,7 @@ Acceptance criteria:
 Depends on: Slice 1
 ```
 
-## Step 6: Implement One Slice
+## Step 7: Implement One Slice
 
 Start a fresh session. Give the agent one slice only.
 
@@ -216,7 +236,25 @@ Expected implementation behavior:
 - runs the verification commands,
 - reports files changed and any divergence from the PRD.
 
-## Step 7: Review
+If both slices are approved and you want one autonomous session to run them sequentially instead:
+
+```text
+/execute-slices
+
+Use docs/prd/workspace-project-usage-limits.md and the approved usage-limit slices.
+Do not implement billing changes.
+Run the verification commands from docs/agents/verification.md.
+```
+
+Expected execution behavior:
+
+- executes slices in dependency order,
+- uses subagents when available,
+- reviews after each slice,
+- stops for blockers, ADR conflicts, failing verification, or unclear scope,
+- does not commit, push, merge, or open a PR.
+
+## Step 8: Review
 
 After implementation:
 
@@ -244,7 +282,7 @@ ADR gaps:
 
 Fix findings before opening a PR.
 
-## Step 8: Handoff
+## Step 9: Handoff
 
 If the session needs to stop:
 

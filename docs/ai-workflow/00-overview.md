@@ -2,7 +2,7 @@
 
 FeatureKit is a portable skill harness for building real full-stack products with AI coding agents.
 
-It is not a framework, app scaffold, or custom runtime. It is a set of small Markdown skills that help you work with agents in a disciplined way: clarify the idea, write the spec, split the work, implement one slice, verify it, review it, and hand off cleanly.
+It is not a framework, app scaffold, or custom runtime. It is a set of small Markdown skills that help you work with agents in a disciplined way: clarify the idea, write the spec, split the work, implement slices, verify them, review them, and hand off cleanly.
 
 ## What FeatureKit Solves
 
@@ -48,12 +48,14 @@ User-invoked skills are commands you intentionally run:
 - `to-prd`
 - `to-slices`
 - `implement`
+- `execute-slices`
 - `prototype`
 - `handoff`
 
 Model-invoked skills are reusable disciplines the agent may use when the task fits:
 
 - `grilling`
+- `using-featurekit`
 - `adr-guidance`
 - `domain-modeling`
 - `tdd`
@@ -61,6 +63,8 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `diagnosing-bugs`
 - `review-change`
 - `codebase-design`
+
+`using-featurekit` is the lightweight bootstrap. Use it at the start of FeatureKit sessions, after context compaction, or through a session-start prompt so the agent checks setup and routes work before acting.
 
 `tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
 
@@ -81,7 +85,7 @@ If this is a new repo, install FeatureKit and run:
 /setup-featurekit
 ```
 
-If FeatureKit is already set up and you do not know what to run, ask:
+If FeatureKit is already set up, start a session by telling the agent to use `using-featurekit`. If you do not know what to run, ask:
 
 ```text
 /ask-featurekit

@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.2.0"
+  featurekit-version: "0.3.0"
 ---
 
 # To Slices
@@ -63,4 +63,4 @@ Depends on:
 
 ## Done
 
-Report the slice list and where it was written.
+Report the slice list and where it was written. Recommend `/execute-slices` when the user wants the approved slice set executed autonomously, or `/implement` when they want one slice built in a focused session.

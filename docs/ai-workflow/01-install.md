@@ -25,7 +25,7 @@ npx skills@latest add . --list
 To install selected skills into a scratch product repo:
 
 ```bash
-npx skills@latest add /absolute/path/to/FeatureKit --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance
+npx skills@latest add /absolute/path/to/FeatureKit --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance
 ```
 
 ## Install For Specific Agents
@@ -81,6 +81,16 @@ npx skills@latest add . --list
 ```
 
 You should see the FeatureKit skills from `skills/engineering/` and `skills/productivity/`.
+
+## Session Bootstrap
+
+FeatureKit does not ship hook scripts in v1. To get session-start behavior, add a short startup instruction in the agent or harness you use:
+
+```text
+At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
+```
+
+If your harness supports session-start hooks or persistent custom instructions, put that sentence there. Otherwise, include it in the first prompt of the session.
 
 ## Confirm Installed Version
 

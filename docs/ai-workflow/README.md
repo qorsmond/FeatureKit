@@ -13,4 +13,4 @@ Read it in order the first time:
 7. [End-to-End Example](./06-end-to-end-example.md)
 8. [Troubleshooting](./07-troubleshooting.md)
 
-After that, use `/ask-featurekit` when you are not sure which skill to run.
+After that, start sessions with `using-featurekit` when available, or use `/ask-featurekit` when you are not sure which skill to run.

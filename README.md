@@ -18,16 +18,16 @@ For local development inside this repo:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance
+npx skills@latest add . --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance
 ```
 
-Then run this in your coding agent:
+Then run this in your coding agent when setting up a product repo:
 
 ```text
 /setup-featurekit
 ```
 
-After setup, use:
+After setup, start FeatureKit sessions with `using-featurekit` or ask explicitly:
 
 ```text
 /ask-featurekit
@@ -46,15 +46,16 @@ rg "featurekit-version" .agents/skills
 ## The Main Flow
 
 1. Start with `/setup-featurekit` once per product repo.
-2. Use `/ask-featurekit` when you are unsure which flow fits.
-3. Use `/grill-with-docs` to clarify an idea against the product context.
-4. Use `/record-adr` when a durable architectural decision is made or changed.
-5. Use `/to-prd` for work that needs a durable spec.
-6. Use `/to-slices` to split a PRD into small vertical implementation slices.
-7. Use `/implement` for one approved slice at a time.
-8. Use `verify-tests` when generated or changed tests need deeper proof.
-9. Use `review-change` before human review.
-10. Use `/handoff` when a session needs to pause or continue elsewhere.
+2. Use `using-featurekit` as a lightweight session bootstrap.
+3. Use `/ask-featurekit` when you are unsure which flow fits.
+4. Use `/grill-with-docs` to clarify an idea against the product context.
+5. Use `/record-adr` when a durable architectural decision is made or changed.
+6. Use `/to-prd` for work that needs a durable spec.
+7. Use `/to-slices` to split a PRD into small vertical implementation slices.
+8. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
+9. Use `verify-tests` when generated or changed tests need deeper proof.
+10. Use `review-change` before human review.
+11. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 ## Optional Tooling Skills
 

@@ -78,7 +78,9 @@ Use these checks before shipping changes to FeatureKit:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance --skill to-slices -y
+npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit --skill using-featurekit --skill execute-slices --skill record-adr --skill adr-guidance --skill to-slices -y
+npx skills@latest use . --skill using-featurekit
+npx skills@latest use . --skill execute-slices
 npx skills@latest use . --skill record-adr
 rg "featurekit-version: \"$(cat VERSION)\"" skills
 ```

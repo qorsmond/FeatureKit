@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable interview loop for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs to ask focused questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.2.0"
+  featurekit-version: "0.3.0"
 ---
 
 # Grilling

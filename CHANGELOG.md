@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 - 2026-06-30
+
+- Added `using-featurekit` as a lightweight session bootstrap and router.
+- Added `/execute-slices` for autonomous sequential execution of approved implementation slices.
+- Updated setup, routing, docs, local-LLM guidance, and install verification for the new workflows.
+
 ## 0.2.0 - 2026-06-30
 
 - Renamed the workflow work item from issues to slices.

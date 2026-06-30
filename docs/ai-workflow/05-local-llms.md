@@ -10,6 +10,8 @@ prompts/local-llm-featurekit.md
 
 Paste it into your local model, then paste the selected context and skill.
 
+For a manual bootstrap, paste the `using-featurekit` skill first. It helps the model route the task before you paste a narrower workflow skill.
+
 ## Minimum Context
 
 For a local model, keep context tight:
@@ -17,7 +19,7 @@ For a local model, keep context tight:
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
 3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
-4. One FeatureKit `SKILL.md`.
+4. `using-featurekit` or one focused FeatureKit `SKILL.md`.
 5. Your exact task.
 
 Do not paste the whole repo unless the local model has enough context and you really need it.
@@ -86,6 +88,7 @@ With local LLMs:
 
 - expect more manual file pasting,
 - keep tasks smaller,
+- use `implement` one slice at a time unless the model can hold the full PRD, slice queue, relevant files, and verification output for `execute-slices`,
 - ask for plans before code,
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,

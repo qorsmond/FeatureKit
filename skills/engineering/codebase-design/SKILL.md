@@ -2,7 +2,7 @@
 name: codebase-design
 description: Improve or evaluate codebase architecture with a focus on clear boundaries, deep modules, stable interfaces, and maintainable full-stack product design. Use when planning architecture, reviewing a design, or cleaning up codebase complexity.
 metadata:
-  featurekit-version: "0.2.0"
+  featurekit-version: "0.3.0"
 ---
 
 # Codebase Design

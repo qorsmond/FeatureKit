@@ -2,7 +2,17 @@
 
 This is the default route from raw idea to shipped change.
 
-## 1. Ask For The Right Flow
+## 1. Bootstrap The Session
+
+At the start of a FeatureKit session, use:
+
+```text
+using-featurekit
+```
+
+This is a lightweight router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops only when production code is requested without a written plan.
+
+## 2. Ask For The Right Flow
 
 When unsure, start here:
 
@@ -12,7 +22,7 @@ When unsure, start here:
 
 `ask-featurekit` routes you to the right skill and tells you whether to stay in the same session or start fresh.
 
-## 2. Clarify The Idea
+## 3. Clarify The Idea
 
 For a product idea or feature:
 
@@ -28,7 +38,7 @@ The agent should:
 - update domain terms or ADRs only after confirming,
 - stop when the goal, scope, constraints, and success criteria are clear.
 
-## 3. Prototype Only If Needed
+## 4. Prototype Only If Needed
 
 If a question cannot be answered through discussion, use:
 
@@ -40,7 +50,7 @@ Prototype when you need a runnable answer about UX, state, architecture, perform
 
 Prototype code is disposable. Use `/handoff` to carry the learning back to the main thread.
 
-## 4. Record Architectural Decisions
+## 5. Record Architectural Decisions
 
 When grilling, design work, or a prototype settles a durable technical choice, use:
 
@@ -52,7 +62,7 @@ Record decisions that future work must obey: boundaries, data ownership, integra
 
 Do not use ADRs as a scratchpad. Product decisions belong in the PRD; unresolved technical uncertainty belongs in grilling or a prototype.
 
-## 5. Write The PRD
+## 6. Write The PRD
 
 For work that needs a durable spec:
 
@@ -77,7 +87,7 @@ The PRD should reference accepted ADRs that constrain the feature and call out a
 
 Small work can skip a full PRD if the written plan is enough.
 
-## 6. Split Into Slices
+## 7. Split Into Slices
 
 For multi-step work:
 
@@ -89,7 +99,7 @@ Slices should be vertical. Each one should produce independently reviewable valu
 
 Avoid horizontal slices like "add all types" or "build all UI". They hide integration risk until too late.
 
-## 7. Implement One Slice
+## 8. Implement One Slice
 
 Start a fresh session per implementation slice when possible:
 
@@ -114,7 +124,19 @@ Before coding, refactoring, or verification, the agent should apply the repo's A
 
 `verify-tests` is model-invoked for deeper test checks. Use it when a generated or changed test might not protect the intended behavior, or when you explicitly want mutation testing such as Stryker. Mutation testing is gated because it can be slow.
 
-## 8. Review
+## 9. Execute Approved Slices
+
+When a PRD and ordered slices are approved and you want autonomous batch execution:
+
+```text
+/execute-slices
+```
+
+The agent should execute slices sequentially, use subagents when available, review after each slice, run verification, and stop for blockers, ADR conflicts, failing checks, or unclear scope. It should not create branches, commit, push, or open PRs.
+
+Use `/implement` instead when you want one focused slice in a fresh session.
+
+## 10. Review
 
 Before human review, ask the agent to use `review-change`.
 
@@ -134,7 +156,7 @@ The review checks:
 
 For high-risk behavior or suspicious generated tests, ask for `verify-tests` before accepting the test coverage.
 
-## 9. Handoff
+## 11. Handoff
 
 Use this when a session is long, context is crowded, or work needs to move:
 
@@ -146,7 +168,7 @@ The handoff is a compact state file, not a transcript.
 
 ## Session Rules
 
-Keep grilling, PRD, and slice planning in one continuous planning thread when possible. Start fresh for each implementation slice so the agent has a clean context and a narrow task.
+Keep grilling, PRD, and slice planning in one continuous planning thread when possible. Start fresh for each implementation slice when using `/implement`, or use `/execute-slices` when the approved slice queue should run sequentially in one autonomous session.
 
 Each fresh implementation, bug, refactor, review, or verification session should begin from the Agent Operating Principles in the repo instructions.
 
