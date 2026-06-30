@@ -1,6 +1,8 @@
 ---
 name: codebase-design
 description: Improve or evaluate codebase architecture with a focus on clear boundaries, deep modules, stable interfaces, and maintainable full-stack product design. Use when planning architecture, reviewing a design, or cleaning up codebase complexity.
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Codebase Design
@@ -9,6 +11,7 @@ Use design judgment to keep the product easy to change.
 
 ## Principles
 
+- Treat accepted ADRs as governing design constraints.
 - Prefer deep modules: simple public interface, meaningful behavior inside.
 - Keep domain rules close to the domain model.
 - Keep infrastructure details behind boundaries.
@@ -20,11 +23,12 @@ Use design judgment to keep the product easy to change.
 ## Process
 
 1. Identify the behavior or boundary under pressure.
-2. Read the current implementation and tests.
+2. Read relevant ADRs, the current implementation, and tests.
 3. Name the design problem in plain language.
 4. Propose the smallest design improvement that helps this change.
 5. Separate required changes from optional cleanup.
-6. Preserve public behavior unless the PRD says otherwise.
+6. Recommend `/record-adr` when the design creates or changes a durable architectural decision.
+7. Preserve public behavior unless the PRD says otherwise.
 
 ## Output
 
@@ -40,4 +44,7 @@ Required change:
 
 Optional follow-up:
 <separate cleanup, if any>
+
+ADR impact:
+<none | governing ADRs or decision to record>
 ```

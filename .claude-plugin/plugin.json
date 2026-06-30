@@ -1,14 +1,17 @@
 {
   "name": "featurekit",
+  "version": "0.1.0",
   "skills": [
     "./skills/engineering/ask-featurekit",
     "./skills/engineering/setup-featurekit",
+    "./skills/engineering/record-adr",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/to-prd",
     "./skills/engineering/to-issues",
     "./skills/engineering/implement",
     "./skills/engineering/prototype",
     "./skills/engineering/grilling",
+    "./skills/engineering/adr-guidance",
     "./skills/engineering/domain-modeling",
     "./skills/engineering/tdd",
     "./skills/engineering/diagnosing-bugs",

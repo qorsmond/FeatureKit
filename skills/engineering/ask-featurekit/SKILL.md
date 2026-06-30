@@ -1,7 +1,9 @@
 ---
 name: ask-featurekit
-description: Route a product or engineering request to the right FeatureKit skill or flow. Use explicitly when the user is unsure what to run, asks how to proceed, has a new idea, bug, PRD, issue, implementation task, review, prototype, or handoff need. User-invoked router; do not implement code from this skill.
+description: Route a product or engineering request to the right FeatureKit skill or flow. Use explicitly when the user is unsure what to run, asks how to proceed, has a new idea, bug, PRD, issue, ADR, implementation task, review, prototype, or handoff need. User-invoked router; do not implement code from this skill.
 disable-model-invocation: true
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Ask FeatureKit
@@ -21,6 +23,7 @@ Route the user to the right FeatureKit flow.
    - bug diagnosis,
    - review,
    - architecture improvement,
+   - ADR recording or conflict,
    - prototype,
    - handoff.
 4. Recommend the next skill and explain why in one or two sentences.
@@ -31,6 +34,7 @@ Route the user to the right FeatureKit flow.
 - New product idea with a codebase: `/grill-with-docs`.
 - New product idea without a codebase: use `grilling` manually and keep it stateless.
 - Durable spec needed: `/to-prd`.
+- Durable architectural decision to capture or update: `/record-adr`.
 - Multi-step implementation: `/to-issues`.
 - One approved issue ready to build: `/implement`.
 - Hard bug or unclear cause: `diagnosing-bugs`.

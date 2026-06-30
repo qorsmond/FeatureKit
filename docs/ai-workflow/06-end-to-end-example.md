@@ -30,6 +30,7 @@ Configured:
 - Domain docs: single-context `CONTEXT.md` plus `docs/adr/`
 - Verification: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`
 - PRDs: `docs/prd/`
+- ADRs: `docs/adr/`
 - Handoffs: `docs/handoff/`
 ```
 
@@ -103,6 +104,17 @@ Domain terms to add:
 - active project
 - project limit
 - limit reached state
+
+ADR follow-up:
+- none, unless the team decides a new durable data ownership or enforcement boundary.
+```
+
+If the interview settles a durable architectural decision, record it before the PRD:
+
+```text
+/record-adr
+
+Record the decision that project-limit enforcement belongs in the domain/API path, not only in UI checks.
 ```
 
 ## Step 4: Create A PRD
@@ -131,6 +143,9 @@ Prevent workspaces from creating more active client projects than their plan all
 - Billing checkout changes.
 - Admin override.
 - Automated upgrade flow.
+
+## ADR Context
+Follow existing ADRs for plan configuration and domain/API boundaries. Record a new ADR if no accepted decision covers the enforcement boundary.
 
 ## Acceptance Criteria
 - A workspace under the limit can create a project.
@@ -194,6 +209,7 @@ Run the verification commands from docs/agents/verification.md.
 Expected implementation behavior:
 
 - reads the PRD and issue,
+- reads relevant accepted ADRs,
 - reads relevant code,
 - writes a failing test first for the limit rule,
 - implements the smallest change,
@@ -221,6 +237,9 @@ Questions:
 Verification:
 - `pnpm test` was run.
 - `pnpm build` was not run.
+
+ADR gaps:
+- none
 ```
 
 Fix findings before opening a PR.
@@ -251,6 +270,9 @@ Done:
 
 Next:
 - Start fresh session for Issue 2 UI state.
+
+ADRs:
+- No ADR update pending.
 
 Watch out for:
 - Archived projects must not count.

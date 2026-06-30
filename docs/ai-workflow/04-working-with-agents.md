@@ -9,6 +9,7 @@ Give the agent:
 - the goal,
 - the selected skill,
 - the relevant PRD or issue,
+- relevant accepted ADRs,
 - any constraints,
 - what is out of scope,
 - the verification command.
@@ -66,9 +67,14 @@ Before opening a PR:
 - read every changed file,
 - understand why each change exists,
 - confirm the diff matches the PRD or issue,
+- confirm the diff follows accepted ADRs,
 - remove out-of-scope edits,
 - run the verification commands,
 - ask `review-change` to review the diff.
+
+## ADR Discipline
+
+Use `/record-adr` when a durable technical decision is made or changed. Other skills should read ADRs, follow accepted ADRs, and flag conflicts, but ADR writes should go through `/record-adr`.
 
 ## Keep Work Small
 

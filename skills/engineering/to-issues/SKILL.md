@@ -2,6 +2,8 @@
 name: to-issues
 description: Split a PRD or approved plan into small vertical implementation issues that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # To Issues
@@ -11,10 +13,11 @@ Split a PRD into independently reviewable implementation issues.
 ## Process
 
 1. Read the PRD or approved plan.
-2. Read `docs/agents/issue-tracker.md` and `docs/agents/workflow-locations.md`.
+2. Read `docs/agents/issue-tracker.md`, `docs/agents/workflow-locations.md`, and relevant ADRs.
 3. Identify vertical slices that each produce testable value.
 4. Order slices by dependency.
-5. Write issues to the configured issue tracker or local Markdown location.
+5. Include governing ADRs or ADR follow-ups in the relevant issue context.
+6. Write issues to the configured issue tracker or local Markdown location.
 
 ## Slicing Rules
 
@@ -25,6 +28,7 @@ Each issue must:
 - fit in a small PR,
 - include verification guidance,
 - avoid unrelated cleanup,
+- respect accepted ADRs,
 - name dependencies on earlier issues.
 
 Avoid horizontal slices such as "add all types", "build all UI", or "wire all backend". A good slice crosses the layers needed for one behavior.
@@ -42,6 +46,9 @@ Scope:
 
 Out of scope:
 <excluded work>
+
+ADRs:
+<none | governing ADRs or ADR follow-ups>
 
 Acceptance criteria:
 - <criterion>

@@ -32,6 +32,8 @@ Setup walks through these one at a time:
 4. How deployment/runtime notes should be recorded.
 5. Where PRDs, issues, ADRs, prototypes, and handoffs should be saved.
 
+ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
+
 The agent should recommend defaults based on what it found.
 
 ## Files Setup Writes

@@ -40,7 +40,19 @@ Prototype when you need a runnable answer about UX, state, architecture, perform
 
 Prototype code is disposable. Use `/handoff` to carry the learning back to the main thread.
 
-## 4. Write The PRD
+## 4. Record Architectural Decisions
+
+When grilling, design work, or a prototype settles a durable technical choice, use:
+
+```text
+/record-adr
+```
+
+Record decisions that future work must obey: boundaries, data ownership, integration contracts, public APIs, auth/security posture, deployment/runtime constraints, or cross-cutting architecture patterns.
+
+Do not use ADRs as a scratchpad. Product decisions belong in the PRD; unresolved technical uncertainty belongs in grilling or a prototype.
+
+## 5. Write The PRD
 
 For work that needs a durable spec:
 
@@ -61,9 +73,11 @@ The PRD captures:
 - acceptance criteria,
 - test and verification plan.
 
+The PRD should reference accepted ADRs that constrain the feature and call out any missing ADRs.
+
 Small work can skip a full PRD if the written plan is enough.
 
-## 5. Split Into Issues
+## 6. Split Into Issues
 
 For multi-step work:
 
@@ -75,7 +89,7 @@ Issues should be vertical slices. Each one should produce independently reviewab
 
 Avoid horizontal slices like "add all types" or "build all UI". They hide integration risk until too late.
 
-## 6. Implement One Issue
+## 7. Implement One Issue
 
 Start a fresh session per implementation issue when possible:
 
@@ -92,9 +106,11 @@ Give the agent:
 
 The agent should implement only that issue, use TDD for logic and bug fixes, run the repo's checks, and report any divergence from the plan.
 
+The agent should also read relevant accepted ADRs. If the issue conflicts with an accepted ADR, stop and resolve the PRD, issue, or ADR before changing production code.
+
 `tdd` is model-invoked, so the implementation skill can use it automatically when the slice contains testable behavior.
 
-## 7. Review
+## 8. Review
 
 Before human review, ask the agent to use `review-change`.
 
@@ -108,9 +124,10 @@ The review checks:
 - weak error handling,
 - unsafe migrations,
 - unclear product behavior,
+- conflicts with accepted ADRs,
 - verification gaps.
 
-## 8. Handoff
+## 9. Handoff
 
 Use this when a session is long, context is crowded, or work needs to move:
 

@@ -33,12 +33,15 @@ No production code starts until there is a written plan.
 
 For small work, the plan can be a short note. For larger work, use a PRD and sliced issues. If reality changes during implementation, update the plan before continuing.
 
+Accepted ADRs are also part of the plan. If a change needs to violate or replace an accepted ADR, record the new architectural decision before implementation continues.
+
 ## Skill Types
 
 User-invoked skills are commands you intentionally run:
 
 - `ask-featurekit`
 - `setup-featurekit`
+- `record-adr`
 - `grill-with-docs`
 - `to-prd`
 - `to-issues`
@@ -49,6 +52,7 @@ User-invoked skills are commands you intentionally run:
 Model-invoked skills are reusable disciplines the agent may use when the task fits:
 
 - `grilling`
+- `adr-guidance`
 - `domain-modeling`
 - `tdd`
 - `diagnosing-bugs`

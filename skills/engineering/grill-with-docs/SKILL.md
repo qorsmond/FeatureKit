@@ -2,6 +2,8 @@
 name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Grill With Docs
@@ -19,7 +21,8 @@ Clarify an idea until it is ready for a written plan or PRD.
    - a one-line reason grounded in repo context.
 5. If a question can be answered by reading the repo, read instead of asking.
 6. Capture decisions, out-of-scope items, assumptions, risks, and domain terms.
-7. When useful, propose updates to `CONTEXT.md` or ADRs, but ask before writing them.
+7. Treat accepted ADRs as constraints and do not recommend conflicting architecture without calling out the conflict.
+8. When useful, propose updates to `CONTEXT.md` or recommend `/record-adr`, but ask before writing durable docs.
 
 ## Question Order
 
@@ -63,6 +66,9 @@ Domain terms:
 
 Risks:
 <risks and unknowns>
+
+ADR updates:
+<none | decisions to record with /record-adr>
 
 Ready for:
 <to-prd | to-issues | implement | prototype>

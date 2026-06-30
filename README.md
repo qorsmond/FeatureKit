@@ -4,6 +4,8 @@ Portable agent skills for building real full-stack products with coding agents.
 
 FeatureKit is a private, framework-agnostic skill harness. It follows the Matt Pocock-style pattern: small composable skills, installed with the open `skills` CLI, then run from Codex, Claude Code, OpenCode, generic agents, or local LLMs.
 
+Current release: see [VERSION](./VERSION) and [CHANGELOG.md](./CHANGELOG.md).
+
 ## Quickstart
 
 Install from the repo:
@@ -16,7 +18,7 @@ For local development inside this repo:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . --skill ask-featurekit --skill setup-featurekit
+npx skills@latest add . --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance
 ```
 
 Then run this in your coding agent:
@@ -33,16 +35,25 @@ After setup, use:
 
 It routes you through the right flow for planning, PRDs, issues, implementation, review, prototyping, debugging, and handoff.
 
+## Confirm Version
+
+Project installs copy FeatureKit skills into `.agents/skills/`. Each installed `SKILL.md` includes `metadata.featurekit-version`, so consumers can confirm the release they received:
+
+```bash
+rg "featurekit-version" .agents/skills
+```
+
 ## The Main Flow
 
 1. Start with `/setup-featurekit` once per product repo.
 2. Use `/ask-featurekit` when you are unsure which flow fits.
 3. Use `/grill-with-docs` to clarify an idea against the product context.
-4. Use `/to-prd` for work that needs a durable spec.
-5. Use `/to-issues` to split a PRD into small vertical implementation issues.
-6. Use `/implement` for one approved issue at a time.
-7. Use `review-change` before human review.
-8. Use `/handoff` when a session needs to pause or continue elsewhere.
+4. Use `/record-adr` when a durable architectural decision is made or changed.
+5. Use `/to-prd` for work that needs a durable spec.
+6. Use `/to-issues` to split a PRD into small vertical implementation issues.
+7. Use `/implement` for one approved issue at a time.
+8. Use `review-change` before human review.
+9. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 ## Optional Tooling Skills
 

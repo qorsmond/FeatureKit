@@ -2,6 +2,8 @@
 name: handoff
 description: Write a compact handoff note so work can continue in a fresh session, another agent, or another developer. Use when context is long, work is pausing, a prototype result needs to return to planning, or a task moves between tools.
 disable-model-invocation: true
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Handoff
@@ -15,8 +17,9 @@ Capture the current state without dumping the whole conversation.
 3. Summarize what is done.
 4. List the next steps in order.
 5. Record changed files or areas.
-6. Capture decisions, risks, and gotchas.
-7. Write the handoff to the configured location, defaulting to `docs/handoff/<slug>.md`.
+6. Capture decisions, risks, gotchas, and relevant ADRs.
+7. Recommend `/record-adr` for unrecorded durable architecture decisions.
+8. Write the handoff to the configured location, defaulting to `docs/handoff/<slug>.md`.
 
 ## Output File Format
 
@@ -40,6 +43,9 @@ Changed:
 
 Decisions:
 - <important decision>
+
+ADRs:
+- <governing ADRs or pending /record-adr follow-up>
 
 Watch out for:
 - <gotcha>

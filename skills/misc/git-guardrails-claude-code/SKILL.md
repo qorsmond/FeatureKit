@@ -1,6 +1,8 @@
 ---
 name: git-guardrails-claude-code
 description: Set up Claude Code hooks that block dangerous git commands such as push, reset --hard, clean, destructive checkout/restore, and branch deletion. Use when a repo needs Claude Code-specific safety guardrails around git operations.
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Git Guardrails For Claude Code

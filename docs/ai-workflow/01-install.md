@@ -25,7 +25,7 @@ npx skills@latest add . --list
 To install selected skills into a scratch product repo:
 
 ```bash
-npx skills@latest add /absolute/path/to/FeatureKit --skill ask-featurekit --skill setup-featurekit
+npx skills@latest add /absolute/path/to/FeatureKit --skill ask-featurekit --skill setup-featurekit --skill record-adr --skill adr-guidance
 ```
 
 ## Install For Specific Agents
@@ -81,6 +81,18 @@ npx skills@latest add . --list
 ```
 
 You should see the FeatureKit skills from `skills/engineering/` and `skills/productivity/`.
+
+## Confirm Installed Version
+
+FeatureKit tracks its source release in `VERSION` and `CHANGELOG.md`. Installed skill copies also include `metadata.featurekit-version` in each `SKILL.md`.
+
+For a project install, check:
+
+```bash
+rg "featurekit-version" .agents/skills
+```
+
+After `npx skills@latest update`, this value should match the latest FeatureKit release.
 
 ## Update Later
 

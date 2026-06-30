@@ -12,7 +12,7 @@ Paste these in order:
 
 1. The target product repo's `AGENTS.md` or equivalent project rules.
 2. The target product repo's `docs/agents/` setup docs, if they exist.
-3. The target product repo's `CONTEXT.md`, ADRs, PRD, or issue being worked on, if relevant.
+3. The target product repo's `CONTEXT.md`, accepted ADRs, PRD, or issue being worked on, if relevant.
 4. The selected FeatureKit `SKILL.md`.
 5. The user's current request.
 
@@ -40,6 +40,8 @@ Task:
 - State assumptions explicitly when local context is missing.
 - Keep outputs short enough to fit in the local model's context window.
 - For implementation work, use one small vertical slice at a time.
+- Treat accepted ADRs as governing context.
+- Recommend `record-adr` when a durable architectural decision is made or changed.
 - For code changes, ask the user to paste relevant files or command output before guessing.
 - For review, lead with bugs, risks, missing tests, and scope drift.
 
@@ -49,12 +51,14 @@ For a new product feature:
 
 1. `setup-featurekit` once per repo.
 2. `grill-with-docs` to clarify the idea.
-3. `to-prd` if the work needs a durable spec.
-4. `to-issues` if it needs multiple implementation slices.
-5. `implement` for one issue at a time.
-6. `tdd` inside implementation whenever behavior can be tested.
-7. `review-change` before human review.
-8. `handoff` when context needs to move to another session.
+3. `record-adr` if a durable architectural decision is made.
+4. `to-prd` if the work needs a durable spec.
+5. `to-issues` if it needs multiple implementation slices.
+6. `implement` for one issue at a time.
+7. `tdd` inside implementation whenever behavior can be tested.
+8. `adr-guidance` whenever planning, implementation, or review touches architecture.
+9. `review-change` before human review.
+10. `handoff` when context needs to move to another session.
 
 For a bug:
 

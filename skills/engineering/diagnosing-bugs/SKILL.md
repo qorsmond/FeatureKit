@@ -1,6 +1,8 @@
 ---
 name: diagnosing-bugs
 description: Diagnose and fix hard, flaky, unclear, or production-impacting bugs. Use when the user reports broken behavior, cannot reproduce an issue, sees intermittent failures, or needs a root-cause-driven regression fix.
+metadata:
+  featurekit-version: "0.1.0"
 ---
 
 # Diagnosing Bugs
@@ -12,10 +14,11 @@ Find the real cause before fixing.
 1. Reproduce the bug.
 2. Minimize the reproduction.
 3. State a hypothesis and why it fits the evidence.
-4. Instrument only if needed, and remove temporary instrumentation.
-5. Write a failing regression test.
-6. Fix the smallest cause.
-7. Run verification.
+4. Read relevant ADRs before changing architecture, data flow, integrations, or deployment behavior.
+5. Instrument only if needed, and remove temporary instrumentation.
+6. Write a failing regression test.
+7. Fix the smallest cause.
+8. Run verification.
 
 ## Do Not
 
@@ -23,6 +26,7 @@ Find the real cause before fixing.
 - Do not ship without a regression test unless impossible and explicitly explained.
 - Do not leave temporary logs or debug code.
 - Do not broaden the change beyond the bug.
+- Do not violate accepted ADRs; recommend `/record-adr` if the bug fix requires changing one.
 
 ## Output
 
@@ -41,4 +45,7 @@ Regression test:
 
 Verification:
 <commands run>
+
+ADRs:
+<none | governing ADRs followed or ADR update needed>
 ```

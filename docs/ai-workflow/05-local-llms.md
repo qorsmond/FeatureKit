@@ -16,7 +16,7 @@ For a local model, keep context tight:
 
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
-3. Relevant `CONTEXT.md`, ADR, PRD, or issue.
+3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or issue.
 4. One FeatureKit `SKILL.md`.
 5. Your exact task.
 
@@ -30,6 +30,7 @@ Use FeatureKit with the grill-with-docs skill.
 Project context:
 <paste AGENTS.md>
 <paste docs/agents/domain.md>
+<paste relevant ADRs, if any>
 <paste CONTEXT.md>
 
 Skill:
@@ -47,6 +48,7 @@ Use FeatureKit with the implement skill.
 Project context:
 <paste AGENTS.md>
 <paste docs/agents/verification.md>
+<paste relevant accepted ADRs>
 
 Spec:
 <paste PRD>

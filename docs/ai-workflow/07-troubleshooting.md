@@ -76,6 +76,26 @@ Use review-change. Check this diff against the PRD and the single issue. Flag sc
 
 Pull unrelated changes into a separate issue or remove them.
 
+## The Work Conflicts With An ADR
+
+Stop implementation and resolve the decision:
+
+```text
+Use /record-adr to supersede the accepted ADR, or update the PRD/issue so the work follows it.
+```
+
+Accepted ADRs are governing context. Do not treat an ADR conflict as an implementation detail.
+
+## A Decision Was Made But Not Recorded
+
+Record it before the next implementation session:
+
+```text
+/record-adr
+```
+
+Include the context, decision, consequences, alternatives considered, and related PRD or issue.
+
 ## Local LLM Context Is Too Small
 
 Use less context:
