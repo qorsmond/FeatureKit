@@ -2,12 +2,14 @@
 name: tdd
 description: Use a red-green-refactor loop for business logic, data transformations, services, API behavior, bug fixes, and other testable product behavior. Use during implementation whenever meaningful behavior can be specified with tests.
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # TDD
 
 Use tests as the implementation feedback loop.
+
+Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
 
 ## Process
 

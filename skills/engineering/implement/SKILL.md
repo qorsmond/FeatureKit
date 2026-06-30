@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit issue or slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or issue is approved and ready to build. Requires a written plan or issue.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Implement
@@ -21,6 +21,8 @@ Before coding, confirm:
 - verification commands are known.
 
 If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-issues`.
+
+Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
 
 ## Process
 

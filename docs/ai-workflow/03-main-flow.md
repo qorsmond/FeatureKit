@@ -108,6 +108,8 @@ The agent should implement only that issue, use TDD for logic and bug fixes, run
 
 The agent should also read relevant accepted ADRs. If the issue conflicts with an accepted ADR, stop and resolve the PRD, issue, or ADR before changing production code.
 
+Before coding, refactoring, or verification, the agent should apply the repo's Agent Operating Principles: state assumptions, name confusion, keep the change minimal, and avoid unrelated edits.
+
 `tdd` is model-invoked, so the implementation skill can use it automatically when the slice contains testable behavior.
 
 ## 8. Review
@@ -140,6 +142,8 @@ The handoff is a compact state file, not a transcript.
 ## Session Rules
 
 Keep grilling, PRD, and issue splitting in one continuous planning thread when possible. Start fresh for each implementation issue so the agent has a clean context and a narrow task.
+
+Each fresh implementation, bug, refactor, review, or verification session should begin from the Agent Operating Principles in the repo instructions.
 
 ## Series Navigation
 

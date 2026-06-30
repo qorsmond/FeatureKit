@@ -70,6 +70,7 @@ With local LLMs:
 - expect more manual file pasting,
 - keep tasks smaller,
 - ask for plans before code,
+- paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
 - use fresh sessions often.
 

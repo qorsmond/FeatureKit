@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when issue tracker, domain docs, stack commands, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Setup FeatureKit
@@ -98,7 +98,7 @@ Record where to save:
 
 Show a draft of:
 
-- the `Agent skills` block for `AGENTS.md` or `CLAUDE.md`,
+- the `Agent skills` and `Agent Operating Principles` blocks for `AGENTS.md` or `CLAUDE.md`,
 - each `docs/agents/*.md` file.
 
 Let the user correct it before writing.
@@ -133,9 +133,36 @@ This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agent
 - Stack and commands: see `docs/agents/stack.md` and `docs/agents/verification.md`.
 - Deployment: see `docs/agents/deployment.md`.
 - Workflow locations: see `docs/agents/workflow-locations.md`.
+
+## Agent Operating Principles
+
+Every new session should follow these principles before coding, refactoring, or verification work.
+
+### Think before coding
+
+- State assumptions explicitly before implementing.
+- Do not hide confusion. If something is unclear, stop, name what is confusing, and ask.
+- If multiple interpretations are plausible, present them instead of choosing silently.
+- Surface important tradeoffs, including simpler approaches and reasons to push back.
+
+### Simplicity first
+
+- Write the minimum code that solves the requested problem.
+- Do not add features, abstractions, flexibility, or configurability that were not requested.
+- Do not add error handling for impossible scenarios.
+- If a solution is much larger than it needs to be, simplify it before handing off.
+
+### Surgical changes
+
+- Touch only the files and lines required by the user's request.
+- Do not improve adjacent code, comments, formatting, or naming unless it is necessary for the requested change.
+- Match existing style, even where another style would be preferable.
+- Mention unrelated dead code or cleanup opportunities instead of deleting them.
+- Remove only imports, variables, functions, or files made unused by your own change.
+- Every changed line should trace directly to the user's request.
 ```
 
-If an `Agent skills` block already exists, update it in place. Do not duplicate it.
+If an `Agent skills` or `Agent Operating Principles` block already exists, update it in place. Do not duplicate it.
 
 ## Do Not
 

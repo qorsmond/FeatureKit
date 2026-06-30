@@ -45,6 +45,33 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 
 No production code starts until there is a written plan. Small work gets a small written plan; larger work gets a PRD and sliced issues.
 
+## Agent Operating Principles
+
+Every new session should follow these principles before coding, refactoring, or verification work.
+
+### Think before coding
+
+- State assumptions explicitly before implementing.
+- Do not hide confusion. If something is unclear, stop, name what is confusing, and ask.
+- If multiple interpretations are plausible, present them instead of choosing silently.
+- Surface important tradeoffs, including simpler approaches and reasons to push back.
+
+### Simplicity first
+
+- Write the minimum code that solves the requested problem.
+- Do not add features, abstractions, flexibility, or configurability that were not requested.
+- Do not add error handling for impossible scenarios.
+- If a solution is much larger than it needs to be, simplify it before handing off.
+
+### Surgical changes
+
+- Touch only the files and lines required by the user's request.
+- Do not improve adjacent code, comments, formatting, or naming unless it is necessary for the requested change.
+- Match existing style, even where another style would be preferable.
+- Mention unrelated dead code or cleanup opportunities instead of deleting them.
+- Remove only imports, variables, functions, or files made unused by your own change.
+- Every changed line should trace directly to the user's request.
+
 ## Verification
 
 Use these checks before shipping changes to FeatureKit:

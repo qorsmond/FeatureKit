@@ -2,12 +2,14 @@
 name: codebase-design
 description: Improve or evaluate codebase architecture with a focus on clear boundaries, deep modules, stable interfaces, and maintainable full-stack product design. Use when planning architecture, reviewing a design, or cleaning up codebase complexity.
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Codebase Design
 
 Use design judgment to keep the product easy to change.
+
+Apply the target repo's `Agent Operating Principles` before recommending refactors or implementation changes.
 
 ## Principles
 

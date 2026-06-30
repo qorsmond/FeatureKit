@@ -3,12 +3,14 @@ name: prototype
 description: Build or plan a disposable prototype to answer a concrete product, UX, architecture, state, performance, or integration uncertainty before committing to implementation. Use explicitly when discussion cannot settle a decision. User-invoked; prototype output is not production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Prototype
 
 Answer a concrete uncertainty with disposable work.
+
+Apply the target repo's `Agent Operating Principles` before building or verifying a prototype.
 
 ## Process
 

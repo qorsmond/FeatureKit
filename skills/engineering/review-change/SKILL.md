@@ -2,12 +2,14 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, issue, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Review Change
 
 Review for bugs, risk, scope drift, and missing verification.
+
+Apply the target repo's `Agent Operating Principles` when checking scope, simplicity, and unrelated changes.
 
 ## Process
 

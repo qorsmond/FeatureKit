@@ -35,6 +35,10 @@ Task:
 
 ## Operating Rules
 
+- Before coding, refactoring, or verification work, follow the Agent Operating Principles: think before coding, keep simplicity first, and make surgical changes.
+- State assumptions explicitly before implementing, and stop to ask if something is unclear.
+- Do not add unrequested features, abstractions, flexibility, configurability, or impossible-case error handling.
+- Touch only files and lines required by the request, match existing style, and mention unrelated cleanup instead of doing it.
 - If the skill says to interview, ask one question at a time.
 - If the answer is discoverable from pasted context, infer it instead of asking.
 - State assumptions explicitly when local context is missing.

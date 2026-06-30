@@ -58,6 +58,14 @@ Use fresh implementation sessions for:
 
 Use `/handoff` when moving between sessions.
 
+## Agent Operating Principles
+
+For coding, refactoring, review, and verification sessions, require the agent to:
+
+- think before coding by stating assumptions, naming confusion, presenting plausible interpretations, and surfacing tradeoffs,
+- keep simplicity first by writing the minimum code that solves the request and avoiding unrequested flexibility or impossible-case handling,
+- make surgical changes by touching only required files and lines, matching existing style, and leaving unrelated cleanup as a note.
+
 ## Review Every Diff
 
 Never accept generated changes blindly.

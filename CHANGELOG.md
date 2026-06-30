@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 - 2026-06-30
+
+- Added canonical Agent Operating Principles for thinking before coding, simplicity first, and surgical changes.
+- Updated setup to copy those principles into target repo agent instructions.
+- Updated implementation, diagnosis, TDD, review, design, prototype, pre-commit, docs, and local-LLM guidance to apply the principles before coding, refactoring, or verification work.
+
 ## 0.1.0 - 2026-06-30
 
 Initial tracked FeatureKit release.

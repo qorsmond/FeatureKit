@@ -49,6 +49,8 @@ By default, setup writes:
 
 It also updates the existing `AGENTS.md` or `CLAUDE.md` with a short `Agent skills` section that points to these docs.
 
+Setup also adds the `Agent Operating Principles` section so every new coding, refactoring, review, or verification session starts with explicit assumptions, simplicity, and surgical-change rules.
+
 ## What Setup Should Not Do
 
 Setup should not:

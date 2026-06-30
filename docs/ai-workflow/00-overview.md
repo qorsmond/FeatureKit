@@ -35,6 +35,8 @@ For small work, the plan can be a short note. For larger work, use a PRD and sli
 
 Accepted ADRs are also part of the plan. If a change needs to violate or replace an accepted ADR, record the new architectural decision before implementation continues.
 
+Every new session should also follow the Agent Operating Principles before coding, refactoring, or verification work: think before coding, keep the solution simple, and make surgical changes only.
+
 ## Skill Types
 
 User-invoked skills are commands you intentionally run:

@@ -2,12 +2,14 @@
 name: setup-pre-commit
 description: Set up or improve pre-commit hooks for a product repo using its package manager and verification commands. Use when the user wants commit-time formatting, linting, typechecking, tests, Husky, lint-staged, or equivalent guardrails.
 metadata:
-  featurekit-version: "0.1.0"
+  featurekit-version: "0.1.1"
 ---
 
 # Setup Pre-Commit
 
 Add repo-level commit guardrails without assuming a specific stack.
+
+Apply the target repo's `Agent Operating Principles` before changing hooks, dependencies, or verification commands.
 
 ## Process
 
