@@ -75,7 +75,13 @@ If the work touches auth, authorization, sensitive data, APIs, deployment, integ
 Stop it and return to the plan:
 
 ```text
-Stop implementation. We need a written plan first. Use `/grill-with-docs` or `/to-prd`.
+Stop implementation. We need an approved written plan first. Use `/grill-with-docs` or `/to-prd`, then wait for approval before coding.
+```
+
+If this happened after you accepted a recommended grilling answer, clarify that the answer was only a planning decision:
+
+```text
+That answer approves the interview decision, not implementation. Produce the reviewable plan or PRD and stop.
 ```
 
 ## The Diff Drifted From The Plan
@@ -106,7 +112,7 @@ Stop it and narrow the queue:
 Stop `/execute-slices`. Continue with `/implement` for one approved slice only.
 ```
 
-Use `/execute-slices` only after the PRD and ordered slices are approved.
+Use `/execute-slices` only after the PRD and ordered slices are approved and you explicitly want autonomous execution.
 
 ## The Work Conflicts With An ADR
 

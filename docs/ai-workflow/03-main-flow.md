@@ -10,7 +10,7 @@ At the start of a FeatureKit session, use:
 using-featurekit
 ```
 
-This is a lightweight router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops only when production code is requested without a written plan.
+This is a lightweight router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan.
 
 ## 2. Ask For The Right Flow
 
@@ -36,7 +36,9 @@ The agent should:
 - ask one question at a time,
 - recommend an answer with a short reason,
 - update domain terms or ADRs only after confirming,
-- stop when the goal, scope, constraints, and success criteria are clear.
+- stop with a reviewable clarified plan when the goal, scope, constraints, and success criteria are clear.
+
+Answering a grilling question or accepting the agent's recommended answer is not approval to implement.
 
 ## 4. Prototype Only If Needed
 
@@ -90,7 +92,7 @@ The PRD captures:
 
 The PRD should reference accepted ADRs that constrain the feature and call out any missing ADRs.
 
-Small work can skip a full PRD if the written plan is enough.
+Small work can skip a full PRD if the written plan is enough, but the agent still needs to show that plan and wait for approval before coding.
 
 ## 7. Split Into Slices
 
@@ -104,9 +106,11 @@ Slices should be vertical. Each one should produce independently reviewable valu
 
 Avoid horizontal slices like "add all types" or "build all UI". They hide integration risk until too late.
 
+Review and approve the PRD or slice list before using `/implement` or `/execute-slices`.
+
 ## 8. Implement One Slice
 
-Start a fresh session per implementation slice when possible:
+After the written plan or slice is approved, start a fresh session per implementation slice when possible:
 
 ```text
 /implement
@@ -114,8 +118,8 @@ Start a fresh session per implementation slice when possible:
 
 Give the agent:
 
-- the PRD,
-- the single slice,
+- the approved PRD or plan,
+- the approved single slice,
 - relevant project context,
 - the verification commands.
 
@@ -133,7 +137,7 @@ Before coding, refactoring, or verification, the agent should apply the repo's A
 
 ## 9. Execute Approved Slices
 
-When a PRD and ordered slices are approved and you want autonomous batch execution:
+When a PRD and ordered slices are approved and you explicitly want autonomous batch execution:
 
 ```text
 /execute-slices

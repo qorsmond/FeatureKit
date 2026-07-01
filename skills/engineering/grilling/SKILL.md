@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable interview loop for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs to ask focused questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # Grilling
@@ -19,6 +19,8 @@ Interview until the work is clear.
 - Capture security requirements and abuse cases when work touches auth, data, APIs, deployment, integrations, or untrusted input.
 - Flag durable architecture decisions that should be recorded with `/record-adr`.
 - Stop when the next concrete artifact can be produced.
+- Do not treat acceptance of a recommended answer as approval to implement.
+- Do not proceed into implementation. Produce the clarified plan summary and next options first.
 
 ## Output
 
@@ -29,4 +31,4 @@ Summarize:
 - ADR follow-ups,
 - out of scope,
 - open risks,
-- next recommended skill or action.
+- next recommended skill or action, such as producing a PRD, slicing an approved plan, asking the user to approve a small plan for implementation, prototyping, or handing off.

@@ -3,12 +3,12 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # Grill With Docs
 
-Clarify an idea until it is ready for a written plan or PRD.
+Clarify an idea until it is ready for a reviewable written plan or PRD.
 
 ## Process
 
@@ -24,6 +24,8 @@ Clarify an idea until it is ready for a written plan or PRD.
 7. Treat accepted ADRs as constraints and do not recommend conflicting architecture without calling out the conflict.
 8. Use `secure-design` when the idea touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 9. When useful, propose updates to `CONTEXT.md` or recommend `/record-adr`, but ask before writing durable docs.
+10. Do not treat the user's answer to an interview question, or acceptance of a recommended answer, as approval to implement.
+11. When the idea is clear, stop with the clarified plan and next options. Do not continue into implementation from this skill.
 
 ## Question Order
 
@@ -43,7 +45,7 @@ Resolve dependencies first:
 
 ## Output
 
-When the idea is clear, output:
+When the idea is clear, output a reviewable plan:
 
 ```markdown
 ## Clarified Feature: <name>
@@ -75,8 +77,8 @@ Security:
 ADR updates:
 <none | decisions to record with /record-adr>
 
-Ready for:
-<to-prd | to-slices | implement | prototype>
+Next options:
+<to-prd | to-slices | ask user to approve this small plan for /implement | prototype | handoff>
 ```
 
 Do not write implementation code from this skill.

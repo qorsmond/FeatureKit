@@ -72,7 +72,7 @@ Use `/grill-with-docs` first.
 
 Reason: this is a product feature with plan, billing, data model, and UX implications.
 
-Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` if the PRD touches multiple areas.
+Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` if the PRD touches multiple areas. Review and approve the written artifacts before implementation.
 ```
 
 ## Step 4: Grill The Idea
@@ -133,6 +133,11 @@ Security:
 
 ADR follow-up:
 - none, unless the team decides a new durable data ownership or enforcement boundary.
+
+Next options:
+- Use `/to-prd` for a durable spec.
+- Ask the user to approve this small plan before `/implement` only if the work is truly one small slice.
+- Use `/handoff` if the planning session should move to a clean session.
 ```
 
 If the interview settles a durable architectural decision, record it before the PRD:
@@ -190,6 +195,8 @@ The PRD is saved in the configured PRD location, for example:
 docs/prd/workspace-project-usage-limits.md
 ```
 
+Review the PRD before continuing. Writing the PRD is not approval to implement.
+
 ## Step 6: Split Into Slices
 
 ```text
@@ -228,15 +235,17 @@ Acceptance criteria:
 Depends on: Slice 1
 ```
 
+Review and approve the slice list before implementation. If you want clean context, use `/handoff` or start a fresh implementation session with one approved slice.
+
 ## Step 7: Implement One Slice
 
-Start a fresh session. Give the agent one slice only.
+After approving the PRD and Slice 1, start a fresh session. Give the agent one approved slice only.
 
 ```text
 /implement
 
 Use docs/prd/workspace-project-usage-limits.md.
-Implement Slice 1 only: Enforce project limit in the domain/API path.
+Implement approved Slice 1 only: Enforce project limit in the domain/API path.
 Do not implement UI changes or billing changes.
 Run the verification commands from docs/agents/verification.md.
 Use docs/agents/security.md for workspace tenant-boundary rules.
@@ -254,7 +263,7 @@ Expected implementation behavior:
 - runs the verification commands,
 - reports files changed and any divergence from the PRD.
 
-If both slices are approved and you want one autonomous session to run them sequentially instead:
+If both slices are approved and you explicitly want one autonomous session to run them sequentially instead:
 
 ```text
 /execute-slices

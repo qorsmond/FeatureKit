@@ -18,7 +18,7 @@ Give the agent:
 
 - the goal,
 - the selected skill,
-- the relevant PRD or slice,
+- the approved PRD or slice for implementation work,
 - relevant accepted ADRs,
 - relevant `docs/agents/security.md` context for security-sensitive work,
 - any constraints,
@@ -50,6 +50,8 @@ Make it better.
 ```
 
 Those prompts force the agent to invent scope.
+
+Also avoid treating an interview answer as implementation approval. If the agent recommends an answer during grilling and you accept it, the next step is still a written plan, PRD, slice, or handoff.
 
 ## Context Hygiene
 
@@ -118,7 +120,7 @@ Avoid:
 
 - "while you are here" refactors,
 - mixed product and cleanup PRs,
-- implementation without a plan,
+- implementation without an approved plan,
 - adding dependencies without confirmation.
 
 ## Stack Rules Belong In The Product Repo

@@ -44,7 +44,7 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 
 ## Core Workflow Rule
 
-No production code starts until there is a written plan. Small work gets a small written plan; larger work gets a PRD and implementation slices.
+No production code starts until there is an approved written plan. Small work gets a small written plan; larger work gets a PRD and implementation slices.
 
 ## Agent Operating Principles
 
@@ -79,8 +79,12 @@ Use these checks before shipping changes to FeatureKit:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . -a codex -a claude-code -a opencode --skill ask-featurekit --skill setup-featurekit --skill using-featurekit --skill execute-slices --skill record-adr --skill adr-guidance --skill to-slices --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill security-review -y
+npx skills@latest add . -a codex -a claude-code -a opencode --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill grill-with-docs --skill to-prd --skill to-slices --skill implement --skill execute-slices --skill handoff --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill tdd --skill verify-tests --skill review-change --skill security-review -y
 npx skills@latest use . --skill using-featurekit
+npx skills@latest use . --skill grill-with-docs
+npx skills@latest use . --skill to-prd
+npx skills@latest use . --skill to-slices
+npx skills@latest use . --skill implement
 npx skills@latest use . --skill execute-slices
 npx skills@latest use . --skill record-adr
 npx skills@latest use . --skill security-review

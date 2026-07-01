@@ -29,9 +29,9 @@ The target product repo owns stack choices. FeatureKit owns the agent workflow.
 
 ## The Rule
 
-No production code starts until there is a written plan.
+No production code starts until there is a written plan that has been shown to the user and approved.
 
-For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. If reality changes during implementation, update the plan before continuing.
+For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. Answering a grilling question or accepting a recommended interview answer is not implementation approval. If reality changes during implementation, update the plan before continuing.
 
 Accepted ADRs are also part of the plan. If a change needs to violate or replace an accepted ADR, record the new architectural decision before implementation continues.
 

@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, security notes, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # Setup FeatureKit
@@ -145,6 +145,7 @@ Use this block:
 This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agents/`.
 
 - Session bootstrap: use `using-featurekit` at the start of FeatureKit sessions or after context compaction to route work before acting.
+- Planning gate: no production code starts until a written plan, PRD, or slice has been presented and explicitly approved. Answering a grilling question or accepting a recommended interview answer is not implementation approval.
 - Work tracker: see `docs/agents/work-tracker.md`.
 - Domain docs: see `docs/agents/domain.md`.
 - Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.

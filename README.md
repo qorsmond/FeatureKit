@@ -18,7 +18,26 @@ For local development inside this repo:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill security-review
+npx skills@latest add . \
+  --skill using-featurekit \
+  --skill ask-featurekit \
+  --skill setup-featurekit \
+  --skill grill-with-docs \
+  --skill to-prd \
+  --skill to-slices \
+  --skill implement \
+  --skill execute-slices \
+  --skill handoff \
+  --skill record-adr \
+  --skill adr-guidance \
+  --skill secure-design \
+  --skill secure-code \
+  --skill secure-api \
+  --skill secure-deploy \
+  --skill tdd \
+  --skill verify-tests \
+  --skill review-change \
+  --skill security-review
 ```
 
 Then run this in your coding agent when setting up a product repo:
@@ -52,11 +71,12 @@ rg "featurekit-version" .agents/skills
 5. Use `/record-adr` when a durable architectural decision is made or changed.
 6. Use `/to-prd` for work that needs a durable spec.
 7. Use `/to-slices` to split a PRD into small vertical implementation slices.
-8. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
-9. Let `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` apply automatically when work touches their security surfaces.
-10. Use `verify-tests` when generated or changed tests need deeper proof.
-11. Use `security-review` for focused security review and `review-change` before human review.
-12. Use `/handoff` when a session needs to pause or continue elsewhere.
+8. Review and approve the written plan, PRD, or slices before implementation.
+9. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
+10. Let `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` apply automatically when work touches their security surfaces.
+11. Use `verify-tests` when generated or changed tests need deeper proof.
+12. Use `security-review` for focused security review and `review-change` before human review.
+13. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 ## Optional Tooling Skills
 

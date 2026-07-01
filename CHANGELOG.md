@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 - 2026-07-01
+
+- Tightened the planning gate so implementation requires an approved written plan, PRD, or slice.
+- Updated `using-featurekit`, `grill-with-docs`, `grilling`, `to-prd`, `to-slices`, `implement`, `execute-slices`, and `setup-featurekit` so accepting an interview recommendation cannot trigger coding.
+- Updated docs, local-LLM guidance, setup output, and install examples to show the expected flow: clarify, write the plan, review and approve it, then implement or hand off.
+
 ## 0.4.0 - 2026-07-01
 
 - Added the default security suite: `secure-design`, `secure-code`, `secure-api`, `secure-deploy`, and `security-review`.

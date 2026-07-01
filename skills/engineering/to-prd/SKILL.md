@@ -3,7 +3,7 @@ name: to-prd
 description: Turn a clarified product idea, plan, or conversation into a concise PRD for a full-stack product change. Use explicitly after grilling or when a durable spec is needed before implementation. Writes or drafts a PRD in the repo's configured workflow location.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # To PRD
@@ -19,6 +19,7 @@ Create a durable product spec from the current context.
 5. Include accepted ADRs that constrain the PRD and decisions that need `/record-adr`.
 6. Use `secure-design` for work that touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 7. Save it to the configured PRD location, defaulting to `docs/prd/<slug>.md`.
+8. Stop after reporting the PRD. Do not continue into slicing or implementation unless the user explicitly asks after reviewing it.
 
 ## PRD Format
 
@@ -67,4 +68,4 @@ Create a durable product spec from the current context.
 
 ## Done
 
-Report where the PRD was written and whether it is ready for `/to-slices` or direct `/implement`.
+Report where the PRD was written and the next options. If the PRD is small enough for direct implementation, say it can be approved for `/implement`; do not treat writing the PRD as approval.

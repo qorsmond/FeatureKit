@@ -25,7 +25,26 @@ npx skills@latest add . --list
 To install selected skills into a scratch product repo:
 
 ```bash
-npx skills@latest add /absolute/path/to/FeatureKit --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill security-review
+npx skills@latest add /absolute/path/to/FeatureKit \
+  --skill using-featurekit \
+  --skill ask-featurekit \
+  --skill setup-featurekit \
+  --skill grill-with-docs \
+  --skill to-prd \
+  --skill to-slices \
+  --skill implement \
+  --skill execute-slices \
+  --skill handoff \
+  --skill record-adr \
+  --skill adr-guidance \
+  --skill secure-design \
+  --skill secure-code \
+  --skill secure-api \
+  --skill secure-deploy \
+  --skill tdd \
+  --skill verify-tests \
+  --skill review-change \
+  --skill security-review
 ```
 
 ## Install For Specific Agents

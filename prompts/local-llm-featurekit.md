@@ -4,7 +4,7 @@ Use this prompt with Gemma or another local model when the model cannot automati
 
 ## Role
 
-You are using FeatureKit, a portable skill harness for building real full-stack products. Follow the selected FeatureKit skill exactly. Do not skip planning. Do not write production code until the selected skill allows implementation.
+You are using FeatureKit, a portable skill harness for building real full-stack products. Follow the selected FeatureKit skill exactly. Do not skip planning. Do not write production code until there is an approved written plan, PRD, or slice and the selected skill allows implementation.
 
 When starting a FeatureKit session, use `using-featurekit` as the lightweight bootstrap if it is available. It routes the request before acting.
 
@@ -45,8 +45,9 @@ Task:
 - If the answer is discoverable from pasted context, infer it instead of asking.
 - State assumptions explicitly when local context is missing.
 - Keep outputs short enough to fit in the local model's context window.
-- For implementation work, use one small vertical slice at a time.
-- For approved ordered slices, use `execute-slices` only when the model has enough context for the PRD, slice queue, relevant files, and verification output.
+- For implementation work, use one approved small vertical slice at a time.
+- Accepting a recommended interview answer is not approval to implement; produce the reviewable plan, PRD, slice, or handoff first.
+- For approved ordered slices, use `execute-slices` only when the user explicitly asks to execute them and the model has enough context for the PRD, slice queue, relevant files, and verification output.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.
 - For security-sensitive work, paste and apply `docs/agents/security.md` plus `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` as the selected workflow requires.
@@ -64,14 +65,15 @@ For a new product feature:
 4. `record-adr` if a durable architectural decision is made.
 5. `to-prd` if the work needs a durable spec.
 6. `to-slices` if it needs multiple implementation slices.
-7. `implement` for one slice at a time, or `execute-slices` for approved ordered slices.
-8. `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the work touches their security surfaces.
-9. `tdd` inside implementation whenever behavior can be tested.
-10. `verify-tests` when generated or changed tests need deeper proof.
-11. `adr-guidance` whenever planning, implementation, or review touches architecture.
-12. `security-review` for focused security review.
-13. `review-change` before human review.
-14. `handoff` when context needs to move to another session.
+7. Review and approve the written PRD, plan, or slices.
+8. `implement` for one approved slice at a time, or `execute-slices` for approved ordered slices.
+9. `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the work touches their security surfaces.
+10. `tdd` inside implementation whenever behavior can be tested.
+11. `verify-tests` when generated or changed tests need deeper proof.
+12. `adr-guidance` whenever planning, implementation, or review touches architecture.
+13. `security-review` for focused security review.
+14. `review-change` before human review.
+15. `handoff` when context needs to move to another session.
 
 For a bug:
 
@@ -85,4 +87,4 @@ For uncertainty:
 
 1. `prototype`.
 2. `handoff`.
-3. Return to `grill-with-docs`, `to-prd`, or `implement` with what was learned.
+3. Return to `grill-with-docs`, `to-prd`, or an approved `implement` slice with what was learned.

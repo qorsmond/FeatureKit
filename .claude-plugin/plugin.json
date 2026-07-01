@@ -1,6 +1,6 @@
 {
   "name": "featurekit",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "skills": [
     "./skills/productivity/using-featurekit",
     "./skills/engineering/ask-featurekit",

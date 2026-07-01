@@ -53,7 +53,7 @@ It also updates the existing `AGENTS.md` or `CLAUDE.md` with a short `Agent skil
 
 Setup also adds the `Agent Operating Principles` section so every new coding, refactoring, review, or verification session starts with explicit assumptions, simplicity, and surgical-change rules.
 
-Setup also adds a short FeatureKit bootstrap note. Agents should use `using-featurekit` at the start of FeatureKit sessions or after context compaction so they route work before acting.
+Setup also adds a short FeatureKit bootstrap note and planning gate. Agents should use `using-featurekit` at the start of FeatureKit sessions or after context compaction so they route work before acting, and production code should wait until a written plan, PRD, or slice has been presented and approved.
 
 ## What Setup Should Not Do
 

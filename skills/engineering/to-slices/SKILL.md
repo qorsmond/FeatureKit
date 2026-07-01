@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # To Slices
@@ -18,6 +18,7 @@ Split a PRD into independently reviewable implementation slices.
 4. Order slices by dependency.
 5. Include security requirements, abuse cases, and governing ADRs or ADR follow-ups in the relevant slice context.
 6. Write slices to the configured work tracker or local Markdown location.
+7. Stop after reporting the slices. Do not execute or implement slices unless the user explicitly approves them and asks for implementation.
 
 ## Slicing Rules
 
@@ -67,4 +68,4 @@ Depends on:
 
 ## Done
 
-Report the slice list and where it was written. Recommend `/execute-slices` when the user wants the approved slice set executed autonomously, or `/implement` when they want one slice built in a focused session.
+Report the slice list and where it was written. Ask the user to review and approve the slices before implementation. After approval, recommend `/execute-slices` when the user wants the ordered slice set executed autonomously, or `/implement` when they want one slice built in a focused session.

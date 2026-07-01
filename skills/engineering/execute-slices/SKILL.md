@@ -3,7 +3,7 @@ name: execute-slices
 description: Execute multiple approved FeatureKit implementation slices from a written PRD or plan. Use explicitly when ordered slices already exist and the user wants autonomous batch execution with verification, review checkpoints, optional subagents, and no branch, commit, push, or PR actions.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.0"
+  featurekit-version: "0.4.1"
 ---
 
 # Execute Slices
@@ -18,6 +18,7 @@ Before changing code, confirm:
 
 - there is an approved PRD, plan, or equivalent written scope,
 - ordered implementation slices exist,
+- the user explicitly approved the slice set and asked to execute it now,
 - each slice has acceptance criteria and verification guidance,
 - out-of-scope work is explicit,
 - relevant ADRs can be checked,
@@ -25,6 +26,8 @@ Before changing code, confirm:
 - repo verification commands are known.
 
 If these are missing, stop and recommend `/grill-with-docs`, `/to-prd`, or `/to-slices`.
+
+A clarified feature summary or a newly generated slice list is not enough by itself. The user must approve the written scope before this skill changes code.
 
 ## Process
 

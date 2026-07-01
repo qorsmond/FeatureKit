@@ -57,13 +57,13 @@ Spec:
 <paste PRD>
 
 Slice:
-<paste one slice only>
+<paste one approved slice only>
 
 Skill:
 <paste skills/engineering/implement/SKILL.md>
 
 Task:
-Implement only this slice. Ask for any file contents you need before editing.
+Implement only this approved slice. Ask for any file contents you need before editing.
 ```
 
 ## Example: Test Verification
@@ -106,8 +106,8 @@ With local LLMs:
 
 - expect more manual file pasting,
 - keep tasks smaller,
-- use `implement` one slice at a time unless the model can hold the full PRD, slice queue, relevant files, and verification output for `execute-slices`,
-- ask for plans before code,
+- use `implement` one approved slice at a time unless the model can hold the full approved PRD, slice queue, relevant files, and verification output for `execute-slices`,
+- ask for plans before code, and approve the written plan or slice before implementation,
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
 - use fresh sessions often.
