@@ -86,6 +86,8 @@ Optional misc tooling skills:
 
 ## Where To Start
 
+For a step-by-step path from installation to the first product slice, see the [Quick Start](./quick-start.md).
+
 If this is a new repo, install FeatureKit and run:
 
 ```text
@@ -100,5 +102,6 @@ If FeatureKit is already set up, start a session by telling the agent to use `us
 
 ## Series Navigation
 
+- Previous: [Quick Start](./quick-start.md)
 - Index: [FeatureKit Guide](./README.md)
 - Next: [Install](./01-install.md)
