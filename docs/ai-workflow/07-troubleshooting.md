@@ -68,6 +68,8 @@ Continue grilling. A plan is not ready if it lacks:
 - error states,
 - verification plan.
 
+If the work touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input, the plan also needs security requirements, abuse cases, and security verification.
+
 ## The Agent Started Coding Too Early
 
 Stop it and return to the plan:
@@ -85,6 +87,16 @@ Use review-change. Check this diff against the PRD and the single slice. Flag sc
 ```
 
 Pull unrelated changes into a separate slice or remove them.
+
+## Security Context Is Missing
+
+Stop and read or create the repo security setup:
+
+```text
+Use /setup-featurekit to record docs/agents/security.md, or update that file before continuing.
+```
+
+For an existing diff, use `security-review` when the risk is exploitable or the repo security posture is unclear.
 
 ## Execute Slices Is Moving Too Broadly
 
@@ -130,5 +142,5 @@ Use `/handoff` to compress context before moving to a local model.
 
 ## Series Navigation
 
-- Previous: [End-to-End Example](./06-end-to-end-example.md)
+- Previous: [Security Workflow](./08-security.md)
 - Index: [FeatureKit Guide](./README.md)

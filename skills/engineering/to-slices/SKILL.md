@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.3.0"
+  featurekit-version: "0.4.0"
 ---
 
 # To Slices
@@ -13,10 +13,10 @@ Split a PRD into independently reviewable implementation slices.
 ## Process
 
 1. Read the PRD or approved plan.
-2. Read `docs/agents/work-tracker.md`, `docs/agents/workflow-locations.md`, and relevant ADRs.
+2. Read `docs/agents/work-tracker.md`, `docs/agents/workflow-locations.md`, `docs/agents/security.md` if present, and relevant ADRs.
 3. Identify vertical slices that each produce testable value.
 4. Order slices by dependency.
-5. Include governing ADRs or ADR follow-ups in the relevant slice context.
+5. Include security requirements, abuse cases, and governing ADRs or ADR follow-ups in the relevant slice context.
 6. Write slices to the configured work tracker or local Markdown location.
 
 ## Slicing Rules
@@ -27,6 +27,7 @@ Each slice must:
 - have clear acceptance criteria,
 - fit in a small PR,
 - include verification guidance,
+- include security verification when the slice touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input,
 - avoid unrelated cleanup,
 - respect accepted ADRs,
 - name dependencies on earlier slices.
@@ -49,6 +50,9 @@ Out of scope:
 
 ADRs:
 <none | governing ADRs or ADR follow-ups>
+
+Security:
+<none | security requirements, abuse cases, or checks>
 
 Acceptance criteria:
 - <criterion>

@@ -49,8 +49,10 @@ Task:
 - For approved ordered slices, use `execute-slices` only when the model has enough context for the PRD, slice queue, relevant files, and verification output.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.
+- For security-sensitive work, paste and apply `docs/agents/security.md` plus `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` as the selected workflow requires.
+- Treat generated security-sensitive code as untrusted until reviewed against the repo's security context.
 - For code changes, ask the user to paste relevant files or command output before guessing.
-- For review, lead with bugs, risks, missing tests, and scope drift.
+- For review, lead with bugs, security risks, missing tests, and scope drift.
 
 ## Recommended Skill Order
 
@@ -63,18 +65,21 @@ For a new product feature:
 5. `to-prd` if the work needs a durable spec.
 6. `to-slices` if it needs multiple implementation slices.
 7. `implement` for one slice at a time, or `execute-slices` for approved ordered slices.
-8. `tdd` inside implementation whenever behavior can be tested.
-9. `verify-tests` when generated or changed tests need deeper proof.
-10. `adr-guidance` whenever planning, implementation, or review touches architecture.
-11. `review-change` before human review.
-12. `handoff` when context needs to move to another session.
+8. `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the work touches their security surfaces.
+9. `tdd` inside implementation whenever behavior can be tested.
+10. `verify-tests` when generated or changed tests need deeper proof.
+11. `adr-guidance` whenever planning, implementation, or review touches architecture.
+12. `security-review` for focused security review.
+13. `review-change` before human review.
+14. `handoff` when context needs to move to another session.
 
 For a bug:
 
 1. `diagnosing-bugs`.
-2. `tdd` for the regression test and fix.
-3. `verify-tests` if the regression is high-risk or the test may pass for the wrong reason.
-4. `review-change`.
+2. `secure-code`, `secure-api`, or `secure-deploy` if the bug touches their security surfaces.
+3. `tdd` for the regression test and fix.
+4. `verify-tests` if the regression is high-risk or the test may pass for the wrong reason.
+5. `review-change`.
 
 For uncertainty:
 

@@ -19,7 +19,7 @@ For a local model, keep context tight:
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
 3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
-4. `using-featurekit` or one focused FeatureKit `SKILL.md`.
+4. `using-featurekit` or one focused FeatureKit `SKILL.md`; paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` too when the focused skill tells the model to use one.
 5. Your exact task.
 
 Do not paste the whole repo unless the local model has enough context and you really need it.
@@ -50,6 +50,7 @@ Use FeatureKit with the implement skill.
 Project context:
 <paste AGENTS.md>
 <paste docs/agents/verification.md>
+<paste docs/agents/security.md if relevant>
 <paste relevant accepted ADRs>
 
 Spec:
@@ -80,6 +81,23 @@ Skill:
 
 Task:
 Check whether these generated tests actually protect the intended behavior. Do not run mutation testing unless the skill's gate is met.
+```
+
+## Example: Security Review
+
+```text
+Use FeatureKit with the security-review skill.
+
+Project context:
+<paste AGENTS.md>
+<paste docs/agents/security.md>
+<paste relevant PRD, slice, ADRs, or diff>
+
+Skill:
+<paste skills/engineering/security-review/SKILL.md>
+
+Task:
+Review this change for exploitable security risk. Lead with findings.
 ```
 
 ## Limitations

@@ -29,6 +29,7 @@ Configured:
 - Work tracker: GitHub Issues
 - Domain docs: single-context `CONTEXT.md` plus `docs/adr/`
 - Verification: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`
+- Security: workspace tenant isolation, API authorization, and app security checks in `docs/agents/security.md`
 - PRDs: `docs/prd/`
 - ADRs: `docs/adr/`
 - Handoffs: `docs/handoff/`
@@ -104,6 +105,7 @@ The agent continues one question at a time until the feature is clear:
 - what happens when a workspace reaches the limit,
 - whether admins can override limits,
 - whether the limit is enforced in UI, API, or both,
+- which authorization and tenant-boundary checks protect the create-project path,
 - what copy users see,
 - whether billing changes are in scope.
 
@@ -124,6 +126,10 @@ Domain terms to add:
 - active project
 - project limit
 - limit reached state
+
+Security:
+- Enforce the limit server-side in the workspace tenant boundary.
+- Add regression coverage for cross-workspace access if the create-project path accepts workspace IDs.
 
 ADR follow-up:
 - none, unless the team decides a new durable data ownership or enforcement boundary.
@@ -164,6 +170,9 @@ Prevent workspaces from creating more active client projects than their plan all
 - Admin override.
 - Automated upgrade flow.
 
+## Security And Abuse Cases
+Project-limit enforcement must happen server-side and respect workspace tenant boundaries. A user must not be able to create a project for another workspace by changing a workspace ID.
+
 ## ADR Context
 Follow existing ADRs for plan configuration and domain/API boundaries. Record a new ADR if no accepted decision covers the enforcement boundary.
 
@@ -171,6 +180,7 @@ Follow existing ADRs for plan configuration and domain/API boundaries. Record a 
 - A workspace under the limit can create a project.
 - A workspace at the limit cannot create another active project.
 - Archived projects do not count.
+- Cross-workspace project creation is rejected if the API receives a workspace ID.
 - The UI explains why project creation is unavailable.
 ```
 
@@ -197,7 +207,12 @@ Acceptance criteria:
 - The create-project path checks the workspace plan limit.
 - Active projects count toward the limit.
 - Archived/deleted projects do not count.
+- Cross-workspace project creation is rejected if the API receives a workspace ID.
 - A regression test covers under-limit and at-limit behavior.
+
+Security:
+- Use `secure-api` for object-level authorization and tenant-boundary checks.
+- Include negative authorization tests if the route accepts user-controlled workspace identifiers.
 
 Depends on: none
 ```
@@ -224,13 +239,16 @@ Use docs/prd/workspace-project-usage-limits.md.
 Implement Slice 1 only: Enforce project limit in the domain/API path.
 Do not implement UI changes or billing changes.
 Run the verification commands from docs/agents/verification.md.
+Use docs/agents/security.md for workspace tenant-boundary rules.
 ```
 
 Expected implementation behavior:
 
 - reads the PRD and slice,
 - reads relevant accepted ADRs,
+- reads `docs/agents/security.md`,
 - reads relevant code,
+- uses `secure-api` because this slice changes API/domain authorization behavior,
 - writes a failing test first for the limit rule,
 - implements the smallest change,
 - runs the verification commands,
@@ -251,7 +269,7 @@ Expected execution behavior:
 - executes slices in dependency order,
 - uses subagents when available,
 - reviews after each slice,
-- stops for blockers, ADR conflicts, failing verification, or unclear scope,
+- stops for blockers, ADR conflicts, unresolved P0/P1 security findings, failing verification, or unclear scope,
 - does not commit, push, merge, or open a PR.
 
 ## Step 8: Review
@@ -260,6 +278,12 @@ After implementation:
 
 ```text
 Use review-change to review the diff against docs/prd/workspace-project-usage-limits.md and Slice 1.
+```
+
+For a focused security pass:
+
+```text
+Use security-review to review the create-project API changes against docs/agents/security.md.
 ```
 
 Expected review shape:
@@ -275,6 +299,9 @@ Questions:
 Verification:
 - `pnpm test` was run.
 - `pnpm build` was not run.
+
+Security gaps:
+- `security-review` still needed for tenant-boundary coverage.
 
 ADR gaps:
 - none
@@ -312,6 +339,9 @@ Next:
 ADRs:
 - No ADR update pending.
 
+Security:
+- Tenant-boundary review remains open for Slice 1.
+
 Watch out for:
 - Archived projects must not count.
 - Billing changes are out of scope.
@@ -323,4 +353,4 @@ This is the pattern to reuse for Blitza, FramerHub, or any other real product.
 
 - Previous: [Local LLMs](./05-local-llms.md)
 - Index: [FeatureKit Guide](./README.md)
-- Next: [Troubleshooting](./07-troubleshooting.md)
+- Next: [Security Workflow](./08-security.md)

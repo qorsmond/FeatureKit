@@ -20,6 +20,7 @@ Give the agent:
 - the selected skill,
 - the relevant PRD or slice,
 - relevant accepted ADRs,
+- relevant `docs/agents/security.md` context for security-sensitive work,
 - any constraints,
 - what is out of scope,
 - the verification command.
@@ -88,12 +89,15 @@ Before opening a PR:
 - understand why each change exists,
 - confirm the diff matches the PRD or slice,
 - confirm the diff follows accepted ADRs,
+- confirm security-sensitive behavior follows `docs/agents/security.md`,
 - confirm new or changed tests would fail if the intended behavior were wrong,
 - remove out-of-scope edits,
 - run the verification commands,
 - ask `review-change` to review the diff.
 
 Use `verify-tests` when test quality is uncertain, behavior is high-risk, or you explicitly want mutation testing such as Stryker. Do not make mutation testing part of every normal review.
+
+Use `security-review` for focused review of auth, authorization, tenant isolation, sensitive data, API, deployment, secrets, generated-code, or other exploitable risk.
 
 ## ADR Discipline
 
@@ -126,7 +130,8 @@ Put those rules in the target repo:
 - `AGENTS.md` for stable conventions,
 - `CONTEXT.md` for domain language,
 - ADRs for durable technical decisions,
-- `docs/agents/*.md` for FeatureKit setup.
+- `docs/agents/security.md` for security posture, auth, sensitive data, secrets, CI/CD, and incident-response context,
+- other `docs/agents/*.md` files for FeatureKit setup.
 
 ## Series Navigation
 

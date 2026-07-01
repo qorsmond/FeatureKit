@@ -62,6 +62,10 @@ Record decisions that future work must obey: boundaries, data ownership, integra
 
 Do not use ADRs as a scratchpad. Product decisions belong in the PRD; unresolved technical uncertainty belongs in grilling or a prototype.
 
+Security is part of the default workflow. For work touching auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input, the agent should use `secure-design` to capture threats, abuse cases, security requirements, verification, and ADR follow-ups before implementation.
+
+For the full security flow, see [Security Workflow](./08-security.md).
+
 ## 6. Write The PRD
 
 For work that needs a durable spec:
@@ -79,6 +83,7 @@ The PRD captures:
 - requirements,
 - product decisions,
 - technical approach,
+- security and abuse cases,
 - risks,
 - acceptance criteria,
 - test and verification plan.
@@ -118,6 +123,8 @@ The agent should implement only that slice, use TDD for logic and bug fixes, run
 
 The agent should also read relevant accepted ADRs. If the slice conflicts with an accepted ADR, stop and resolve the PRD, slice, or ADR before changing production code.
 
+When a slice touches security-sensitive areas, the agent should use `secure-code`, `secure-api`, or `secure-deploy` before coding and preserve the PRD or slice security requirements.
+
 Before coding, refactoring, or verification, the agent should apply the repo's Agent Operating Principles: state assumptions, name confusion, keep the change minimal, and avoid unrelated edits.
 
 `tdd` is model-invoked, so the implementation skill can use it automatically when the slice contains testable behavior.
@@ -132,7 +139,7 @@ When a PRD and ordered slices are approved and you want autonomous batch executi
 /execute-slices
 ```
 
-The agent should execute slices sequentially, use subagents when available, review after each slice, run verification, and stop for blockers, ADR conflicts, failing checks, or unclear scope. It should not create branches, commit, push, or open PRs.
+The agent should execute slices sequentially, use subagents when available, review after each slice, run verification, and stop for blockers, ADR conflicts, unresolved P0/P1 security findings, failing checks, or unclear scope. It should not create branches, commit, push, or open PRs.
 
 Use `/implement` instead when you want one focused slice in a fresh session.
 
@@ -147,6 +154,7 @@ The review checks:
 - missing tests,
 - weak tests that may pass for the wrong reason,
 - risky architecture,
+- exploitable security risk,
 - poor typing,
 - weak error handling,
 - unsafe migrations,
@@ -155,6 +163,8 @@ The review checks:
 - verification gaps.
 
 For high-risk behavior or suspicious generated tests, ask for `verify-tests` before accepting the test coverage.
+
+For focused OWASP, API, deployment, generated-code, or hardening review, ask for `security-review`.
 
 ## 11. Handoff
 

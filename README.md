@@ -18,7 +18,7 @@ For local development inside this repo:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance
+npx skills@latest add . --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill execute-slices --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill security-review
 ```
 
 Then run this in your coding agent when setting up a product repo:
@@ -33,7 +33,7 @@ After setup, start FeatureKit sessions with `using-featurekit` or ask explicitly
 /ask-featurekit
 ```
 
-It routes you through the right flow for planning, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
+It routes you through the right flow for planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
 
 ## Confirm Version
 
@@ -53,9 +53,10 @@ rg "featurekit-version" .agents/skills
 6. Use `/to-prd` for work that needs a durable spec.
 7. Use `/to-slices` to split a PRD into small vertical implementation slices.
 8. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
-9. Use `verify-tests` when generated or changed tests need deeper proof.
-10. Use `review-change` before human review.
-11. Use `/handoff` when a session needs to pause or continue elsewhere.
+9. Let `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` apply automatically when work touches their security surfaces.
+10. Use `verify-tests` when generated or changed tests need deeper proof.
+11. Use `security-review` for focused security review and `review-change` before human review.
+12. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 ## Optional Tooling Skills
 
@@ -80,6 +81,7 @@ The detailed usage guide is the source of truth:
 - [Local LLMs](./docs/ai-workflow/05-local-llms.md)
 - [End-to-End Example](./docs/ai-workflow/06-end-to-end-example.md)
 - [Troubleshooting](./docs/ai-workflow/07-troubleshooting.md)
+- [Security Workflow](./docs/ai-workflow/08-security.md)
 
 ## Local LLMs
 

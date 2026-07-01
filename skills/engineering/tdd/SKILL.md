@@ -2,7 +2,7 @@
 name: tdd
 description: Use a red-green-refactor loop for business logic, data transformations, services, API behavior, bug fixes, and other testable product behavior. Use during implementation whenever meaningful behavior can be specified with tests.
 metadata:
-  featurekit-version: "0.3.0"
+  featurekit-version: "0.4.0"
 ---
 
 # TDD
@@ -18,7 +18,7 @@ Apply the target repo's `Agent Operating Principles` before coding, refactoring,
 3. Run the focused test and confirm it fails for the expected reason.
 4. Implement the smallest change to pass.
 5. Run the focused test and confirm it passes.
-6. Use `verify-tests` when generated or changed tests are high-risk, suspicious, assertion-light, or explicitly requested for deeper verification.
+6. Use `secure-code` for security-sensitive behavior and `verify-tests` when generated or changed tests are high-risk, suspicious, assertion-light, security-sensitive, or explicitly requested for deeper verification.
 7. Refactor only with tests green.
 8. Run the broader verification command required by the repo.
 

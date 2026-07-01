@@ -1,9 +1,9 @@
 ---
 name: setup-featurekit
-description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, deployment notes, or workflow locations change. User-invoked setup skill.
+description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, security notes, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.3.0"
+  featurekit-version: "0.4.0"
 ---
 
 # Setup FeatureKit
@@ -22,7 +22,7 @@ Inspect the repo before asking questions. Look for:
 - `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/`,
 - package manifests and scripts,
 - test, lint, typecheck, build, and CI config,
-- database, migration, auth, and deployment config,
+- database, migration, auth, security, secrets, CI/CD, and deployment config,
 - existing docs, specs, work folders, or scratch folders.
 
 If a fact is discoverable, do not ask the user for it.
@@ -35,6 +35,7 @@ Summarize:
 - what stack and commands appear to be used,
 - what work tracker appears likely,
 - whether domain docs already exist,
+- what auth, security, API, secrets, and deployment conventions appear to exist,
 - where specs and handoffs seem to belong,
 - what is missing.
 
@@ -84,6 +85,21 @@ Record:
 - required manual checks,
 - unknowns.
 
+### Security
+
+Record:
+
+- authentication and session model,
+- authorization, roles, tenant boundaries, and ownership rules,
+- sensitive data classes, privacy constraints, retention, and audit needs,
+- API styles, public/internal boundary, webhook and third-party API patterns,
+- secrets source, local secret handling, and rotation expectations,
+- dependency, package, container, and artifact integrity policy,
+- CI/CD security tooling, secret scanning, audits, SAST, dependency checks, and manual security checks,
+- deployment environments, IAM/service accounts, security headers, CORS, TLS, cookies, and debug settings when discoverable,
+- logging, alerting, incident response contacts, and vulnerability handling process,
+- known security ADRs and security decisions that need `/record-adr`.
+
 ### Workflow Locations
 
 Record where to save:
@@ -111,6 +127,7 @@ Write or update:
 - `docs/agents/domain.md`,
 - `docs/agents/stack.md`,
 - `docs/agents/verification.md`,
+- `docs/agents/security.md`,
 - `docs/agents/deployment.md`,
 - `docs/agents/workflow-locations.md`.
 
@@ -132,6 +149,7 @@ This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agent
 - Domain docs: see `docs/agents/domain.md`.
 - Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.
 - Stack and commands: see `docs/agents/stack.md` and `docs/agents/verification.md`.
+- Security: see `docs/agents/security.md`.
 - Deployment: see `docs/agents/deployment.md`.
 - Workflow locations: see `docs/agents/workflow-locations.md`.
 

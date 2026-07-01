@@ -2,7 +2,7 @@
 name: codebase-design
 description: Improve or evaluate codebase architecture with a focus on clear boundaries, deep modules, stable interfaces, and maintainable full-stack product design. Use when planning architecture, reviewing a design, or cleaning up codebase complexity.
 metadata:
-  featurekit-version: "0.3.0"
+  featurekit-version: "0.4.0"
 ---
 
 # Codebase Design
@@ -25,12 +25,13 @@ Apply the target repo's `Agent Operating Principles` before recommending refacto
 ## Process
 
 1. Identify the behavior or boundary under pressure.
-2. Read relevant ADRs, the current implementation, and tests.
+2. Read relevant ADRs, `docs/agents/security.md` if present, the current implementation, and tests.
 3. Name the design problem in plain language.
 4. Propose the smallest design improvement that helps this change.
 5. Separate required changes from optional cleanup.
-6. Recommend `/record-adr` when the design creates or changes a durable architectural decision.
-7. Preserve public behavior unless the PRD says otherwise.
+6. Use `secure-design` when the boundary touches auth, authorization, sensitive data, APIs, deployment, integrations, or untrusted input.
+7. Recommend `/record-adr` when the design creates or changes a durable architectural decision.
+8. Preserve public behavior unless the PRD says otherwise.
 
 ## Output
 
@@ -49,4 +50,7 @@ Optional follow-up:
 
 ADR impact:
 <none | governing ADRs or decision to record>
+
+Security impact:
+<none | trust boundary, sensitive data, or security posture impact>
 ```

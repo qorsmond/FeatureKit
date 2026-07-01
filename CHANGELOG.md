@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-07-01
+
+- Added the default security suite: `secure-design`, `secure-code`, `secure-api`, `secure-deploy`, and `security-review`.
+- Added `docs/agents/security.md` to setup so product repos can record auth, authorization, sensitive data, API, secrets, dependency, deployment, logging, and incident-response context.
+- Integrated security guidance into planning, PRDs, slices, implementation, execution, bug diagnosis, reviews, handoffs, docs, local-LLM guidance, and a dedicated security workflow guide.
+- Kept the suite stack-neutral and scanner-neutral; product repos choose their own tools and durable security decisions through setup docs and ADRs.
+
 ## 0.3.0 - 2026-06-30
 
 - Added `using-featurekit` as a lightweight session bootstrap and router.

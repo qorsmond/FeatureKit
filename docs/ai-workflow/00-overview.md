@@ -2,7 +2,7 @@
 
 FeatureKit is a portable skill harness for building real full-stack products with AI coding agents.
 
-It is not a framework, app scaffold, or custom runtime. It is a set of small Markdown skills that help you work with agents in a disciplined way: clarify the idea, write the spec, split the work, implement slices, verify them, review them, and hand off cleanly.
+It is not a framework, app scaffold, or custom runtime. It is a set of small Markdown skills that help you work with agents in a disciplined way: clarify the idea, capture security requirements, write the spec, split the work, implement slices, verify them, review them, and hand off cleanly.
 
 ## What FeatureKit Solves
 
@@ -49,6 +49,7 @@ User-invoked skills are commands you intentionally run:
 - `to-slices`
 - `implement`
 - `execute-slices`
+- `security-review`
 - `prototype`
 - `handoff`
 
@@ -58,6 +59,10 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `using-featurekit`
 - `adr-guidance`
 - `domain-modeling`
+- `secure-design`
+- `secure-code`
+- `secure-api`
+- `secure-deploy`
 - `tdd`
 - `verify-tests`
 - `diagnosing-bugs`
@@ -67,6 +72,8 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 `using-featurekit` is the lightweight bootstrap. Use it at the start of FeatureKit sessions, after context compaction, or through a session-start prompt so the agent checks setup and routes work before acting.
 
 `tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
+
+The security suite is model-invoked except for `security-review`. Planning, implementation, and review workflows should reach for `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` when work touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 
 `verify-tests` is also model-invoked. Agents should use it when generated or changed tests look weak, high-risk, or explicitly need mutation testing. It does not run expensive mutation tests by default.
 

@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.3.0"
+  featurekit-version: "0.4.0"
 ---
 
 # Grill With Docs
@@ -20,9 +20,10 @@ Clarify an idea until it is ready for a written plan or PRD.
    - your recommended answer,
    - a one-line reason grounded in repo context.
 5. If a question can be answered by reading the repo, read instead of asking.
-6. Capture decisions, out-of-scope items, assumptions, risks, and domain terms.
+6. Capture decisions, out-of-scope items, assumptions, risks, security requirements, abuse cases, and domain terms.
 7. Treat accepted ADRs as constraints and do not recommend conflicting architecture without calling out the conflict.
-8. When useful, propose updates to `CONTEXT.md` or recommend `/record-adr`, but ask before writing durable docs.
+8. Use `secure-design` when the idea touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
+9. When useful, propose updates to `CONTEXT.md` or recommend `/record-adr`, but ask before writing durable docs.
 
 ## Question Order
 
@@ -34,10 +35,11 @@ Resolve dependencies first:
 4. domain terms,
 5. data and state,
 6. system boundaries,
-7. UX/API behavior,
-8. errors and edge cases,
-9. rollout and migration,
-10. tests and verification.
+7. security and abuse cases,
+8. UX/API behavior,
+9. errors and edge cases,
+10. rollout and migration,
+11. tests and verification.
 
 ## Output
 
@@ -66,6 +68,9 @@ Domain terms:
 
 Risks:
 <risks and unknowns>
+
+Security:
+<security requirements, abuse cases, or none>
 
 ADR updates:
 <none | decisions to record with /record-adr>

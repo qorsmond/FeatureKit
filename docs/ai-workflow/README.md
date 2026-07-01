@@ -11,6 +11,7 @@ Read it in order the first time:
 5. [Working With Agents](./04-working-with-agents.md)
 6. [Local LLMs](./05-local-llms.md)
 7. [End-to-End Example](./06-end-to-end-example.md)
-8. [Troubleshooting](./07-troubleshooting.md)
+8. [Security Workflow](./08-security.md)
+9. [Troubleshooting](./07-troubleshooting.md)
 
 After that, start sessions with `using-featurekit` when available, or use `/ask-featurekit` when you are not sure which skill to run.
