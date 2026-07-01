@@ -46,7 +46,7 @@ Then run this in your coding agent when setting up a product repo:
 /setup-featurekit
 ```
 
-After setup, start FeatureKit sessions with `using-featurekit` or ask explicitly:
+After setup, keep `using-featurekit` in session-start instructions when available. For a known raw feature idea, start with `/grill-with-docs`; when you are unsure which skill fits, ask explicitly:
 
 ```text
 /ask-featurekit
@@ -65,7 +65,7 @@ rg "featurekit-version" .agents/skills
 ## The Main Flow
 
 1. Start with `/setup-featurekit` once per product repo.
-2. Use `using-featurekit` as a lightweight session bootstrap.
+2. Keep `using-featurekit` as the lightweight session bootstrap.
 3. Use `/ask-featurekit` when you are unsure which flow fits.
 4. Use `/grill-with-docs` to clarify an idea against the product context.
 5. Use `/record-adr` when a durable architectural decision is made or changed.

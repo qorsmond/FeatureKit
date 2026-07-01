@@ -1,142 +1,160 @@
 # Quick Start
 
-Use this path when you want to start building a product with FeatureKit quickly.
+Use this path when FeatureKit is already installed and the product repo has already been set up. The goal is to take one real feature idea from raw intent to an approved, implemented, reviewed slice.
 
-FeatureKit does not replace your product stack. It gives your coding agent a repeatable workflow: set up repo context, clarify the product goal, write the plan, split the work, implement approved slices, verify, review, and hand off.
+FeatureKit does not replace your product stack. It gives your coding agent a repeatable workflow: read the repo context, clarify the feature, write a plan, get approval, implement the approved slice, verify it, review it, and hand off cleanly.
 
-## 1. Install FeatureKit In The Product Repo
+Need install? See [Install](./01-install.md).
 
-From the repo where you want to build the product:
+Need repo setup? See [Setup](./02-setup.md). A prepared repo should have FeatureKit skills available, `/setup-featurekit` already run, and repo guidance under `docs/agents/`.
 
-```bash
-cd /path/to/product-repo
-npx skills@latest add qorsmond/FeatureKit -a codex -a claude-code -a opencode
-```
+## 1. Start The Feature Session
 
-Use only the agent flags you need. Because FeatureKit v1 is private, run this from an environment that can read the GitHub repo.
-
-If you are testing from a local FeatureKit checkout, install from that path instead:
-
-```bash
-npx skills@latest add /absolute/path/to/FeatureKit -a codex
-```
-
-## 2. Add The Session Bootstrap
-
-Add this startup instruction to your agent's saved instructions, session-start prompt, or first message:
-
-```text
-At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
-```
-
-This tells the agent to route the work through FeatureKit before it starts changing files.
-
-## 3. Set Up The Repo Once
-
-In a coding-agent session inside the product repo, run:
-
-```text
-/setup-featurekit
-```
-
-The agent should inspect the repo, ask for missing workflow decisions, and write `docs/agents/` files for stack, verification, security, deployment, work tracking, domain context, and workflow locations.
-
-Do not skip this for a real product repo. Setup is how later FeatureKit skills know how the repo works.
-
-## 4. Start A Product Session
-
-For each new product feature or meaningful change, start with:
-
-```text
-using-featurekit
-```
-
-If you are unsure which skill to use, ask:
-
-```text
-/ask-featurekit
-```
-
-The agent should tell you the next workflow step instead of guessing.
-
-## 5. Clarify The Product Idea
-
-Give the agent a short product goal and run:
+In the product repo, start a known raw feature idea directly with `/grill-with-docs`:
 
 ```text
 /grill-with-docs
+
+Feature idea: add team invitations so workspace admins can invite coworkers by email.
 ```
 
-Example prompt:
+The agent should read repo context first, ask one question at a time, recommend answers where useful, and stop with a clarified written plan. It should not write production code from this skill.
+
+Use `using-featurekit` as the model-invoked or session-start bootstrap. Put `Use using-featurekit before acting.` in saved instructions, pinned instructions, or a session-start hook when your harness supports that. You should not need to run `using-featurekit` manually and then repeat the same idea into `/grill-with-docs`.
+
+If you do not know which skill fits, ask directly:
 
 ```text
-Use /grill-with-docs for this idea: add team invitations so workspace admins can invite coworkers by email.
+/ask-featurekit
+
+I want to add team invitations so workspace admins can invite coworkers by email.
 ```
 
-The agent should read existing project context, ask one question at a time, recommend answers when useful, and stop with a reviewable clarified plan.
+Expected route:
 
-## 6. Turn The Idea Into A Plan
+```markdown
+Recommended skill: `/grill-with-docs`
 
-For small work, the clarified written plan may be enough.
+Why: This is a product feature that needs scope, permissions, email behavior, and user-facing states clarified before planning or implementation.
+```
 
-For product work that needs a durable spec, run:
+## 2. Clarify The Real Feature
+
+Use the `/grill-with-docs` conversation to turn the raw idea into a reviewable feature plan.
+
+The clarified plan should make these things explicit:
+
+- goal and users,
+- scope and out of scope,
+- important product decisions,
+- data, state, UX, API, and error behavior,
+- security or abuse cases,
+- risks and unknowns,
+- acceptance criteria,
+- recommended next step.
+
+Answering an interview question is not approval to implement. Accepting a recommended answer is not approval to implement.
+
+## 3. Choose The Planning Depth
+
+For very small work, the clarified written plan may be enough. Review it, then explicitly approve it before implementation.
+
+For product work that needs a durable spec, use `/to-prd`:
 
 ```text
 /to-prd
+
+Turn the clarified team-invitations feature into a PRD.
 ```
 
 For multi-step work, split the approved PRD into implementation slices:
 
 ```text
 /to-slices
+
+Use docs/prd/team-invitations.md and split it into small vertical implementation slices.
 ```
 
-Review the PRD or slice list before coding. FeatureKit's core rule is that production code waits for an approved written plan.
+The agent should write or update the configured PRD or slice location from `docs/agents/workflow-locations.md`. Review the PRD or slice list before coding.
 
-## 7. Approve One Slice Explicitly
+## 4. Approve Exactly What Should Be Built
 
-When you are ready for implementation, approve a specific plan or slice in plain language:
+Production code waits for an approved written plan, PRD, or slice.
+
+Approve one implementation scope in plain language:
 
 ```text
-I approve Slice 1. Use /implement to implement only Slice 1.
+I approve Slice 1 from docs/prd/team-invitations.md: create and persist pending invitations.
+Use /implement to implement only Slice 1.
+Do not implement invite acceptance, email delivery, or admin UI yet.
 ```
 
-For larger work, prefer one fresh implementation session per slice. This keeps context small and makes the diff easier to review.
+For larger features, prefer one fresh implementation session per slice. Fresh sessions keep context small and make the diff easier to review.
 
-## 8. Implement, Verify, And Review
+## 5. Implement One Slice
 
-The implementation agent should read the approved plan, follow repo instructions, keep the change scoped, and run the verification commands from `docs/agents/verification.md`.
-
-Before accepting the work, ask for a review:
+In the implementation session, give the agent the approved scope and verification expectations:
 
 ```text
-Use review-change on this diff.
+/implement
+
+Use docs/prd/team-invitations.md.
+Implement approved Slice 1 only: create and persist pending invitations.
+Do not implement invite acceptance, email delivery, or admin UI yet.
+Run the verification commands from docs/agents/verification.md.
+Use docs/agents/security.md for authorization and abuse-case checks.
+```
+
+The implementation agent should:
+
+- read the approved plan or slice,
+- read `AGENTS.md`, `docs/agents/`, relevant ADRs, and relevant code,
+- restate the slice before changing files,
+- use TDD for testable behavior,
+- use security skills when the slice touches auth, authorization, APIs, sensitive data, deployment, integrations, generated code, or untrusted input,
+- make the smallest scoped change,
+- run the configured verification commands,
+- report any divergence from the approved plan.
+
+Use `/execute-slices` only when the PRD and ordered slices are already approved and you explicitly want the agent to run the queue sequentially.
+
+## 6. Review Before Accepting
+
+Ask for a review against the approved plan or slice:
+
+```text
+Use review-change to review this diff against docs/prd/team-invitations.md and approved Slice 1.
 ```
 
 For security-sensitive work, also ask:
 
 ```text
-Use security-review on this change.
+Use security-review to review the invitation authorization, token, and abuse-case behavior.
 ```
 
-For weak or generated tests, ask the agent to use `verify-tests`.
+For generated, risky, or assertion-light tests, ask:
 
-## 9. Hand Off Or Continue
+```text
+Use verify-tests to check whether the new tests prove the approved invitation behavior.
+```
 
-When a session is long, context is crowded, or another agent will continue the work, run:
+Fix blocking findings before continuing to the next slice or opening a PR.
+
+## 7. Hand Off Or Continue
+
+When a session is long, context is crowded, or another agent will continue the feature, run:
 
 ```text
 /handoff
+
+Write a handoff for the team-invitations work.
 ```
 
-Then start the next slice from the handoff and the approved plan.
+Then start the next session from the handoff, the approved PRD or slice list, and the repo guidance under `docs/agents/`.
 
-## Fast Path Summary
+## Fast Path
 
 ```text
-/setup-featurekit
-using-featurekit
-/ask-featurekit
 /grill-with-docs
 /to-prd
 /to-slices
@@ -145,7 +163,7 @@ Use review-change on this diff.
 /handoff
 ```
 
-Use `/execute-slices` only when the PRD and ordered slices are already approved and you explicitly want the agent to run the queue sequentially.
+Start with `/ask-featurekit` instead of `/grill-with-docs` only when you are unsure which skill fits. Keep `using-featurekit` in session-start instructions or let the agent invoke it automatically. Skip `/to-prd` or `/to-slices` only when the written plan is small, clear, and explicitly approved for `/implement`.
 
 ## Series Navigation
 

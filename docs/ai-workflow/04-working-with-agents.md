@@ -4,13 +4,13 @@ FeatureKit works best when you treat the agent like a fast engineer that needs c
 
 ## Session Bootstrap
 
-At the start of a FeatureKit session, tell the agent:
+At the start of FeatureKit sessions, give the agent this bootstrap instruction:
 
 ```text
 Use `using-featurekit` before acting.
 ```
 
-If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction.
+If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction. For a known raw feature idea, invoke `/grill-with-docs` directly. Use `/ask-featurekit` only when you are unsure which workflow fits.
 
 ## Good Prompts
 

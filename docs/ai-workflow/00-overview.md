@@ -69,7 +69,7 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `review-change`
 - `codebase-design`
 
-`using-featurekit` is the lightweight bootstrap. Use it at the start of FeatureKit sessions, after context compaction, or through a session-start prompt so the agent checks setup and routes work before acting.
+`using-featurekit` is the lightweight model-invoked bootstrap. Put it in session-start instructions, use it after context compaction, or let capable agents invoke it automatically so they check setup and route work before acting. For a known raw feature idea, start with `/grill-with-docs`; when you are unsure which workflow fits, use `/ask-featurekit`.
 
 `tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
 
@@ -86,7 +86,7 @@ Optional misc tooling skills:
 
 ## Where To Start
 
-For a step-by-step path from installation to the first product slice, see the [Quick Start](./quick-start.md).
+For a fast path from a prepared product repo to the first implemented feature slice, see the [Quick Start](./quick-start.md).
 
 If this is a new repo, install FeatureKit and run:
 
@@ -94,7 +94,13 @@ If this is a new repo, install FeatureKit and run:
 /setup-featurekit
 ```
 
-If FeatureKit is already set up, start a session by telling the agent to use `using-featurekit`. If you do not know what to run, ask:
+If FeatureKit is already set up, put `using-featurekit` in your session-start instructions or let the agent invoke it automatically. For a known raw feature idea, start with:
+
+```text
+/grill-with-docs
+```
+
+If you do not know what to run, ask:
 
 ```text
 /ask-featurekit

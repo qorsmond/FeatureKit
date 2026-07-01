@@ -4,13 +4,13 @@ This is the default route from raw idea to shipped change.
 
 ## 1. Bootstrap The Session
 
-At the start of a FeatureKit session, use:
+At the start of FeatureKit sessions, put this in saved instructions, pinned instructions, or a session-start hook when your harness supports it:
 
 ```text
-using-featurekit
+Use `using-featurekit` before acting.
 ```
 
-This is a lightweight router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan.
+`using-featurekit` is a lightweight model-invoked router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan. You should not need to manually run it and then repeat the same idea into a workflow skill.
 
 ## 2. Ask For The Right Flow
 
