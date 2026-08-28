@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, security notes, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.1"
+  featurekit-version: "0.5.0"
 ---
 
 # Setup FeatureKit
@@ -39,9 +39,9 @@ Summarize:
 - where specs and handoffs seem to belong,
 - what is missing.
 
-## 3. Confirm Decisions One At A Time
+## 3. Confirm Decisions In Clear Rounds
 
-Ask one section at a time. For each section, explain the choice, recommend a default, and wait for the answer.
+Use the harness's structured question tool when available. Ask up to its current limit, with one clear decision per question. Use simple words, recommend a default, explain the practical effect, and allow a custom answer. If no question tool exists, ask no more than three numbered questions per round. Wait for the answers before continuing.
 
 ### Work Tracker
 
@@ -144,8 +144,8 @@ Use this block:
 
 This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agents/`.
 
-- Session bootstrap: use `using-featurekit` at the start of FeatureKit sessions or after context compaction to route work before acting.
-- Planning gate: no production code starts until a written plan, PRD, or slice has been presented and explicitly approved. Answering a grilling question or accepting a recommended interview answer is not implementation approval.
+- Session bootstrap: use `using-featurekit` at the start of FeatureKit sessions or after context compaction. Raw feature requests begin a design-tree interview automatically.
+- Planning gate: no production code starts until a written plan, PRD, or slice has been presented and approved through its final approval question. Earlier interview answers and accepted recommendations are not approval.
 - Work tracker: see `docs/agents/work-tracker.md`.
 - Domain docs: see `docs/agents/domain.md`.
 - Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.

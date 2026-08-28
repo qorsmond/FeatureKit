@@ -24,7 +24,7 @@ If the answer is in the repo, the agent should discover it instead of asking you
 
 ## Decisions Setup Asks You To Make
 
-Setup walks through these one at a time:
+Setup groups these into short, clear rounds through the harness question UI when available:
 
 1. Where work lives: GitHub Issues, GitLab Issues, Linear, Jira, local Markdown, or another workflow.
 2. Where product/domain context lives: one `CONTEXT.md`, multiple contexts, or a new layout.
@@ -35,7 +35,7 @@ Setup walks through these one at a time:
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
-The agent should recommend defaults based on what it found.
+Each question should cover one decision, use simple language, and recommend a default based on what the agent found.
 
 ## Files Setup Writes
 
@@ -53,7 +53,7 @@ It also updates the existing `AGENTS.md` or `CLAUDE.md` with a short `Agent skil
 
 Setup also adds the `Agent Operating Principles` section so every new coding, refactoring, review, or verification session starts with explicit assumptions, simplicity, and surgical-change rules.
 
-Setup also adds a short FeatureKit bootstrap note and planning gate. Agents should use `using-featurekit` at the start of FeatureKit sessions or after context compaction so they route work before acting, and production code should wait until a written plan, PRD, or slice has been presented and approved.
+Setup also adds a short FeatureKit bootstrap note and planning gate. Agents should use `using-featurekit` at the start of FeatureKit sessions or after context compaction. Raw feature requests then begin the design-tree interview automatically, and production code waits until the complete written plan, PRD, or slice has been shown and approved through its final approval question.
 
 ## What Setup Should Not Do
 

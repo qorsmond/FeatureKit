@@ -79,9 +79,10 @@ Use these checks before shipping changes to FeatureKit:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . -a codex -a claude-code -a opencode --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill grill-with-docs --skill to-prd --skill to-slices --skill implement --skill execute-slices --skill handoff --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill tdd --skill verify-tests --skill review-change --skill security-review -y
+npx skills@latest add . -a codex -a claude-code -a opencode --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill grill-with-docs --skill grilling --skill to-prd --skill to-slices --skill implement --skill execute-slices --skill handoff --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill tdd --skill verify-tests --skill review-change --skill security-review -y
 npx skills@latest use . --skill using-featurekit
 npx skills@latest use . --skill grill-with-docs
+npx skills@latest use . --skill grilling
 npx skills@latest use . --skill to-prd
 npx skills@latest use . --skill to-slices
 npx skills@latest use . --skill implement

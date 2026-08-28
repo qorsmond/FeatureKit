@@ -17,4 +17,4 @@ If this is your first time using FeatureKit in a repo, read the install and setu
 9. [Security Workflow](./08-security.md)
 10. [Troubleshooting](./07-troubleshooting.md)
 
-After that, keep `using-featurekit` in session-start instructions when available, use `/grill-with-docs` for known raw feature ideas, and use `/ask-featurekit` when you are not sure which skill to run.
+After that, keep `using-featurekit` in session-start instructions when available so raw features begin interviewing automatically. Use `/grill-with-docs` to start the same interview explicitly, and `/ask-featurekit` when you are not sure which skill to run.

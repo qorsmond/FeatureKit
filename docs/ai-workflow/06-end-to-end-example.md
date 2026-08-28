@@ -47,14 +47,14 @@ using-featurekit
 I want to add usage limits to FramerHub so workspaces on different plans can only have a certain number of active client projects.
 ```
 
-Expected output shape:
+Expected behavior:
 
 ```markdown
-FeatureKit route:
-`/grill-with-docs`
+Interview depth:
+Product depth, because the next artifact should be a PRD and the feature has billing, data, and security decisions.
 
-Why:
-This is a product feature with plan, billing, data model, and UX implications.
+Round 1:
+The agent begins the design-tree interview now. It does not return only a route or ask you to repeat the idea.
 ```
 
 ## Step 3: Ask For The Right Flow
@@ -65,14 +65,10 @@ This is a product feature with plan, billing, data model, and UX implications.
 I want to add usage limits to FramerHub so workspaces on different plans can only have a certain number of active client projects.
 ```
 
-Expected output shape:
+Expected behavior:
 
 ```markdown
-Use `/grill-with-docs` first.
-
-Reason: this is a product feature with plan, billing, data model, and UX implications.
-
-Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` if the PRD touches multiple areas. Review and approve the written artifacts before implementation.
+The agent begins the same design-tree interview immediately. It uses the repo context already available in the session.
 ```
 
 ## Step 4: Grill The Idea
@@ -83,31 +79,44 @@ Stay in this session for grilling, then use `/to-prd`. Split with `/to-slices` i
 Feature idea: workspaces on different plans should have project usage limits.
 ```
 
-Expected interview style:
+The agent reads plan, project-state, authorization, and billing context before asking you for facts. It maps decisions and asks only ready choices. A native question UI may show a round like this:
 
 ```markdown
-Question: Which project states should count toward the limit?
+1. Which projects should count toward the limit?
 
-Recommendation: Count only active projects, not archived or deleted projects.
+- Active projects only (Recommended): This keeps old project history without using the current allowance.
+- All saved projects: Archived projects also use the allowance.
+- Custom answer
 
-Reason: This preserves historical project data while making the limit match what customers are actively using.
+2. What should happen when a workspace reaches its limit?
+
+- Block new projects (Recommended): Existing work stays available, but the workspace cannot add another active project.
+- Warn but allow: The limit is guidance and does not stop creation.
+- Custom answer
+
+3. Are billing changes part of this feature?
+
+- No billing changes (Recommended): Enforce existing plan limits without changing checkout or upgrades.
+- Add upgrade flow: Include billing and plan changes in this feature.
+- Custom answer
 ```
 
 You answer:
 
 ```text
-Yes, active only. Archived projects should not count.
+Active projects only. Block new projects at the limit. Billing changes are out of scope.
 ```
 
-The agent continues one question at a time until the feature is clear:
+The answers reshape the tree. The next round asks decisions that are now ready, such as:
 
 - which plans have which limits,
-- what happens when a workspace reaches the limit,
 - whether admins can override limits,
 - whether the limit is enforced in UI, API, or both,
 - which authorization and tenant-boundary checks protect the create-project path,
 - what copy users see,
-- whether billing changes are in scope.
+- how rollout and verification should work.
+
+After every round, the agent shows a short ledger of settled, ready, blocked, and removed decisions, including the reason for each block. If a repo fact needs more research, that search blocks only the questions that need it. The agent asks unrelated ready decisions now.
 
 Expected final output shape:
 
@@ -135,10 +144,20 @@ ADR follow-up:
 - none, unless the team decides a new durable data ownership or enforcement boundary.
 
 Next options:
-- Use `/to-prd` for a durable spec.
-- Ask the user to approve this small plan before `/implement` only if the work is truly one small slice.
-- Use `/handoff` if the planning session should move to a clean session.
+- Create a staged PRD because this feature spans policy, API, UI, and security behavior.
 ```
+
+The agent then asks one final approval question through the native question UI:
+
+```markdown
+Does this plan match what you want?
+
+- Yes, approve it (Recommended): Approve the clarified plan and create the staged PRD.
+- Ask more questions: Reopen the design tree because an important choice is missing.
+- Change the plan: Keep the main plan but correct something.
+```
+
+Only the first choice approves the clarified plan. Earlier answers do not. After approval, FeatureKit creates the PRD automatically when the harness can chain the next skill. Otherwise it gives one exact `/to-prd` invocation without asking you to repeat the context.
 
 If the interview settles a durable architectural decision, record it before the PRD:
 
@@ -195,7 +214,7 @@ The PRD is saved in the configured PRD location, for example:
 docs/prd/workspace-project-usage-limits.md
 ```
 
-Review the PRD before continuing. Writing the PRD is not approval to implement.
+The PRD is a richer staged artifact. Review it and use its own final approval question before continuing. Writing it is not approval to implement.
 
 ## Step 6: Split Into Slices
 
@@ -235,7 +254,7 @@ Acceptance criteria:
 Depends on: Slice 1
 ```
 
-Review and approve the slice list before implementation. If you want clean context, use `/handoff` or start a fresh implementation session with one approved slice.
+Review the slice list and use its final approval question before implementation. If you want clean context, use `/handoff` or start a fresh implementation session with one approved slice.
 
 ## Step 7: Implement One Slice
 

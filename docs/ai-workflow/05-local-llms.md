@@ -10,7 +10,7 @@ prompts/local-llm-featurekit.md
 
 Paste it into your local model, then paste the selected context and skill.
 
-For a manual bootstrap, paste the `using-featurekit` skill first. It helps the model route the task before you paste a narrower workflow skill.
+For a manual bootstrap, paste the `using-featurekit` skill first. For a raw feature, also paste `grilling` so the model can begin the design-tree interview without another prompt. For other work, paste the narrower workflow skill selected by the bootstrap.
 
 ## Minimum Context
 
@@ -19,7 +19,7 @@ For a local model, keep context tight:
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
 3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
-4. `using-featurekit` or one focused FeatureKit `SKILL.md`; paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` too when the focused skill tells the model to use one.
+4. `using-featurekit` plus `grilling` for a raw feature, or one focused FeatureKit `SKILL.md`; paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` too when the focused skill tells the model to use one.
 5. Your exact task.
 
 Do not paste the whole repo unless the local model has enough context and you really need it.
@@ -39,7 +39,7 @@ Skill:
 <paste skills/engineering/grill-with-docs/SKILL.md>
 
 Task:
-I want to add saved dashboards to this product. Interview me until the scope is clear.
+I want to add saved dashboards to this product. Build a design tree and interview me until its selected planning depth has no material decision left open.
 ```
 
 ## Example: Implementation
@@ -105,6 +105,7 @@ Review this change for exploitable security risk. Lead with findings.
 With local LLMs:
 
 - expect more manual file pasting,
+- use numbered text with at most three simple questions per interview round when the model has no structured question tool,
 - keep tasks smaller,
 - use `implement` one approved slice at a time unless the model can hold the full approved PRD, slice queue, relevant files, and verification output for `execute-slices`,
 - ask for plans before code, and approve the written plan or slice before implementation,

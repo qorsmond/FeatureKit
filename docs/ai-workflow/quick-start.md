@@ -18,9 +18,9 @@ In the product repo, start a known raw feature idea directly with `/grill-with-d
 Feature idea: add team invitations so workspace admins can invite coworkers by email.
 ```
 
-The agent should read repo context first, ask one question at a time, recommend answers where useful, and stop with a clarified written plan. It should not write production code from this skill.
+The agent should read repo context first, build a dependency-aware design tree, and ask ready decisions in short rounds through the harness question UI. Questions should use simple language, include a recommended answer, and never ask for facts the agent can discover. The interview ends with the complete written plan and a clear final approval question. It should not write production code inside this skill.
 
-Use `using-featurekit` as the model-invoked or session-start bootstrap. Put `Use using-featurekit before acting.` in saved instructions, pinned instructions, or a session-start hook when your harness supports that. You should not need to run `using-featurekit` manually and then repeat the same idea into `/grill-with-docs`.
+Use `using-featurekit` as the model-invoked or session-start bootstrap. Put `Use using-featurekit before acting.` in saved instructions, pinned instructions, or a session-start hook when your harness supports that. A raw feature request should enter the interview immediately, without running another skill or repeating the idea.
 
 If you do not know which skill fits, ask directly:
 
@@ -30,12 +30,10 @@ If you do not know which skill fits, ask directly:
 I want to add team invitations so workspace admins can invite coworkers by email.
 ```
 
-Expected route:
+Expected behavior:
 
 ```markdown
-Recommended skill: `/grill-with-docs`
-
-Why: This is a product feature that needs scope, permissions, email behavior, and user-facing states clarified before planning or implementation.
+The agent begins the same design-tree interview immediately because this feature needs scope, permissions, email behavior, and user-facing states clarified before planning or implementation.
 ```
 
 ## 2. Clarify The Real Feature
@@ -53,7 +51,7 @@ The clarified plan should make these things explicit:
 - acceptance criteria,
 - recommended next step.
 
-Answering an interview question is not approval to implement. Accepting a recommended answer is not approval to implement.
+Answering an interview question is not approval. Accepting a recommended answer is not approval. The agent must show the complete plan and ask the final approval question.
 
 ## 3. Choose The Planning Depth
 

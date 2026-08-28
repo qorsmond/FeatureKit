@@ -20,7 +20,7 @@ When unsure, start here:
 /ask-featurekit
 ```
 
-`ask-featurekit` routes you to the right skill and tells you whether to stay in the same session or start fresh.
+For a raw feature, `ask-featurekit` begins the interview immediately. For other work it routes you to the right skill and tells you whether to stay in the same session or start fresh.
 
 ## 3. Clarify The Idea
 
@@ -33,12 +33,19 @@ For a product idea or feature:
 The agent should:
 
 - read project context first,
-- ask one question at a time,
-- recommend an answer with a short reason,
+- choose and state the planning depth from the next artifact and the feature's risk,
+- map decisions as a dependency tree and discover repo facts instead of asking for them,
+- use subagents for independent facts or coverage checks when useful, without delaying unrelated questions,
+- ask ready decisions in short rounds through the harness's question UI,
+- number each question and recommend an answer with a short reason,
+- use simple language, one decision per question, and clear consequences,
+- keep a short ledger of settled, removed, blocked, and ready decisions,
 - update domain terms or ADRs only after confirming,
-- stop with a reviewable clarified plan when the goal, scope, constraints, and success criteria are clear.
+- stop only after a final coverage check, show the complete plan, and ask the clear final approval question.
 
-Answering a grilling question or accepting the agent's recommended answer is not approval to implement.
+Answering an interview question or accepting the agent's recommended answer is not approval. Only the final approval question approves the clarified plan. Generated PRDs and slices are richer staged artifacts and need their own final approval.
+
+Use the harness's structured question tool when it is available. If it is disabled, the agent should explain how to enable it and pause. Plain text is used only when no native tool exists or you explicitly accept the fallback, and it contains at most three questions per round.
 
 ## 4. Prototype Only If Needed
 

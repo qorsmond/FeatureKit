@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or slice is approved and ready to build. Requires a written plan or slice.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.1"
+  featurekit-version: "0.5.0"
 ---
 
 # Implement
@@ -14,7 +14,7 @@ Implement exactly one approved slice.
 
 Before coding, confirm:
 
-- the user explicitly asked to implement now,
+- the original or current request explicitly asked to make the change,
 - there is a written PRD, plan, or slice,
 - the written PRD, plan, or slice has been shown to the user and approved,
 - the scope is one slice,
@@ -25,7 +25,7 @@ Before coding, confirm:
 
 If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-slices`.
 
-A clarified feature summary is not enough by itself. A user accepting a recommended grilling answer is not approval to implement.
+A clarified feature summary is not enough by itself. Accepting an interview recommendation is not approval. A final confirmation of an implementation-ready clarified plan satisfies plan approval; final approval of a PRD or slice satisfies approval for that artifact. If implementation intent is unclear, stop and ask.
 
 Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
 

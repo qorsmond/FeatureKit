@@ -2,7 +2,7 @@
 name: scaffold-exercises
 description: Scaffold course, tutorial, workshop, or exercise directories with problem, solution, and explainer variants. Use when a repo needs structured learning content or exercise stubs.
 metadata:
-  featurekit-version: "0.4.1"
+  featurekit-version: "0.5.0"
 ---
 
 # Scaffold Exercises

@@ -30,6 +30,7 @@ npx skills@latest add /absolute/path/to/FeatureKit \
   --skill ask-featurekit \
   --skill setup-featurekit \
   --skill grill-with-docs \
+  --skill grilling \
   --skill to-prd \
   --skill to-slices \
   --skill implement \

@@ -3,7 +3,7 @@ name: handoff
 description: Write a compact handoff note so work can continue in a fresh session, another agent, or another developer. Use when context is long, work is pausing, a prototype result needs to return to planning, or a task moves between tools.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.1"
+  featurekit-version: "0.5.0"
 ---
 
 # Handoff

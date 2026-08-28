@@ -23,6 +23,7 @@ npx skills@latest add . \
   --skill ask-featurekit \
   --skill setup-featurekit \
   --skill grill-with-docs \
+  --skill grilling \
   --skill to-prd \
   --skill to-slices \
   --skill implement \
@@ -46,13 +47,13 @@ Then run this in your coding agent when setting up a product repo:
 /setup-featurekit
 ```
 
-After setup, keep `using-featurekit` in session-start instructions when available. For a known raw feature idea, start with `/grill-with-docs`; when you are unsure which skill fits, ask explicitly:
+After setup, keep `using-featurekit` in session-start instructions when available. A raw feature request starts the design-tree interview automatically. You can also invoke `/grill-with-docs` directly. When you are unsure which skill fits, ask explicitly:
 
 ```text
 /ask-featurekit
 ```
 
-It routes you through the right flow for planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
+For a raw feature, `/ask-featurekit` begins the interview instead of returning only a route. For other work it routes you through planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
 
 ## Confirm Version
 
@@ -65,13 +66,13 @@ rg "featurekit-version" .agents/skills
 ## The Main Flow
 
 1. Start with `/setup-featurekit` once per product repo.
-2. Keep `using-featurekit` as the lightweight session bootstrap.
-3. Use `/ask-featurekit` when you are unsure which flow fits.
-4. Use `/grill-with-docs` to clarify an idea against the product context.
+2. Keep `using-featurekit` as the lightweight session bootstrap so raw features begin interviewing automatically.
+3. Use `/ask-featurekit` when you are unsure which flow fits; it also begins interviewing raw features immediately.
+4. Use `/grill-with-docs` when you want to start the same design-tree interview explicitly against product context.
 5. Use `/record-adr` when a durable architectural decision is made or changed.
 6. Use `/to-prd` for work that needs a durable spec.
 7. Use `/to-slices` to split a PRD into small vertical implementation slices.
-8. Review and approve the written plan, PRD, or slices before implementation.
+8. Review each written plan, PRD, or slice and use its final approval question before implementation.
 9. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
 10. Let `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` apply automatically when work touches their security surfaces.
 11. Use `verify-tests` when generated or changed tests need deeper proof.

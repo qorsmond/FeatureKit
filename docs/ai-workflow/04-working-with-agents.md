@@ -10,7 +10,7 @@ At the start of FeatureKit sessions, give the agent this bootstrap instruction:
 Use `using-featurekit` before acting.
 ```
 
-If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction. For a known raw feature idea, invoke `/grill-with-docs` directly. Use `/ask-featurekit` only when you are unsure which workflow fits.
+If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction. A raw feature request begins interviewing automatically. Invoke `/grill-with-docs` when you want the same interview explicitly, or use `/ask-featurekit` when you are unsure which workflow fits.
 
 ## Good Prompts
 
@@ -51,7 +51,7 @@ Make it better.
 
 Those prompts force the agent to invent scope.
 
-Also avoid treating an interview answer as implementation approval. If the agent recommends an answer during grilling and you accept it, the next step is still a written plan, PRD, slice, or handoff.
+Also avoid treating one interview answer as approval. The agent must finish the design tree, show the complete plan, and ask the final approval question. A later PRD or slice has its own final approval.
 
 ## Context Hygiene
 

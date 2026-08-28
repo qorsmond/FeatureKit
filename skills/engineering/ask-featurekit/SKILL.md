@@ -1,9 +1,9 @@
 ---
 name: ask-featurekit
-description: Route a product or engineering request to the right FeatureKit skill or flow. Use explicitly when the user is unsure what to run, asks how to proceed, has a new idea, bug, PRD, slice, multi-slice execution, ADR, implementation task, test verification, mutation testing, review, prototype, or handoff need. User-invoked router; do not implement code from this skill.
+description: Start clarification for a raw feature or route another product or engineering request to the right FeatureKit flow. Use explicitly when the user is unsure what to run or has a new idea, bug, PRD, slice, implementation, review, prototype, or handoff need. User-invoked router; do not write production code inside this skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.4.1"
+  featurekit-version: "0.5.0"
 ---
 
 # Ask FeatureKit
@@ -29,15 +29,17 @@ Route the user to the right FeatureKit flow.
    - ADR recording or conflict,
    - prototype,
    - handoff.
-4. If the user asks for production code without an approved written plan, PRD, or slice, recommend planning first.
-5. Do not treat acceptance of a recommended grilling answer as implementation approval.
-6. Recommend the next skill and explain why in one or two sentences.
-7. Tell the user whether to continue in the same session or start a fresh one.
+4. For a raw product idea or unclear feature scope, begin the `grilling` design-tree interview now. Do not output only a recommendation or ask the user to paste the idea again.
+5. If the user asks for production code without a written plan, PRD, or slice approved through its final approval question, begin planning first.
+6. Only the interview's final approval question approves its clarified plan. Earlier answers and accepted recommendations do not.
+7. After final approval, choose the next workflow from the plan and original request. Continue automatically when the harness permits. If an explicit-only skill cannot be chained, give one exact invocation without asking the user to repeat context.
+8. Generated PRDs and slices are staged artifacts and require their own final approval. Begin implementation only when the original request asked to make the change and the approved artifact is implementation-ready. Stop and ask if intent or authority is unclear.
+9. For requests other than raw features, recommend the next skill in one or two sentences and say whether to stay in the same session.
 
 ## Routes
 
-- New product idea with a codebase: `/grill-with-docs`.
-- New product idea without a codebase: use `grilling` manually and keep it stateless.
+- New product idea with a codebase: begin `grilling` now using repo context.
+- New product idea without a codebase: begin `grilling` now and keep it stateless.
 - Durable spec needed: `/to-prd`.
 - Durable architectural decision to capture or update: `/record-adr`.
 - Security requirements, threat modeling, or hardening needed: `secure-design`.
@@ -56,7 +58,7 @@ Route the user to the right FeatureKit flow.
 
 ## Output
 
-Use this format:
+Use this format only when routing instead of starting a raw-feature interview:
 
 ```markdown
 Recommended skill: `<skill-name>`

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - 2026-08-28
+
+- Replaced one-question-at-a-time feature grilling with dependency-aware design trees, short question rounds, concise decision ledgers, and final plan approval.
+- Added portable structured-question guidance for Codex, Claude Code, and OpenCode, with simple-language rules and an explicit plain-text fallback.
+- Made raw feature requests begin interviewing automatically through `using-featurekit` and `ask-featurekit`, while preserving staged approval for PRDs, slices, and implementation.
+- Added demand-driven fact discovery, optional subagent fact and coverage audits, context-aware continuation, updated setup/docs/examples, and cross-harness verification guidance.
+
 ## 0.4.1 - 2026-07-01
 
 - Tightened the planning gate so implementation requires an approved written plan, PRD, or slice.

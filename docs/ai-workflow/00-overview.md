@@ -31,7 +31,7 @@ The target product repo owns stack choices. FeatureKit owns the agent workflow.
 
 No production code starts until there is a written plan that has been shown to the user and approved.
 
-For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. Answering a grilling question or accepting a recommended interview answer is not implementation approval. If reality changes during implementation, update the plan before continuing.
+For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. The feature interview ends by showing the complete plan and asking a clear final approval question. Earlier answers and accepted recommendations are not approval. If reality changes during implementation, update and approve the plan before continuing.
 
 Accepted ADRs are also part of the plan. If a change needs to violate or replace an accepted ADR, record the new architectural decision before implementation continues.
 
@@ -69,7 +69,7 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `review-change`
 - `codebase-design`
 
-`using-featurekit` is the lightweight model-invoked bootstrap. Put it in session-start instructions, use it after context compaction, or let capable agents invoke it automatically so they check setup and route work before acting. For a known raw feature idea, start with `/grill-with-docs`; when you are unsure which workflow fits, use `/ask-featurekit`.
+`using-featurekit` is the lightweight model-invoked bootstrap. Put it in session-start instructions, use it after context compaction, or let capable agents invoke it automatically. A raw feature request begins the design-tree interview without making you repeat the idea. `/grill-with-docs` starts the same interview explicitly, and `/ask-featurekit` begins it for a raw feature or routes other work.
 
 `tdd` is intentionally model-invoked. Implementation and bug-fix workflows should be able to reach for it automatically whenever behavior can be protected with tests.
 
@@ -94,7 +94,7 @@ If this is a new repo, install FeatureKit and run:
 /setup-featurekit
 ```
 
-If FeatureKit is already set up, put `using-featurekit` in your session-start instructions or let the agent invoke it automatically. For a known raw feature idea, start with:
+If FeatureKit is already set up, put `using-featurekit` in your session-start instructions or let the agent invoke it automatically. A raw feature prompt should begin interviewing immediately. You can also start explicitly with:
 
 ```text
 /grill-with-docs

@@ -45,15 +45,19 @@ The rule is:
 - keep `CLAUDE.md` as a pointer when possible,
 - keep FeatureKit setup details in `docs/agents/*.md`.
 
-## The Agent Is Asking Too Many Questions
+## The Interview Feels Noisy
 
 Tell it:
 
 ```text
-Read the repo first and ask only questions that cannot be answered from local context.
+Read the repo first. Ask only user decisions that cannot be answered from local context. Use simple language and one decision per question.
 ```
 
-FeatureKit skills should discover facts before asking preferences.
+FeatureKit should discover facts before asking preferences. Each round should fit the native question UI, prioritize decisions that unlock other branches, and keep other ready decisions for later.
+
+## The Question UI Is Missing
+
+If the harness has a native question tool, switch to the mode or permission setting that enables it. The agent should explain the exact remedy and pause. If the tool cannot be enabled, explicitly tell the agent to continue with numbered text. Text rounds contain at most three questions.
 
 ## The Plan Is Too Vague
 
@@ -78,10 +82,10 @@ Stop it and return to the plan:
 Stop implementation. We need an approved written plan first. Use `/grill-with-docs` or `/to-prd`, then wait for approval before coding.
 ```
 
-If this happened after you accepted a recommended grilling answer, clarify that the answer was only a planning decision:
+If this happened after you accepted an interview recommendation, clarify that the answer was only one planning decision:
 
 ```text
-That answer approves the interview decision, not implementation. Produce the reviewable plan or PRD and stop.
+That answer settles one interview decision. It does not approve the plan. Finish the design tree, show the complete plan, and ask the final approval question.
 ```
 
 ## The Diff Drifted From The Plan
