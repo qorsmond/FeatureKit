@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2 - 2026-08-29
+
+- Made every interview question self-contained with short plain-language context, concrete outcomes, and explicit material consequences.
+- Kept uncertain or confused answers unresolved so FeatureKit explains and re-asks only that decision without discarding other settled answers.
+- Added a separate post-approval destination choice for implementation-ready artifacts, with fresh-task creation when supported and a self-contained handoff fallback when it is not.
+
 ## 0.5.1 - 2026-08-29
 
 - Added an interview question-tool gate that runs before repo inspection, fact discovery, subagents, or task-specific secondary skills.

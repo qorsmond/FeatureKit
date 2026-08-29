@@ -18,7 +18,7 @@ In the product repo, start a known raw feature idea directly with `/grill-with-d
 Feature idea: add team invitations so workspace admins can invite coworkers by email.
 ```
 
-The agent should read repo context first, build a dependency-aware design tree, and ask ready decisions in short rounds through the harness question UI. Questions should use simple language, include a recommended answer, and never ask for facts the agent can discover. The interview ends with the complete written plan and a clear final approval question. It should not write production code inside this skill.
+The agent should read repo context first, build a dependency-aware design tree, and ask ready decisions in short rounds through the harness question UI. Every question should contain its own short context, use the user's words, describe what each option causes, include a recommended answer, and never ask for facts the agent can discover. If the user is unsure or does not understand, the agent explains and re-asks that decision instead of inferring an answer. The interview ends with the complete written plan and a clear final approval question. It should not write production code inside this skill.
 
 Use `using-featurekit` as the model-invoked or session-start bootstrap. Put `Use using-featurekit before acting.` in saved instructions, pinned instructions, or a session-start hook when your harness supports that. A raw feature request should enter the interview immediately, without running another skill or repeating the idea.
 
@@ -89,6 +89,14 @@ Do not implement invite acceptance, email delivery, or admin UI yet.
 
 For larger features, prefer one fresh implementation session per slice. Fresh sessions keep context small and make the diff easier to review.
 
+After approval, FeatureKit asks where implementation should continue:
+
+- create a fresh implementation task (recommended),
+- continue in the current task,
+- stop after planning.
+
+This choice is separate from approval. It appears only when the plan, PRD, or slice is implementation-ready. If the harness cannot create a task, FeatureKit provides one exact self-contained implementation prompt.
+
 ## 5. Implement One Slice
 
 In the implementation session, give the agent the approved scope and verification expectations:
@@ -148,7 +156,7 @@ When a session is long, context is crowded, or another agent will continue the f
 Write a handoff for the team-invitations work.
 ```
 
-Then start the next session from the handoff, the approved PRD or slice list, and the repo guidance under `docs/agents/`.
+Then start the next session from the handoff, the approved PRD or slice list, and the repo guidance under `docs/agents/`. When task creation is available, selecting the fresh-task option performs this handoff for you.
 
 ## Fast Path
 

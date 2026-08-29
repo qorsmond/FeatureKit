@@ -55,6 +55,16 @@ Read the repo first. Ask only user decisions that cannot be answered from local 
 
 FeatureKit should discover facts before asking preferences. Each round should fit the native question UI, prioritize decisions that unlock other branches, and keep other ready decisions for later.
 
+## A Question Is Hard To Answer
+
+Tell it:
+
+```text
+Keep this decision open. Explain the current situation and why the answer matters in plain language, give one concrete example, then re-ask only this question. Preserve my other answers.
+```
+
+Every question should include its own short context rather than depend on earlier commentary. Option descriptions should say what happens when chosen. Choices with material scope, security, migration, cost, reversibility, or rollout effects should state those consequences before the user answers.
+
 ## The Question UI Is Missing
 
 If the harness has a native question tool, switch to the mode or permission setting that enables it. The agent should show a provisional ledger, explain the exact remedy, and pause before reading the repo, searching for facts, or loading secondary task skills. If the tool cannot be enabled, explicitly tell the agent to continue with numbered text. Text rounds contain at most three questions.
@@ -87,6 +97,8 @@ If this happened after you accepted an interview recommendation, clarify that th
 ```text
 That answer settles one interview decision. It does not approve the plan. Finish the design tree, show the complete plan, and ask the final approval question.
 ```
+
+After approval, session choice is separate. FeatureKit offers a fresh implementation task only when the artifact is implementation-ready; otherwise it continues to the required PRD or slices.
 
 ## The Diff Drifted From The Plan
 

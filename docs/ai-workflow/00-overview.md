@@ -31,7 +31,7 @@ The target product repo owns stack choices. FeatureKit owns the agent workflow.
 
 No production code starts until there is a written plan that has been shown to the user and approved.
 
-For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. The feature interview ends by showing the complete plan and asking a clear final approval question. Earlier answers and accepted recommendations are not approval. If reality changes during implementation, update and approve the plan before continuing.
+For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. The feature interview asks self-contained questions with plain-language context and consequences, then ends by showing the complete plan and asking a clear final approval question. Earlier answers and accepted recommendations are not approval. After an implementation-ready artifact is approved, a separate choice offers a fresh implementation task, the current task, or stopping after planning. If reality changes during implementation, update and approve the plan before continuing.
 
 Accepted ADRs are also part of the plan. If a change needs to violate or replace an accepted ADR, record the new architectural decision before implementation continues.
 

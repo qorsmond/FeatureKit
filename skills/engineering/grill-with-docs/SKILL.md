@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.1"
+  featurekit-version: "0.5.2"
 ---
 
 # Grill With Docs
@@ -26,9 +26,9 @@ Before reading repository context, apply the `grilling` question-tool gate. Choo
 8. Treat accepted ADRs as constraints and call out any conflict. Use `secure-design` when the idea touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 9. Recompute the frontier after each answer round. Ask up to the active question tool's current limit and leave other ready decisions for later.
 10. Prioritize questions that unlock more branches, followed by security, irreversible choices, and high-impact product behavior.
-11. Number every question, ask one decision per question, and put the recommended answer first with a short reason grounded in repo context.
-12. Use simple words and short sentences. Explain necessary technical terms once. Give concrete consequences. Avoid compound questions, double negatives, and unexplained abbreviations.
-13. Offer only meaningful choices and allow a custom answer. Wait for all answers in the round before recomputing the tree.
+11. Apply the full user-answerable question contract from `grilling`. Put one or two short context sentences inside every question, use the user's words and concrete outcomes, ask one direct decision, and put the recommended answer first with a short reason grounded in repo context.
+12. Explain what each option causes. Call out material scope, security or privacy, migration, cost, reversibility, or rollout consequences before the user chooses. Do not rely on earlier commentary to make the question understandable.
+13. Offer only meaningful choices and allow a custom answer. Treat uncertainty or a question in place of an answer as unresolved: explain it, give a concrete example when useful, and re-ask only that decision while preserving other settled answers. Wait for all answers in the round before recomputing the tree.
    If an ancestor answer changes, remove descendants that no longer apply, add any descendants the new answer creates, and reopen every affected descendant that still applies as ready or blocked. Do this even if it had an earlier answer; never restore or silently reuse that answer.
 14. Prefer the harness's structured question tool and respect its schema. The Question Tool Gate owns discovery, unavailable-tool pauses, and plain-text fallback authorization.
 15. After each round, show a concise ledger using the four tree states: settled, ready, blocked, and removed. Name what blocks each blocked decision. Repeat the selected depth and say the user can correct it. Keep the ledger understandable without rereading earlier rounds so the interview survives compaction or handoff. After compaction or handoff, rebuild and audit the tree from the ledger. Preserve settled answers unless newer user input conflicts; when it does, reopen affected descendants.
@@ -44,7 +44,7 @@ When the final audit finds no material decision open within the selected depth:
 
 Only final approval approves the clarified plan. Earlier answers and accepted recommendations do not.
 
-After approval, choose the next workflow from the plan and the original request. Continue automatically when the harness permits. If an explicit-only skill cannot be chained, give one exact invocation without asking the user to repeat context. A generated PRD or slice remains a staged artifact that needs its own approval. Implementation may begin without another plan approval only when the original request already asked to make the change and the confirmed plan is implementation-ready. If intent or authority is unclear, stop and ask. Do not write production code inside this skill.
+After approval, choose the next workflow from the plan and the original request. A product-depth result continues to its required PRD or slices and must not offer implementation yet. For an implementation-ready result, ask a separate destination question: fresh implementation task (recommended), current task, or stop after planning. Create a fresh task only after the user selects it and pass a self-contained `handoff`; if the task tool is unavailable or disabled, explain the exact remedy or provide one exact prompt without reopening the interview. Implementation may begin without another plan approval only when the original request already asked to make the change and the confirmed plan is implementation-ready. If intent or authority is unclear, stop and ask. Do not write production code inside this skill.
 
 ## Output
 

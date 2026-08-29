@@ -82,19 +82,19 @@ Feature idea: workspaces on different plans should have project usage limits.
 The agent reads plan, project-state, authorization, and billing context before asking you for facts. It maps decisions and asks only ready choices. A native question UI may show a round like this:
 
 ```markdown
-1. Which projects should count toward the limit?
+1. Archived projects are kept as history. Counting them would reduce the current allowance even when nobody is working in them. Which projects should use the limit?
 
 - Active projects only (Recommended): This keeps old project history without using the current allowance.
 - All saved projects: Archived projects also use the allowance.
 - Custom answer
 
-2. What should happen when a workspace reaches its limit?
+2. The limit can either stop new work or act only as guidance. Stopping creation enforces the plan, while a warning lets the workspace exceed it. What should happen when the workspace reaches its limit?
 
 - Block new projects (Recommended): Existing work stays available, but the workspace cannot add another active project.
 - Warn but allow: The limit is guidance and does not stop creation.
 - Custom answer
 
-3. Are billing changes part of this feature?
+3. Adding an upgrade path would expand this work into checkout and billing behavior. Keeping billing separate makes this feature smaller and avoids changing payments. Should this feature include billing changes?
 
 - No billing changes (Recommended): Enforce existing plan limits without changing checkout or upgrades.
 - Add upgrade flow: Include billing and plan changes in this feature.
@@ -158,6 +158,16 @@ Does this plan match what you want?
 ```
 
 Only the first choice approves the clarified plan. Earlier answers do not. After approval, FeatureKit creates the PRD automatically when the harness can chain the next skill. Otherwise it gives one exact `/to-prd` invocation without asking you to repeat the context.
+
+Because this result is product-depth and still needs a PRD, FeatureKit does not offer implementation yet. After a later implementation-ready plan or slice is approved, it asks a separate question:
+
+```markdown
+The approved slice is ready to build. A fresh task gives implementation a full context window, while continuing here keeps the planning history in the same session. Where should implementation continue?
+
+- Fresh implementation task (Recommended): Create a new task with the approved slice, constraints, repository state, and verification commands.
+- Continue in this task: Keep working here after the current mode permits implementation.
+- Stop after planning: Keep the approved artifact without starting implementation.
+```
 
 If the interview settles a durable architectural decision, record it before the PRD:
 
@@ -358,11 +368,17 @@ Add active-project limits by workspace plan.
 Plan:
 docs/prd/workspace-project-usage-limits.md
 
+Approval:
+- The PRD and Slices 1-2 are approved.
+
 Done:
 - Slice 1 implemented and tested.
 
 Next:
 - Start fresh session for Slice 2 UI state.
+
+Repository state:
+- Current project and checkout recorded; unrelated working changes preserved.
 
 ADRs:
 - No ADR update pending.
@@ -373,6 +389,12 @@ Security:
 Watch out for:
 - Archived projects must not count.
 - Billing changes are out of scope.
+
+Suggested next skill:
+/implement
+
+Verification:
+- Run the repository checks from docs/agents/verification.md.
 ```
 
 This is the pattern to reuse for Blitza, FramerHub, or any other real product.

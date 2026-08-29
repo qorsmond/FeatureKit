@@ -98,4 +98,12 @@ For the interview mode gate, also run this behavioral smoke test in a harness wh
 2. Confirm the first response chooses a provisional depth, shows an initial ledger, explains how to enable the question tool, and pauses.
 3. Confirm no repo inspection, fact search, subagent, or task-specific secondary skill runs before the mode changes or the user explicitly accepts numbered plain text.
 
+For user-answerable questions and implementation handoff, run these behavioral smoke scenarios in a harness with its native question UI:
+
+1. Start an interview with an ambiguous choice that has a material consequence. Confirm every question contains its own short context, uses user-facing language, asks one decision, and explains what each option causes. Confirm scope, security or privacy, migration, cost, reversibility, or rollout consequences are explicit when material.
+2. Answer one question with `I don't understand` or another question while answering the other questions normally. Confirm the unclear decision remains ready, the other answers remain settled, and the next round explains and re-asks only the unclear decision with a concrete example.
+3. Complete a product-depth interview that still needs a PRD or slices. Confirm approval routes to that artifact and does not offer implementation.
+4. Complete and approve an implementation-ready plan or slice. Confirm a separate destination question offers fresh implementation task, current task, or stop after planning, and that no task is created before the user chooses fresh.
+5. Choose fresh implementation task. Confirm the destination receives the approved artifact, objective, scope and out-of-scope boundaries, decisions, ADR and security constraints, repository state, verification commands, and exact `/implement` or `/execute-slices` route. Confirm it receives no transcript and does not restart the interview. If task creation is unavailable or disabled, confirm the source gives the exact remedy or one self-contained prompt instead.
+
 For documentation changes, follow the guide end to end in a scratch product repo and fix any confusing step.

@@ -44,14 +44,18 @@ Task:
 - If the skill says to interview, build a design tree and choose product or implementation-ready depth from the intended artifact and risk. State the depth so the user can correct it.
 - Find facts in the pasted context instead of asking. If independent agents are available, use them for useful fact searches and missing-branch audits; otherwise inspect and audit directly.
 - Track settled, ready, blocked, and removed decisions. Name the unsettled prerequisite or fact search for each block. Ask ready decisions in rounds of no more than three because this prompt targets models without a native question UI.
-- Number every question, ask one decision per question, and put the recommended answer first with a short reason.
-- Use simple words, short sentences, and concrete consequences. Explain necessary technical terms once. Avoid compound questions, double negatives, and unexplained abbreviations.
+- Put one or two short context sentences inside every question so it explains the current situation and why the answer matters without relying on earlier commentary.
+- Use the user's words and concrete outcomes, ask one decision per question, and put the recommended answer first with a short reason. Each option should say what happens when chosen.
+- State material scope, security or privacy, migration, cost, reversibility, or rollout consequences before the user answers. Explain unavoidable technical terms once; avoid compound questions, double negatives, and unexplained abbreviations.
+- Treat uncertainty, confusion, or a question in place of an answer as unresolved. Explain it with a concrete example and re-ask only that decision while preserving other settled answers.
 - After each round, restate a short decision ledger that can survive context loss.
 - Before completion, audit for missing branches, show the full plan, and ask one final approval question with three choices: approve, ask more questions, or change the plan.
 - State assumptions explicitly when local context is missing.
 - Keep outputs short enough to fit in the local model's context window.
 - For implementation work, use one approved small vertical slice at a time.
 - Accepting a recommended interview answer is not approval. Only the final approval question approves the clarified plan. Later PRDs and slices need their own final approval.
+- After an implementation-ready artifact is approved, keep approval separate from the destination choice: fresh implementation session, current session, or stop after planning. Do not offer implementation from a product-depth result that still needs a PRD or slices.
+- Create a fresh session only after the user selects it. Pass the approved artifact, scope, decisions, constraints, repository state, verification, and exact implementation skill without a transcript or repeated interview; otherwise provide one exact copy-paste prompt.
 - For approved ordered slices, use `execute-slices` only when the user explicitly asks to execute them and the model has enough context for the PRD, slice queue, relevant files, and verification output.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.

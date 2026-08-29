@@ -35,7 +35,7 @@ Setup groups these into short, clear rounds through the harness question UI when
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
-Each question should cover one decision, use simple language, and recommend a default based on what the agent found.
+Each question should cover one decision, include its own short context, use the user's words and concrete outcomes, explain what the options cause, and recommend a default based on what the agent found. Uncertainty stays unresolved and is explained and re-asked in simpler language.
 
 ## Files Setup Writes
 

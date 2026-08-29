@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, security notes, deployment notes, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.1"
+  featurekit-version: "0.5.2"
 ---
 
 # Setup FeatureKit
@@ -41,7 +41,7 @@ Summarize:
 
 ## 3. Confirm Decisions In Clear Rounds
 
-Use the harness's structured question tool when available. Ask up to its current limit, with one clear decision per question. Use simple words, recommend a default, explain the practical effect, and allow a custom answer. If no question tool exists, ask no more than three numbered questions per round. Wait for the answers before continuing.
+Use the harness's structured question tool when available. Ask up to its current limit, with one clear decision per question. Put one or two short context sentences inside every question so it explains the current situation and why the answer matters without relying on earlier commentary. Use the user's words and concrete outcomes, recommend a default, and make each option explain its practical effect and any material consequence. Treat uncertainty as unresolved and re-ask that decision in simpler language without discarding other settled answers. If no question tool exists, ask no more than three numbered questions per round. Wait for the answers before continuing.
 
 ### Work Tracker
 

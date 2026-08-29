@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable design-tree interview for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs dependency-aware questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.5.1"
+  featurekit-version: "0.5.2"
 ---
 
 # Grilling
@@ -57,10 +57,16 @@ Within the selected depth, include every material decision that can change produ
 2. Ask only as many frontier questions as the active question tool supports. Leave the rest ready for a later round.
 3. Prioritize decisions that unlock the most branches, then security, irreversible choices, and high-impact product behavior.
 4. Number each question. Ask one decision per question.
-5. Put the recommended answer first and give a short, practical reason.
-6. Use simple words, short sentences, and concrete consequences. Explain a necessary technical term once. Avoid compound questions, double negatives, and unexplained abbreviations.
-7. Offer only meaningful choices and allow a custom answer.
-8. Wait for the user's answers before recomputing the tree.
+5. Make every question self-contained inside the question UI or numbered prompt. Include one or two short context sentences that explain the current situation and why the answer matters, then ask one direct question.
+6. Use the user's words and concrete outcomes in headers, questions, and option labels. Do not expose repository identifiers, architecture labels, or technical terms unless the user needs them to decide; define an unavoidable term once in plain language.
+7. Put the recommended answer first and give a short, practical reason. Each option description must say what the user or system will experience and name its meaningful tradeoff.
+8. For choices that materially change scope, security or privacy, migration effort, cost, reversibility, or rollout risk, state that consequence before the user chooses. Keep routine context short.
+9. Avoid compound questions, double negatives, unexplained abbreviations, and choices distinguished only by implementation detail. Offer only meaningful choices and allow a custom answer.
+10. Wait for the user's answers before recomputing the tree.
+
+Required context belongs with the question, not only in earlier commentary or the decision ledger. A user should be able to answer the question without rereading the conversation.
+
+Treat `not sure`, `I don't understand`, a question in place of an answer, or any equivalent uncertainty as unresolved. Do not infer or recommend the decision into a settled state. Explain the missing idea in plain language, give one concrete example when useful, and re-ask only that decision in the next round. Preserve unrelated answers from the same round.
 
 If an ancestor answer changes, remove descendants that no longer apply, add any descendants the new answer creates, and reopen every affected descendant that still applies as ready or blocked. Do this even if it had an earlier answer; never restore or silently reuse that answer.
 
@@ -78,7 +84,14 @@ Before completion, audit the tree again. When no material decision remains open 
 
 Only final approval approves the clarified plan. Accepting a recommendation or answering an earlier question does not.
 
-Return control to the active FeatureKit workflow after approval. It should choose the next workflow from the approved plan and original request, continue automatically when the harness permits, and stop when intent or authority is unclear. A later PRD or slice is a richer staged artifact and still needs its own approval. Do not implement production code from this interview discipline.
+Keep plan approval separate from the choice of where work continues. After approval, return control to the active FeatureKit workflow:
+
+- If the approved artifact is implementation-ready, ask a separate structured destination question with three choices: create a fresh implementation task (recommended), continue in the current task, or stop after planning.
+- If product-depth decisions, a PRD, or slices are still required, route to that planning artifact instead. Do not offer implementation yet.
+- Create a fresh task only after the user selects it. Use the `handoff` contract to pass the approved artifact and implementation context without a transcript or a restarted interview.
+- If a task tool exists but the current mode or permissions disable it, explain the exact user action that enables it and pause without reopening settled decisions. If no task tool exists, provide one exact self-contained prompt for a new session.
+
+A later PRD or slice is a richer staged artifact and still needs its own approval. Do not implement production code from this interview discipline.
 
 ## Output
 

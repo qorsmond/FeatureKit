@@ -53,7 +53,7 @@ After setup, keep `using-featurekit` in session-start instructions when availabl
 /ask-featurekit
 ```
 
-For a raw feature, `/ask-featurekit` begins the interview instead of returning only a route. For other work it routes you through planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
+For a raw feature, `/ask-featurekit` begins the interview instead of returning only a route. Interview questions carry their own plain-language context and consequences, and uncertainty is explained and re-asked rather than inferred. For other work it routes you through planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
 
 ## Confirm Version
 
@@ -73,7 +73,7 @@ rg "featurekit-version" .agents/skills
 6. Use `/to-prd` for work that needs a durable spec.
 7. Use `/to-slices` to split a PRD into small vertical implementation slices.
 8. Review each written plan, PRD, or slice and use its final approval question before implementation.
-9. Use `/implement` for one approved slice, or `/execute-slices` for approved ordered slices.
+9. After an implementation-ready artifact is approved, choose a fresh implementation task, the current task, or stop after planning; use `/implement` for one approved slice or `/execute-slices` for approved ordered slices.
 10. Let `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` apply automatically when work touches their security surfaces.
 11. Use `verify-tests` when generated or changed tests need deeper proof.
 12. Use `security-review` for focused security review and `review-change` before human review.

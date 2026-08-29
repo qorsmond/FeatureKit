@@ -39,13 +39,16 @@ The agent should:
 - map decisions as a dependency tree and discover repo facts instead of asking for them,
 - use subagents for independent facts or coverage checks when useful, without delaying unrelated questions,
 - ask ready decisions in short rounds through the harness's question UI,
-- number each question and recommend an answer with a short reason,
-- use simple language, one decision per question, and clear consequences,
+- put one or two short context sentences inside every question so it is understandable without earlier commentary,
+- use the user's words and concrete outcomes, ask one decision, and recommend an answer with a short reason,
+- explain what each option causes and call out material scope, security, migration, cost, reversibility, or rollout consequences,
 - keep a short ledger of settled, removed, blocked, and ready decisions,
 - update domain terms or ADRs only after confirming,
 - stop only after a final coverage check, show the complete plan, and ask the clear final approval question.
 
 Answering an interview question or accepting the agent's recommended answer is not approval. Only the final approval question approves the clarified plan. Generated PRDs and slices are richer staged artifacts and need their own final approval.
+
+If an answer says the user is unsure, does not understand, or asks a question instead of choosing, the decision stays open. The agent explains it with a concrete example and re-asks only that decision without discarding other answers from the round.
 
 Use the harness's structured question tool when it is available. If it is disabled, the agent should explain how to enable it and pause before repo inspection or secondary task skills. Plain text is used only when no native tool exists or you explicitly accept the fallback, and it contains at most three questions per round.
 
@@ -117,6 +120,8 @@ Avoid horizontal slices like "add all types" or "build all UI". They hide integr
 
 Review and approve the PRD or slice list before using `/implement` or `/execute-slices`.
 
+After an implementation-ready artifact is approved, FeatureKit asks a separate destination question: create a fresh implementation task, continue in the current task, or stop after planning. Product-depth work that still needs a PRD or slices does not offer implementation yet.
+
 ## 8. Implement One Slice
 
 After the written plan or slice is approved, start a fresh session per implementation slice when possible:
@@ -187,7 +192,7 @@ Use this when a session is long, context is crowded, or work needs to move:
 /handoff
 ```
 
-The handoff is a compact state file, not a transcript.
+The handoff is compact, self-contained implementation context, not a transcript. When the user selects a fresh implementation task and the harness supports task creation, FeatureKit creates it with the approved artifact, scope, decisions, constraints, repository state, verification commands, and exact implementation skill. If creation is unavailable, it provides one exact prompt and a handoff note when useful.
 
 ## Session Rules
 

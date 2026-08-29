@@ -3,7 +3,7 @@ name: ask-featurekit
 description: Start clarification for a raw feature or route another product or engineering request to the right FeatureKit flow. Use explicitly when the user is unsure what to run or has a new idea, bug, PRD, slice, implementation, review, prototype, or handoff need. User-invoked router; do not write production code inside this skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.1"
+  featurekit-version: "0.5.2"
 ---
 
 # Ask FeatureKit
@@ -32,8 +32,8 @@ Route the user to the right FeatureKit flow.
 4. For a raw product idea or unclear feature scope, begin the `grilling` design-tree interview now. Do not output only a recommendation or ask the user to paste the idea again.
 5. If the user asks for production code without a written plan, PRD, or slice approved through its final approval question, begin planning first.
 6. Only the interview's final approval question approves its clarified plan. Earlier answers and accepted recommendations do not.
-7. After final approval, choose the next workflow from the plan and original request. Continue automatically when the harness permits. If an explicit-only skill cannot be chained, give one exact invocation without asking the user to repeat context.
-8. Generated PRDs and slices are staged artifacts and require their own final approval. Begin implementation only when the original request asked to make the change and the approved artifact is implementation-ready. Stop and ask if intent or authority is unclear.
+7. After final approval, choose the next planning workflow from the plan and original request. Continue automatically through required PRDs, ADRs, prototypes, or slices when the harness permits. If an explicit-only skill cannot be chained, give one exact invocation without asking the user to repeat context.
+8. Generated PRDs and slices are staged artifacts and require their own final approval. When the approved artifact is implementation-ready, use the separate destination choice from `using-featurekit`: fresh implementation task, current task, or stop after planning. Do not offer implementation from product-depth work. Stop and ask if intent or authority is unclear.
 9. For requests other than raw features, recommend the next skill in one or two sentences and say whether to stay in the same session.
 
 ## Routes

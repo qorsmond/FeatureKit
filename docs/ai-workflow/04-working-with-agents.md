@@ -53,6 +53,8 @@ Those prompts force the agent to invent scope.
 
 Also avoid treating one interview answer as approval. The agent must finish the design tree, show the complete plan, and ask the final approval question. A later PRD or slice has its own final approval.
 
+Do not accept questions that make you translate internal code language. Each question should carry its own short context, ask one concrete decision in your words, and explain what the choices change. If you answer that you are unsure or ask for clarification, FeatureKit should explain and re-ask instead of treating that response as a choice.
+
 ## Context Hygiene
 
 Use one planning thread for:
@@ -72,6 +74,8 @@ Use fresh implementation sessions for:
 Use `/execute-slices` only when the PRD and ordered slices are approved and you want the agent to run the slice queue autonomously with verification and review checkpoints.
 
 Use `/handoff` when moving between sessions.
+
+After an implementation-ready artifact is approved, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript.
 
 ## Agent Operating Principles
 
