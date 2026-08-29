@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Lightweight FeatureKit bootstrap and router. Use at the start of FeatureKit sessions, after context compaction, or when a user asks for product or engineering work in a repo that may use FeatureKit, so the agent checks setup, chooses the right FeatureKit skill, and avoids coding before an approved written plan.
 metadata:
-  featurekit-version: "0.5.2"
+  featurekit-version: "0.5.3"
 ---
 
 # Using FeatureKit

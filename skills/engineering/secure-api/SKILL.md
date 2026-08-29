@@ -2,7 +2,7 @@
 name: secure-api
 description: Apply API security guardrails during API planning, implementation, integration, testing, or review. Use when work adds or changes REST, GraphQL, RPC, webhook, event, internal service, third-party API, or public contract behavior.
 metadata:
-  featurekit-version: "0.5.2"
+  featurekit-version: "0.5.3"
 ---
 
 # Secure API

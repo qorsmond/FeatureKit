@@ -130,6 +130,16 @@ Stop `/execute-slices`. Continue with `/implement` for one approved slice only.
 
 Use `/execute-slices` only after the PRD and ordered slices are approved and you explicitly want autonomous execution.
 
+## Implementation Is Consuming Too Many Tokens
+
+Tell the agent:
+
+```text
+Use the FeatureKit context budget. Start from the approved artifact, use semantic symbol lookup before full-file reads, keep searches and command output bounded, run narrow verification first, and expand only the failing target. Do not use subagents for routine slices.
+```
+
+When available, enable Serena or an equivalent semantic code tool for symbol-level discovery and RTK or an equivalent output filter for noisy shell commands. If neither is available, the implementation skills fall back to targeted `rg`, narrow file ranges, quiet test modes, and compact handoffs. Do not trade away acceptance criteria, security constraints, or necessary failure diagnostics merely to reduce tokens.
+
 ## The Work Conflicts With An ADR
 
 Stop implementation and resolve the decision:

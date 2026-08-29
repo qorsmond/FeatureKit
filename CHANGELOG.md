@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.3 - 2026-08-29
+
+- Added progressive context budgets to slicing and implementation, preferring Serena-style symbol discovery and RTK-style command compression when available with portable bounded fallbacks.
+- Reduced repeated reads, verbose verification, routine subagent dispatch, and duplicated handoff context while preserving targeted diagnostic escalation and high-risk review gates.
+- Documented token-efficient implementation and troubleshooting guidance.
+
 ## 0.5.2 - 2026-08-29
 
 - Made every interview question self-contained with short plain-language context, concrete outcomes, and explicit material consequences.

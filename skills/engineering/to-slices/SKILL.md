@@ -3,17 +3,24 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.2"
+  featurekit-version: "0.5.3"
 ---
 
 # To Slices
 
 Split a PRD into independently reviewable implementation slices.
 
+## Context Budget
+
+- Treat the PRD or approved plan as the primary source. Inspect code only when current architecture materially changes a slice boundary, dependency, acceptance criterion, or verification command.
+- When code inspection is needed and Serena or an equivalent semantic tool is available, activate the project and prefer symbol overviews, symbol lookup, and reference lookup over full-file reads.
+- When RTK is available, use its appropriate wrappers for noisy searches, reads, diffs, and verification discovery. Otherwise use scoped paths and bounded output. Do not install optional tools unless the user asks.
+- Keep each slice self-contained with only the context needed to implement it. Reference shared PRD sections and ADRs instead of copying the whole PRD or repeating common material in every slice.
+
 ## Process
 
 1. Read the PRD or approved plan.
-2. Read `docs/agents/work-tracker.md`, `docs/agents/workflow-locations.md`, `docs/agents/security.md` if present, and relevant ADRs.
+2. Read `docs/agents/work-tracker.md`, `docs/agents/workflow-locations.md`, `docs/agents/security.md` if present, and relevant ADRs; do not load unrelated repo guidance.
 3. Identify vertical slices that each produce testable value.
 4. Order slices by dependency.
 5. Include security requirements, abuse cases, and governing ADRs or ADR follow-ups in the relevant slice context.

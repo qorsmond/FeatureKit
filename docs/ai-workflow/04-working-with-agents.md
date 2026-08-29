@@ -77,6 +77,21 @@ Use `/handoff` when moving between sessions.
 
 After an implementation-ready artifact is approved, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript.
 
+## Token-Efficient Execution
+
+Implementation should discover context progressively instead of loading the repository up front:
+
+- start from the approved artifact and stable repo instructions,
+- locate relevant files and symbols before reading bodies,
+- prefer Serena or an equivalent semantic code tool for symbol overviews, definitions, and references when available,
+- prefer RTK or equivalent compact wrappers for noisy shell, diff, build, lint, and test output when available,
+- use scoped searches, targeted reads, quiet flags, and failure-only output as portable fallbacks,
+- expand only the failing target when compact output omits a needed diagnostic,
+- run narrow verification per slice and broader repo verification once after the queue is stable,
+- avoid subagents for routine slices; use them only when isolation or independent high-risk review justifies their additional context.
+
+[Serena](https://github.com/oraios/serena) and [RTK](https://github.com/rtk-ai/rtk) are optional. FeatureKit uses them when the harness exposes them and continues with portable fallbacks when it does not. Their absence should not block a slice or trigger an installation without user approval.
+
 ## Agent Operating Principles
 
 For coding, refactoring, review, and verification sessions, require the agent to:
