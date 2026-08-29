@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 - 2026-08-29
+
+- Added an interview question-tool gate that runs before repo inspection, fact discovery, subagents, or task-specific secondary skills.
+- Required a provisional depth and decision ledger before pausing for a mode, configuration, or permission change that enables the native question UI.
+- Added a behavioral smoke test that prevents unavailable question tooling from causing unnecessary discovery work before the user can enable it or accept plain text.
+
 ## 0.5.0 - 2026-08-28
 
 - Replaced one-question-at-a-time feature grilling with dependency-aware design trees, short question rounds, concise decision ledgers, and final plan approval.

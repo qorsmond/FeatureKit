@@ -2,7 +2,7 @@
 name: diagnosing-bugs
 description: Diagnose and fix hard, flaky, unclear, or production-impacting bugs. Use when the user reports broken behavior, cannot reproduce an issue, sees intermittent failures, or needs a root-cause-driven regression fix.
 metadata:
-  featurekit-version: "0.5.0"
+  featurekit-version: "0.5.1"
 ---
 
 # Diagnosing Bugs

@@ -92,4 +92,10 @@ npx skills@latest use . --skill security-review
 rg "featurekit-version: \"$(cat VERSION)\"" skills
 ```
 
+For the interview mode gate, also run this behavioral smoke test in a harness where a native question tool exists but the current mode disables it:
+
+1. Invoke `using-featurekit` with a raw feature request.
+2. Confirm the first response chooses a provisional depth, shows an initial ledger, explains how to enable the question tool, and pauses.
+3. Confirm no repo inspection, fact search, subagent, or task-specific secondary skill runs before the mode changes or the user explicitly accepts numbered plain text.
+
 For documentation changes, follow the guide end to end in a scratch product repo and fix any confusing step.

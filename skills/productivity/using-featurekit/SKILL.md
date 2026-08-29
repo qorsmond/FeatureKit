@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Lightweight FeatureKit bootstrap and router. Use at the start of FeatureKit sessions, after context compaction, or when a user asks for product or engineering work in a repo that may use FeatureKit, so the agent checks setup, chooses the right FeatureKit skill, and avoids coding before an approved written plan.
 metadata:
-  featurekit-version: "0.5.0"
+  featurekit-version: "0.5.1"
 ---
 
 # Using FeatureKit
@@ -10,6 +10,18 @@ metadata:
 Use this skill as a lightweight session bootstrap. It helps choose the right FeatureKit workflow before acting.
 
 This is not a strict global gate. Hard-stop when the user asks for production code without a written plan, PRD, or slice approved through its final approval question. Accepting an interview recommendation is not final approval.
+
+## Interview Tool Gate
+
+Classify the request before repository inspection, fact discovery, or loading task-specific secondary skills. When the request routes to `grilling`, load that skill and apply its question-tool gate immediately:
+
+1. Choose a provisional interview depth from the request and context already present.
+2. Discover whether the harness has a native question tool and whether the current mode, configuration, or permissions allow it.
+3. Show a provisional initial ledger from the request and context already present.
+4. If the native tool exists but is unavailable, explain the exact user action that enables it and pause. Do not inspect the repo, search for facts, or load other task skills first.
+5. Continue only after the tool is enabled or the user explicitly accepts numbered plain text. If the harness has no native question tool, use the plain-text fallback from `grilling`.
+
+After this gate clears, discover repo facts and refine the provisional ledger through the normal design-tree process.
 
 ## Process
 
@@ -19,7 +31,7 @@ This is not a strict global gate. Hard-stop when the user asks for production co
    - an `Agent skills` block in `AGENTS.md` or equivalent instructions.
 2. If the repo is not configured, recommend `/setup-featurekit` before product work.
 3. Read the user's request and route to the smallest matching skill.
-4. If the request is a raw feature idea or unclear feature scope, begin the `grilling` design-tree interview now. Starting the interview includes obeying `grilling` when the native question tool is unavailable: show the initial ledger, explain how to enable the tool, and pause. Do not return only a route or ask the user to repeat the idea.
+4. If the request is a raw feature idea or unclear feature scope, begin the `grilling` design-tree interview now. Apply the Interview Tool Gate before repo discovery. Do not return only a route or ask the user to repeat the idea.
 5. If the request is implementation work, confirm both:
    - explicit user intent to implement now,
    - a written plan, PRD, or slice approved through its final approval question.

@@ -3,16 +3,20 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.0"
+  featurekit-version: "0.5.1"
 ---
 
 # Grill With Docs
 
 Clarify an idea with a dependency-aware design tree until it is ready for a reviewable written plan or PRD.
 
+## Question Tool Gate
+
+Before reading repository context, apply the `grilling` question-tool gate. Choose a provisional depth, discover whether the native question tool is usable, and show a provisional initial ledger from the request and context already present. If the tool exists but the current mode, configuration, or permissions disable it, explain the exact remedy and pause before repo inspection. Continue only after the tool is enabled or the user explicitly accepts numbered plain text.
+
 ## Process
 
-1. Read `AGENTS.md`, `docs/agents/`, `CONTEXT.md`, relevant ADRs, and relevant code.
+1. After the Question Tool Gate clears, read `AGENTS.md`, `docs/agents/`, `CONTEXT.md`, relevant ADRs, and relevant code.
 2. Choose product depth for a later PRD or implementation-ready depth for a small direct plan. Expand the depth for architecture, security, migration, rollout, or irreversible choices. State the choice so the user can correct it.
 3. Build a design tree. Each decision records its prerequisites and is settled, ready, blocked, or removed by an earlier answer. Name the unsettled prerequisite or fact search for every blocked decision. The frontier is every ready decision whose prerequisites are settled.
 4. Include every material decision within the selected depth that can change behavior, domain rules, user experience, security, architecture, migration, rollout, or verification.
@@ -26,7 +30,7 @@ Clarify an idea with a dependency-aware design tree until it is ready for a revi
 12. Use simple words and short sentences. Explain necessary technical terms once. Give concrete consequences. Avoid compound questions, double negatives, and unexplained abbreviations.
 13. Offer only meaningful choices and allow a custom answer. Wait for all answers in the round before recomputing the tree.
    If an ancestor answer changes, remove descendants that no longer apply, add any descendants the new answer creates, and reopen every affected descendant that still applies as ready or blocked. Do this even if it had an earlier answer; never restore or silently reuse that answer.
-14. Prefer the harness's structured question tool. Discover the available tool and respect its schema. Show the initial ledger before the first round or any tool-availability pause. If the tool exists but is unavailable, explain how to enable it and pause; use plain text only after explicit user consent. If no tool exists, use numbered plain text. Plain-text rounds contain at most three questions.
+14. Prefer the harness's structured question tool and respect its schema. The Question Tool Gate owns discovery, unavailable-tool pauses, and plain-text fallback authorization.
 15. After each round, show a concise ledger using the four tree states: settled, ready, blocked, and removed. Name what blocks each blocked decision. Repeat the selected depth and say the user can correct it. Keep the ledger understandable without rereading earlier rounds so the interview survives compaction or handoff. After compaction or handoff, rebuild and audit the tree from the ledger. Preserve settled answers unless newer user input conflicts; when it does, reopen affected descendants.
 16. When useful, propose updates to `CONTEXT.md` or recommend `/record-adr`, but do not write durable docs before final approval.
 

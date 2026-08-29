@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable design-tree interview for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs dependency-aware questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.5.0"
+  featurekit-version: "0.5.1"
 ---
 
 # Grilling
@@ -18,6 +18,18 @@ Choose the interview depth from the intended next artifact and the risk:
 - Expand either depth when architecture, security, migration, rollout, or irreversible choices require it.
 
 State the chosen depth in plain language. Let the user correct it.
+
+## Gate The Question Tool
+
+Apply this gate immediately after choosing the provisional depth and before repo inspection, fact searches, subagents, or task-specific secondary skills:
+
+1. Discover whether the harness has a native question tool and whether the current mode, configuration, or permissions allow it.
+2. Build a provisional initial ledger from the user's request and context already present. It may be refined after fact discovery.
+3. Show that ledger before the first question round or any tool-availability pause.
+4. If a native question tool exists but is unavailable, explain the exact user action that enables it and pause. Do not perform repo discovery first.
+5. Continue with numbered plain text only after the user explicitly opts in. If the harness has no native question tool, use numbered plain text with at most three questions per round.
+
+Only after this gate clears should repo discovery refine the design tree. This gate takes precedence over the fact-discovery guidance below.
 
 ## Build The Design Tree
 
@@ -52,9 +64,7 @@ Within the selected depth, include every material decision that can change produ
 
 If an ancestor answer changes, remove descendants that no longer apply, add any descendants the new answer creates, and reopen every affected descendant that still applies as ready or blocked. Do this even if it had an earlier answer; never restore or silently reuse that answer.
 
-Prefer the harness's structured question tool, such as Codex `request_user_input`, Claude Code `AskUserQuestion`, or OpenCode `question`. Discover the active tool and respect its current schema instead of assuming a fixed brand limit.
-
-Before the first round or any tool-availability pause, show the initial ledger. If a native question tool exists but is unavailable because of mode, configuration, or permissions, explain how to enable it and pause. Continue with numbered plain text only if the user explicitly opts in. If the harness has no native question tool, use numbered plain text. Plain-text rounds contain at most three questions.
+Prefer the harness's structured question tool, such as Codex `request_user_input`, Claude Code `AskUserQuestion`, or OpenCode `question`. Respect its current schema instead of assuming a fixed brand limit. The earlier Question Tool Gate owns discovery, unavailable-tool pauses, and plain-text fallback authorization.
 
 After each round, restate a short ledger using the four tree states: settled, ready, blocked, and removed. Name what blocks each blocked decision. Repeat the chosen depth and say the user can correct it. Keep the ledger understandable without rereading earlier rounds so compaction and handoff preserve the interview state. After compaction or handoff, rebuild and audit the tree from the ledger. Preserve settled answers unless newer user input conflicts; when it does, reopen affected descendants.
 

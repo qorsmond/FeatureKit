@@ -12,6 +12,8 @@ Use `using-featurekit` before acting.
 
 `using-featurekit` is a lightweight model-invoked router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan. You should not need to manually run it and then repeat the same idea into a workflow skill.
 
+For raw features, the interview checks its question UI before inspecting the repository. If the native question tool exists but the current mode or permissions disable it, the agent should show a provisional ledger, explain the exact setting to change, and pause before spending context on repo discovery. After the tool is enabled—or after you explicitly accept numbered plain text—the agent discovers facts and refines the ledger.
+
 ## 2. Ask For The Right Flow
 
 When unsure, start here:
@@ -45,7 +47,7 @@ The agent should:
 
 Answering an interview question or accepting the agent's recommended answer is not approval. Only the final approval question approves the clarified plan. Generated PRDs and slices are richer staged artifacts and need their own final approval.
 
-Use the harness's structured question tool when it is available. If it is disabled, the agent should explain how to enable it and pause. Plain text is used only when no native tool exists or you explicitly accept the fallback, and it contains at most three questions per round.
+Use the harness's structured question tool when it is available. If it is disabled, the agent should explain how to enable it and pause before repo inspection or secondary task skills. Plain text is used only when no native tool exists or you explicitly accept the fallback, and it contains at most three questions per round.
 
 ## 4. Prototype Only If Needed
 

@@ -57,7 +57,7 @@ FeatureKit should discover facts before asking preferences. Each round should fi
 
 ## The Question UI Is Missing
 
-If the harness has a native question tool, switch to the mode or permission setting that enables it. The agent should explain the exact remedy and pause. If the tool cannot be enabled, explicitly tell the agent to continue with numbered text. Text rounds contain at most three questions.
+If the harness has a native question tool, switch to the mode or permission setting that enables it. The agent should show a provisional ledger, explain the exact remedy, and pause before reading the repo, searching for facts, or loading secondary task skills. If the tool cannot be enabled, explicitly tell the agent to continue with numbered text. Text rounds contain at most three questions.
 
 ## The Plan Is Too Vague
 
