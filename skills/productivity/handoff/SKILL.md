@@ -1,9 +1,9 @@
 ---
 name: handoff
-description: Prepare compact continuation context or create a fresh implementation task after an approved artifact and explicit user selection. Use when context is long, work is pausing, a prototype result needs to return to planning, or work moves to another session, agent, developer, or tool.
+description: Prepare compact continuation context or create a fresh implementation task for substantial work after an approved artifact and explicit user selection. Use when context is long, work is pausing, a prototype result needs to return to planning, or work moves to another session, agent, developer, or tool.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Handoff
@@ -24,14 +24,14 @@ Capture the current state without dumping the whole conversation.
 
 ## Fresh Implementation Task
 
-Use this path only when an implementation-ready plan, PRD, or slice has final approval and the user explicitly selected a fresh implementation task.
+Use this path only when implementation is substantial, an implementation-ready plan, PRD, or slice has final approval, and the user explicitly selected a fresh implementation task. Focused work continues in the current task without this destination question.
 
 1. Prepare a self-contained implementation prompt with the approved artifact, objective, scope and out-of-scope boundaries, decisions, governing ADRs, security constraints, risks, relevant files or symbols, repository state, verification commands, and available context-efficiency tools.
 2. Name the exact next skill: `/implement` for one approved plan or slice, or `/execute-slices` only when the user approved autonomous execution of the ordered slice set.
 3. Do not include a conversation transcript, raw source bodies, full diffs, raw logs, repeated successful test output, or ask the destination to repeat the interview. Include the approved artifact exactly once: link it when the destination shares access, otherwise include it without also duplicating a summary of it.
-4. When the harness can create a task, use its task or session creation tool only after the user selects this path. Keep the new task in the same project and preserve required uncommitted planning artifacts or working-tree state.
-5. If task creation exists but the current mode or permissions disable it, explain the exact enabling action and pause. Resume from the approved artifact and selected destination without asking the interview questions again.
-6. If task creation is unavailable, provide the exact copy-paste prompt and the handoff-note path when one was written.
+4. When the harness can create a task, use its task or session creation tool only after the user selects this path. Start the new task in the same saved project, existing checkout, and active branch so it shares installed FeatureKit skills, project-scoped tools such as Serena, and required uncommitted planning artifacts or working-tree state. Do not create a worktree, branch, clone, or isolated checkout. In Codex, choose the project's local environment rather than a worktree environment.
+5. If task creation cannot preserve that checkout or the current mode or permissions disable it, explain the exact enabling action and pause. Resume from the approved artifact and selected destination without asking the interview questions again.
+6. If suitable task creation is unavailable, provide the exact copy-paste prompt, instruct the user to open it from the same checkout and branch, and include the handoff-note path when one was written.
 
 ## Output File Format
 

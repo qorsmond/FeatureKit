@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Grill With Docs
@@ -44,7 +44,7 @@ When the final audit finds no material decision open within the selected depth:
 
 Only final approval approves the clarified plan. Earlier answers and accepted recommendations do not.
 
-After approval, choose the next workflow from the plan and the original request. A product-depth result continues to its required PRD or slices and must not offer implementation yet. For an implementation-ready result, ask a separate destination question: fresh implementation task (recommended), current task, or stop after planning. Create a fresh task only after the user selects it and pass a self-contained `handoff`; if the task tool is unavailable or disabled, explain the exact remedy or provide one exact prompt without reopening the interview. Implementation may begin without another plan approval only when the original request already asked to make the change and the confirmed plan is implementation-ready. If intent or authority is unclear, stop and ask. Do not write production code inside this skill.
+After approval, choose the next workflow from the plan and the original request. A product-depth result continues to its required PRD or slices and must not offer implementation yet. For an implementation-ready result that the user asked to implement, continue focused work in the current task without a destination question. Only when the work is substantial under `using-featurekit` should you ask: fresh implementation task on the current checkout and branch (recommended), current task, or stop after planning. Create a fresh task only after the user selects it, keep it out of a worktree, and pass a self-contained `handoff`; if a suitable task tool is unavailable or disabled, explain the exact remedy or provide one exact prompt without reopening the interview. Implementation may begin without another plan approval only when the original request already asked to make the change and the confirmed plan is implementation-ready. If intent or authority is unclear, stop and ask. Do not write production code inside this skill.
 
 ## Output
 

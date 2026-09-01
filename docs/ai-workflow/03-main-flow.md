@@ -120,11 +120,11 @@ Avoid horizontal slices like "add all types" or "build all UI". They hide integr
 
 Review and approve the PRD or slice list before using `/implement` or `/execute-slices`.
 
-After an implementation-ready artifact is approved, FeatureKit asks a separate destination question: create a fresh implementation task, continue in the current task, or stop after planning. Product-depth work that still needs a PRD or slices does not offer implementation yet.
+After an implementation-ready artifact is approved, focused implementation that was already requested continues in the current task without a destination question. Only substantial work asks whether to create a fresh implementation task on the current checkout and branch, continue in the current task, or stop after planning. Product-depth work that still needs a PRD or slices does not offer implementation yet.
 
 ## 8. Implement One Slice
 
-After the written plan or slice is approved, start a fresh session per implementation slice when possible:
+After the written plan or slice is approved, continue a focused implementation in the current task:
 
 ```text
 /implement
@@ -159,7 +159,7 @@ When a PRD and ordered slices are approved and you explicitly want autonomous ba
 
 The agent should execute slices sequentially, use subagents when available, review after each slice, run verification, and stop for blockers, ADR conflicts, unresolved P0/P1 security findings, failing checks, or unclear scope. It should not create branches, commit, push, or open PRs.
 
-Use `/implement` instead when you want one focused slice in a fresh session.
+Use `/implement` instead when you want one focused slice.
 
 ## 10. Review
 
@@ -192,11 +192,11 @@ Use this when a session is long, context is crowded, or work needs to move:
 /handoff
 ```
 
-The handoff is compact, self-contained implementation context, not a transcript. When the user selects a fresh implementation task and the harness supports task creation, FeatureKit creates it with the approved artifact, scope, decisions, constraints, repository state, verification commands, and exact implementation skill. If creation is unavailable, it provides one exact prompt and a handoff note when useful.
+The handoff is compact, self-contained implementation context, not a transcript. For substantial work, when the user selects a fresh implementation task and the harness supports task creation on the existing checkout, FeatureKit creates it in the same saved project and active branch without a worktree. It receives the approved artifact, scope, decisions, constraints, repository state, verification commands, and exact implementation skill. If suitable creation is unavailable, FeatureKit provides one exact prompt and a handoff note when useful.
 
 ## Session Rules
 
-Keep grilling, PRD, and slice planning in one continuous planning thread when possible. Start fresh for each implementation slice when using `/implement`, or use `/execute-slices` when the approved slice queue should run sequentially in one autonomous session.
+Keep grilling, PRD, slice planning, and focused implementation in one continuous task when practical. Consider a fresh task only for substantial implementation or when the current task no longer has enough usable context. Use `/execute-slices` when the approved slice queue should run sequentially in one autonomous task.
 
 Each fresh implementation, bug, refactor, review, or verification session should begin from the Agent Operating Principles in the repo instructions.
 

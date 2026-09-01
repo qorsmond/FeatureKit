@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Lightweight FeatureKit bootstrap and router. Use at the start of FeatureKit sessions, after context compaction, or when a user asks for product or engineering work in a repo that may use FeatureKit, so the agent checks setup, chooses the right FeatureKit skill, and avoids coding before an approved written plan.
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Using FeatureKit
@@ -39,25 +39,32 @@ After this gate clears, discover repo facts and refine the provisional ledger th
 7. If multiple skills might apply, choose the process skill first, then security, implementation, review, or verification skills.
 8. After final approval, choose the next workflow from the plan and original request:
    - create a PRD, ADR, prototype, or slices when the approved plan requires one,
-   - offer the implementation destination choice below when the approved plan is implementation-ready,
+   - continue focused implementation in the current task when the approved plan is implementation-ready and the original request authorized implementation,
+   - offer the implementation destination choice below only when the implementation work is substantial,
    - stop and ask when intent, authority, or scope is unclear.
-9. Continue automatically through required planning artifacts when the harness permits. Implementation always waits for the separate destination choice. If an explicit-only skill cannot be chained, give one exact invocation and preserve the current context so the user does not have to restate it.
+9. Continue automatically through required planning artifacts when the harness permits. Focused implementation does not wait for a destination choice; substantial implementation does. If an explicit-only skill cannot be chained, give one exact invocation and preserve the current context so the user does not have to restate it.
 10. Treat generated PRDs and slices as staged artifacts. Show each one and get final approval before implementation.
 11. Keep non-interview routing short. Do not write production code from this bootstrap; hand control to the selected workflow.
 
 ## Implementation Destination
 
-Keep approval and session choice separate. After an implementation-ready plan, PRD, or slice receives final approval, ask one structured question with these choices:
+After an implementation-ready plan, PRD, or slice receives final approval, continue in the current task without a destination question when all of the following hold:
 
-1. Create a fresh implementation task (recommended).
+- the original request authorized implementation,
+- the work is one focused change or slice that is likely to fit in one implementation pass,
+- the current task has enough usable context remaining.
+
+Treat implementation as substantial when it spans multiple approved slices, crosses several major subsystems, is expected to need multiple implementation passes, or the planning history has consumed enough context that continuing materially increases delivery risk. Only for substantial work, keep approval and destination choice separate and ask one structured question with these choices:
+
+1. Create a fresh implementation task on the current checkout and branch (recommended).
 2. Continue in the current task.
 3. Stop after planning.
 
-Do not show this implementation choice for a product-depth result that still requires a PRD, ADR resolution, prototype, or slices.
+When the boundary is unclear, prefer continuing in the current task instead of asking. Do not show this implementation choice for a product-depth result that still requires a PRD, ADR resolution, prototype, or slices. If the original request did not authorize implementation, stop after planning rather than treating approval as implementation authority.
 
-The user's fresh-task selection is the authorization to create that task. Discover the harness's task or session creation capability only after selection. Pass the self-contained context defined by `handoff`, use `/implement` for one approved plan or slice and `/execute-slices` only for an explicitly approved batch, and do not restart grilling in the destination.
+The user's fresh-task selection is the authorization to create that task. Discover the harness's task or session creation capability only after selection. Create it in the same saved project, using the current checkout and active branch; do not create a worktree, branch, clone, or isolated checkout. In Codex, use the project's local environment rather than a worktree environment so project-installed FeatureKit skills and project-scoped tools such as Serena remain available. Pass the self-contained context defined by `handoff`, use `/implement` for one approved plan or slice and `/execute-slices` only for an explicitly approved batch, and do not restart grilling in the destination.
 
-If the creation tool exists but the current mode, configuration, or permissions disable it, explain the exact enabling action and pause while preserving the approved artifact and destination choice. If the harness has no creation tool, provide one exact copy-paste implementation prompt. Never silently continue implementation in the planning task when fresh was selected.
+If the creation tool cannot start a task on the current checkout or the current mode, configuration, or permissions disable it, explain the exact enabling action and pause while preserving the approved artifact and destination choice. If the harness has no suitable creation tool, provide one exact copy-paste implementation prompt that tells the user to open it from the same checkout and branch. Never silently continue implementation in the planning task when fresh was selected.
 
 ## Routes
 

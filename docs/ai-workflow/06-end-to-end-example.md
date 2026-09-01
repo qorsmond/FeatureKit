@@ -159,12 +159,12 @@ Does this plan match what you want?
 
 Only the first choice approves the clarified plan. Earlier answers do not. After approval, FeatureKit creates the PRD automatically when the harness can chain the next skill. Otherwise it gives one exact `/to-prd` invocation without asking you to repeat the context.
 
-Because this result is product-depth and still needs a PRD, FeatureKit does not offer implementation yet. After a later implementation-ready plan or slice is approved, it asks a separate question:
+Because this result is product-depth and still needs a PRD, FeatureKit does not offer implementation yet. After a later focused implementation-ready slice is approved, FeatureKit continues in the current task when the original request included implementation. If the approved work is substantial, it asks a separate question:
 
 ```markdown
-The approved slice is ready to build. A fresh task gives implementation a full context window, while continuing here keeps the planning history in the same session. Where should implementation continue?
+The approved work is substantial. A fresh task gives implementation a full context window, while continuing here keeps the planning history in the same task. Where should implementation continue?
 
-- Fresh implementation task (Recommended): Create a new task with the approved slice, constraints, repository state, and verification commands.
+- Fresh implementation task on this checkout and branch (Recommended): Create a new task with the approved artifact, constraints, repository state, and verification commands, without creating a worktree.
 - Continue in this task: Keep working here after the current mode permits implementation.
 - Stop after planning: Keep the approved artifact without starting implementation.
 ```
@@ -264,11 +264,11 @@ Acceptance criteria:
 Depends on: Slice 1
 ```
 
-Review the slice list and use its final approval question before implementation. If you want clean context, use `/handoff` or start a fresh implementation session with one approved slice.
+Review the slice list and use its final approval question before implementation. Continue a focused slice in the current task. If substantial work needs clean context, use `/handoff` and start the fresh task from the same checkout and branch.
 
 ## Step 7: Implement One Slice
 
-After approving the PRD and Slice 1, start a fresh session. Give the agent one approved slice only.
+After approving the PRD and Slice 1, continue in the current task because this is one focused slice. Give the agent one approved slice only.
 
 ```text
 /implement
@@ -375,7 +375,7 @@ Done:
 - Slice 1 implemented and tested.
 
 Next:
-- Start fresh session for Slice 2 UI state.
+- If the current task is context-constrained, start a fresh task for Slice 2 UI state on this same checkout and branch.
 
 Repository state:
 - Current project and checkout recorded; unrelated working changes preserved.

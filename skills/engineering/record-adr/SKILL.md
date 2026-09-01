@@ -3,7 +3,7 @@ name: record-adr
 description: Record or update architectural decision records (ADRs) for durable technical decisions in a product repo. Use explicitly when a feature, PRD, prototype, design review, implementation, or migration chooses or changes architecture that future work must follow.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Record ADR

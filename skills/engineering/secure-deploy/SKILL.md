@@ -2,7 +2,7 @@
 name: secure-deploy
 description: Apply deployment, runtime, CI/CD, secrets, and supply-chain hardening guidance during deployment planning, infrastructure changes, release workflows, production configuration, migration planning, or review. Use when work touches environments, hosting, pipelines, secrets, IAM, containers, artifacts, observability, rollback, or production operations.
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Secure Deploy

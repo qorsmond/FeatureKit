@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable design-tree interview for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs dependency-aware questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # Grilling
@@ -86,9 +86,9 @@ Only final approval approves the clarified plan. Accepting a recommendation or a
 
 Keep plan approval separate from the choice of where work continues. After approval, return control to the active FeatureKit workflow:
 
-- If the approved artifact is implementation-ready, ask a separate structured destination question with three choices: create a fresh implementation task (recommended), continue in the current task, or stop after planning.
+- If the approved artifact is implementation-ready and implementation was requested, continue focused work in the current task without asking where to run it. For substantial work only, ask a separate structured destination question with three choices: create a fresh implementation task on the current checkout and branch (recommended), continue in the current task, or stop after planning. Apply the substantial-work criteria from `using-featurekit`.
 - If product-depth decisions, a PRD, or slices are still required, route to that planning artifact instead. Do not offer implementation yet.
-- Create a fresh task only after the user selects it. Use the `handoff` contract to pass the approved artifact and implementation context without a transcript or a restarted interview.
+- Create a fresh task only after the user selects it. Use the `handoff` contract to keep it on the current checkout and branch and pass the approved artifact and implementation context without a transcript or a restarted interview.
 - If a task tool exists but the current mode or permissions disable it, explain the exact user action that enables it and pause without reopening settled decisions. If no task tool exists, provide one exact self-contained prompt for a new session.
 
 A later PRD or slice is a richer staged artifact and still needs its own approval. Do not implement production code from this interview discipline.

@@ -98,7 +98,7 @@ If this happened after you accepted an interview recommendation, clarify that th
 That answer settles one interview decision. It does not approve the plan. Finish the design tree, show the complete plan, and ask the final approval question.
 ```
 
-After approval, session choice is separate. FeatureKit offers a fresh implementation task only when the artifact is implementation-ready; otherwise it continues to the required PRD or slices.
+After approval, focused implementation continues in the current task without a session-choice question. FeatureKit offers a fresh implementation task only when the artifact is implementation-ready and the work is substantial; that task must use the same checkout and branch. Product-depth work continues to the required PRD or slices.
 
 ## The Diff Drifted From The Plan
 

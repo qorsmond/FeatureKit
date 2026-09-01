@@ -111,7 +111,7 @@ With local LLMs:
 - ask for plans before code, and approve the written plan or slice before implementation,
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
-- use fresh sessions often.
+- use fresh sessions only for substantial work or when the current session is context-constrained, and reopen the same checkout and branch.
 
 The workflow still works because the skills are plain Markdown.
 

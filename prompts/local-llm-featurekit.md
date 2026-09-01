@@ -54,8 +54,8 @@ Task:
 - Keep outputs short enough to fit in the local model's context window.
 - For implementation work, use one approved small vertical slice at a time.
 - Accepting a recommended interview answer is not approval. Only the final approval question approves the clarified plan. Later PRDs and slices need their own final approval.
-- After an implementation-ready artifact is approved, keep approval separate from the destination choice: fresh implementation session, current session, or stop after planning. Do not offer implementation from a product-depth result that still needs a PRD or slices.
-- Create a fresh session only after the user selects it. Pass the approved artifact, scope, decisions, constraints, repository state, verification, and exact implementation skill without a transcript or repeated interview; otherwise provide one exact copy-paste prompt.
+- After an implementation-ready artifact is approved and implementation was requested, continue focused work in the current session without asking where to run it. Ask about a fresh implementation session, the current session, or stopping after planning only for substantial work such as a multi-slice batch, a broad cross-system change, or a planning session with too little context remaining. Do not offer implementation from a product-depth result that still needs a PRD or slices.
+- Create a fresh session only after the user selects it. Start it from the same project checkout and active branch without creating a worktree, branch, clone, or isolated checkout. Pass the approved artifact, scope, decisions, constraints, repository state, verification, and exact implementation skill without a transcript or repeated interview; otherwise provide one exact copy-paste prompt.
 - For approved ordered slices, use `execute-slices` only when the user explicitly asks to execute them and the model has enough context for the PRD, slice queue, relevant files, and verification output.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.

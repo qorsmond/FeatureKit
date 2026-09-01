@@ -87,15 +87,15 @@ Use /implement to implement only Slice 1.
 Do not implement invite acceptance, email delivery, or admin UI yet.
 ```
 
-For larger features, prefer one fresh implementation session per slice. Fresh sessions keep context small and make the diff easier to review.
+For a focused slice, continue in the current task without another destination question. When implementation is substantial or the planning history leaves too little usable context, a fresh task can keep context small and make the diff easier to review.
 
-After approval, FeatureKit asks where implementation should continue:
+Only for substantial work, FeatureKit asks where implementation should continue:
 
-- create a fresh implementation task (recommended),
+- create a fresh implementation task on the current checkout and branch (recommended),
 - continue in the current task,
 - stop after planning.
 
-This choice is separate from approval. It appears only when the plan, PRD, or slice is implementation-ready. If the harness cannot create a task, FeatureKit provides one exact self-contained implementation prompt.
+This choice is separate from approval. Focused implementation that was already requested continues in the current task. When a fresh task is selected, it uses the same saved project checkout and active branch instead of creating a worktree. If the harness cannot do that, FeatureKit provides one exact self-contained implementation prompt.
 
 ## 5. Implement One Slice
 
@@ -156,7 +156,7 @@ When a session is long, context is crowded, or another agent will continue the f
 Write a handoff for the team-invitations work.
 ```
 
-Then start the next session from the handoff, the approved PRD or slice list, and the repo guidance under `docs/agents/`. When task creation is available, selecting the fresh-task option performs this handoff for you.
+If substantial work needs a fresh task, start it from the same saved project checkout and active branch with the handoff, approved PRD or slice list, and repo guidance under `docs/agents/`. When suitable task creation is available, selecting the fresh-task option performs this handoff for you without creating a worktree.
 
 ## Fast Path
 

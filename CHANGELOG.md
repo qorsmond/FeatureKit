@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.4 - 2026-09-01
+
+- Continued focused implementation in the current task without an unnecessary post-approval destination question.
+- Limited the fresh-task choice to substantial implementation work and required fresh tasks to reuse the current project checkout and active branch without creating a worktree.
+- Updated handoff guidance, behavioral smoke tests, local-LLM guidance, and workflow documentation for the new routing behavior.
+
 ## 0.5.3 - 2026-08-29
 
 - Added progressive context budgets to slicing and implementation, preferring Serena-style symbol discovery and RTK-style command compression when available with portable bounded fallbacks.

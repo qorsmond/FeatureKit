@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.3"
+  featurekit-version: "0.5.4"
 ---
 
 # To Slices
@@ -26,7 +26,7 @@ Split a PRD into independently reviewable implementation slices.
 5. Include security requirements, abuse cases, and governing ADRs or ADR follow-ups in the relevant slice context.
 6. Write slices to the configured work tracker or local Markdown location.
 7. Show the completed slices and ask one self-contained final approval question with short context and three clear choices: approve them, ask more questions, or change them. Apply the `grilling` question contract to any reopened decision; uncertainty does not approve or settle it.
-8. Treat the slices as staged until the user approves them. After approval, use the separate implementation destination choice from `using-featurekit`. Route a focused slice to `/implement`; route the ordered set to `/execute-slices` only when the user explicitly approved autonomous batch execution. Stop when intent is unclear.
+8. Treat the slices as staged until the user approves them. After approval, apply the implementation destination rules from `using-featurekit`: continue a focused slice in the current task without asking, and ask about a fresh task only for substantial work. Route a focused slice to `/implement`; route the ordered set to `/execute-slices` only when the user explicitly approved autonomous batch execution. Stop when intent is unclear.
 
 ## Slicing Rules
 
@@ -76,4 +76,4 @@ Depends on:
 
 ## Done
 
-Report the slice list and where it was written. Only the final approval question approves the slices. After approval, offer fresh implementation task, current task, or stop after planning. Choose `/execute-slices` only when the user approved the ordered set to run autonomously, or `/implement` for one focused slice. If the harness cannot create or chain the destination, give one exact self-contained prompt without asking the user to repeat context.
+Report the slice list and where it was written. Only the final approval question approves the slices. After approval, continue one focused slice in the current task when implementation was requested. For substantial work only, offer a fresh implementation task on the current checkout and branch, the current task, or stop after planning. Choose `/execute-slices` only when the user approved the ordered set to run autonomously, or `/implement` for one focused slice. If the harness cannot create or chain the destination, give one exact self-contained prompt without asking the user to repeat context.

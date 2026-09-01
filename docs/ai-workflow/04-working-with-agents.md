@@ -64,18 +64,18 @@ Use one planning thread for:
 - PRD,
 - slices.
 
-Use fresh implementation sessions for:
+Consider fresh implementation tasks when the work is substantial or the current task is context-constrained, for example:
 
-- one slice,
-- one bug,
-- one refactor,
-- one review.
+- an approved multi-slice batch,
+- a broad cross-system change,
+- a large refactor with several verification phases,
+- implementation after a long planning task has consumed most of the useful context.
 
 Use `/execute-slices` only when the PRD and ordered slices are approved and you want the agent to run the slice queue autonomously with verification and review checkpoints.
 
-Use `/handoff` when moving between sessions.
+Use `/handoff` when moving between tasks. Keep a fresh task on the same saved project checkout and active branch; do not create a worktree just to reset conversation context.
 
-After an implementation-ready artifact is approved, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript.
+After an implementation-ready artifact is approved, focused work should continue in the current task without another question. For substantial work, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript, and runs from the existing checkout and branch.
 
 ## Token-Efficient Execution
 
