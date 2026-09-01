@@ -8,6 +8,12 @@ FeatureKit is a private, framework-agnostic agent skill harness for building rea
 
 The goal is portable, plain Markdown skills that can be installed with the open `skills` CLI and used from Codex, Claude Code, OpenCode, generic agents, and local LLMs.
 
+## Agent Tool Routing
+
+- Use Repowise for repository overview and documentation context/search.
+- Use Serena for symbol-aware source navigation and refactoring when the repository contains analyzable source code.
+- Do not repeat the same retrieval in both tools; choose the tool that owns the task above.
+
 ## Product Direction
 
 - FeatureKit v1 is private.

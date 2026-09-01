@@ -1,0 +1,40 @@
+INFO  2026-08-29 22:32:19,160 serena.cli:health_check:949 - Starting health check for project: /Users/iso/Dev/FeatureKit
+INFO  2026-08-29 22:32:19,161 serena.cli:health_check:953 - Creating SerenaAgent with disabled dashboard...
+INFO  2026-08-29 22:32:19,171 serena.util.file_system:stop:336 - Loading of .gitignore files completed in 0.011 seconds
+INFO  2026-08-29 22:32:19,171 serena.project:stop:336 - Gathering ignore spec for project FeatureKit completed in 0.011 seconds
+INFO  2026-08-29 22:32:19,191 serena.agent:__init__:631 - Will record tool usage statistics with token count estimator: CHAR_COUNT.
+INFO  2026-08-29 22:32:19,203 serena.agent:__init__:635 - Starting Serena server (version=1.7.0, process id=86513, parent process id=86512; language backend=LSP); Python version=3.13.15, platform=macOS-26.4-arm64-arm-64bit-Mach-O
+INFO  2026-08-29 22:32:19,204 serena.agent:__init__:639 - Configuration file: /Users/iso/.serena/serena_config.yml
+INFO  2026-08-29 22:32:19,204 serena.agent:__init__:640 - Available projects: FeatureKit, blitza-platform
+INFO  2026-08-29 22:32:19,204 serena.agent:__init__:641 - Loaded tools (52): create_text_file, replace_content, replace_in_files, delete_lines, replace_lines, insert_at_line, replace_symbol_body, insert_after_symbol, insert_before_symbol, read_file, list_dir, find_file, search_for_pattern, restart_language_server, get_symbols_overview, find_symbol, find_referencing_symbols, find_implementations, find_declaration, get_diagnostics_for_file, get_diagnostics_for_symbol, rename_symbol, safe_delete_symbol, write_memory, read_memory, list_memories, delete_memory, rename_memory, edit_memory, execute_shell_command, open_dashboard, activate_project, remove_project, get_current_config, onboarding, initial_instructions, serena_info, jet_brains_find_symbol, jet_brains_move, jet_brains_safe_delete, jet_brains_inline_symbol, jet_brains_find_referencing_symbols, jet_brains_get_symbols_overview, jet_brains_type_hierarchy, jet_brains_find_declaration, jet_brains_find_implementations, jet_brains_rename, jet_brains_debug, jet_brains_run_inspections, jet_brains_list_inspections, list_queryable_projects, query_project
+INFO  2026-08-29 22:32:19,204 serena.config.serena_config:determine_language_backend:1452 - Using language backend from global configuration: LSP
+INFO  2026-08-29 22:32:19,217 serena.config.serena_config:start:329 - Loading project instance for RegisteredProject[project_root=/Users/iso/Dev/FeatureKit, project_config=ProjectConfig[project_name=FeatureKit]] starting ...
+INFO  2026-08-29 22:32:19,218 serena.project:__init__:46 - Serena project data folder: /Users/iso/Dev/FeatureKit/.serena
+INFO  2026-08-29 22:32:19,218 serena.project:start:329 - Gathering ignore spec for project FeatureKit starting ...
+INFO  2026-08-29 22:32:19,218 serena.config.serena_config:stop:336 - Loading project instance for RegisteredProject[project_root=/Users/iso/Dev/FeatureKit, project_config=ProjectConfig[project_name=FeatureKit]] completed in 0.000 seconds
+INFO  2026-08-29 22:32:19,218 serena.util.file_system:start:329 - Loading of .gitignore files starting ...
+INFO  2026-08-29 22:32:19,218 serena.agent:activate_project_from_path_or_name:1351 - Found registered project 'FeatureKit' at path /Users/iso/Dev/FeatureKit
+INFO  2026-08-29 22:32:19,218 serena.agent:_activate_project:1219 - Activating FeatureKit at /Users/iso/Dev/FeatureKit
+INFO  2026-08-29 22:32:19,219 serena.task_executor:issue_task:217 - Scheduling Task-1:init_project_services
+INFO  2026-08-29 22:32:19,219 serena.agent:_update_active_modes:1127 - Active modes (2): editing, interactive
+INFO  2026-08-29 22:32:19,219 serena.util.file_system:_load_gitignore_files:165 - Processing .gitignore file: /Users/iso/Dev/FeatureKit/.serena/.gitignore
+INFO  2026-08-29 22:32:19,221 serena.agent:_create_base_toolset:813 - Number of exposed tools: 29
+INFO  2026-08-29 22:32:19,257 serena.agent:__init__:681 - Number of exposed tools: 29. Exposed tools: ['activate_project', 'create_text_file', 'delete_memory', 'edit_memory', 'execute_shell_command', 'find_declaration', 'find_file', 'find_implementations', 'find_referencing_symbols', 'find_symbol', 'get_current_config', 'get_diagnostics_for_file', 'get_symbols_overview', 'initial_instructions', 'insert_after_symbol', 'insert_before_symbol', 'list_dir', 'list_memories', 'onboarding', 'read_file', 'read_memory', 'rename_memory', 'rename_symbol', 'replace_content', 'replace_in_files', 'replace_symbol_body', 'safe_delete_symbol', 'search_for_pattern', 'write_memory']
+INFO  2026-08-29 22:32:19,258 serena.agent:_update_active_tools:1145 - Active tools (29): activate_project, create_text_file, delete_memory, edit_memory, execute_shell_command, find_declaration, find_file, find_implementations, find_referencing_symbols, find_symbol, get_current_config, get_diagnostics_for_file, get_symbols_overview, initial_instructions, insert_after_symbol, insert_before_symbol, list_dir, list_memories, onboarding, read_file, read_memory, rename_memory, rename_symbol, replace_content, replace_in_files, replace_symbol_body, safe_delete_symbol, search_for_pattern, write_memory
+INFO  2026-08-29 22:32:19,262 serena.util.file_system:stop:336 - Loading of .gitignore files completed in 0.044 seconds
+INFO  2026-08-29 22:32:19,263 serena.project:stop:336 - Gathering ignore spec for project FeatureKit completed in 0.045 seconds
+INFO  2026-08-29 22:32:19,305 serena.task_executor:_process_task_queue:139 - Starting execution of Task-1:init_project_services
+INFO  2026-08-29 22:32:19,305 serena.task_executor:start:329 - Task-1:init_project_services starting ...
+INFO  2026-08-29 22:32:19,305 serena.agent:start:329 - Language server initialization starting ...
+INFO  2026-08-29 22:32:19,305 serena.project:create_language_server_manager:517 - Creating language server manager for /Users/iso/Dev/FeatureKit
+INFO  2026-08-29 22:32:19,305 sensai.util.logging:start:329 - Initialising file change notifier (polling for baseline) starting ...
+INFO  2026-08-29 22:32:19,310 sensai.util.logging:stop:336 - Initialising file change notifier (polling for baseline) completed in 0.005 seconds
+INFO  2026-08-29 22:32:19,311 serena.agent:stop:336 - Language server initialization completed in 0.005 seconds
+INFO  2026-08-29 22:32:19,311 serena.task_executor:stop:336 - Task-1:init_project_services completed in 0.006 seconds
+INFO  2026-08-29 22:32:19,862 serena.cli:health_check:956 - SerenaAgent created successfully
+INFO  2026-08-29 22:32:19,862 serena.cli:health_check:959 - Searching for analyzable files...
+ERROR 2026-08-29 22:32:19,868 serena.cli:health_check:1034 - Health check failed with exception: No analyzable files found
+Traceback (most recent call last):
+  File "/Users/iso/.local/share/uv/tools/serena-agent/lib/python3.13/site-packages/serena/cli.py", line 974, in health_check
+    raise ProjectCommands._HealthCheckFailure("No analyzable files found")
+serena.cli.ProjectCommands._HealthCheckFailure: No analyzable files found

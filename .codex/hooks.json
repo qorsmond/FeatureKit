@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/iso/.local/bin/repowise-auto-update /Users/iso/Dev/FeatureKit >/dev/null 2>&1 &",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
