@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Lightweight FeatureKit bootstrap and router. Use at the start of FeatureKit sessions, after context compaction, or when a user asks for product or engineering work in a repo that may use FeatureKit, so the agent checks setup, chooses the right FeatureKit skill, and avoids coding before an approved written plan.
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Using FeatureKit
@@ -22,6 +22,12 @@ Classify the request before repository inspection, fact discovery, or loading ta
 5. Continue only after the tool is enabled or the user explicitly accepts numbered plain text. If the harness has no native question tool, use the plain-text fallback from `grilling`.
 
 After this gate clears, discover repo facts and refine the provisional ledger through the normal design-tree process.
+
+## Work Distribution
+
+After the interview gate clears, use `orchestrate-work` when the selected workflow distributes substantive work. It chooses direct tools, the current agent, or bounded workers by capability and available proof. Read optional repo mappings from `docs/agents/orchestration.md`; missing mappings or workers do not block the workflow. Worker dispatch does not create a fresh user task or transfer ownership. Assigned workers follow their packet without restarting routing or interviewing.
+
+Make the selected workflow and execution route visible to the user, following `orchestrate-work`'s live-feedback contract. Show requested versus runtime-reported model/effort, worker IDs when available, and meaningful changes in status; do not leave these only in a private ledger. Preserve the interview gate before any additional discovery.
 
 ## Process
 
@@ -79,6 +85,8 @@ If the creation tool cannot start a task on the current checkout or the current 
 - Implement one approved slice after explicit approval: `/implement`.
 - Hard bug or unclear failure: `diagnosing-bugs`.
 - Verify generated or risky tests: `verify-tests`.
+- Validate feature behavior and runtime evidence: `validate-feature`.
+- Distribute bounded work or escalate a worker: `orchestrate-work` within the selected workflow.
 - Review a diff or PR: `review-change`.
 - Focused security review: `security-review`.
 - API security work: `secure-api` inside planning, implementation, or review.

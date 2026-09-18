@@ -2,7 +2,7 @@
 name: diagnosing-bugs
 description: Diagnose and fix hard, flaky, unclear, or production-impacting bugs. Use when the user reports broken behavior, cannot reproduce an issue, sees intermittent failures, or needs a root-cause-driven regression fix.
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Diagnosing Bugs
@@ -10,6 +10,8 @@ metadata:
 Find the real cause before fixing.
 
 Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
+
+Use `orchestrate-work` for bounded reproduction/investigation or approved fixes. Keep ambiguous root-cause decisions with adequate reasoning. Read-only diagnosis may precede approval; production edits still require an approved written plan under `using-featurekit`. Assigned workers do not delegate again.
 
 ## Process
 
@@ -22,7 +24,7 @@ Apply the target repo's `Agent Operating Principles` before coding, refactoring,
 7. Fix the smallest cause.
 8. Use `secure-code`, `secure-api`, or `secure-deploy` when the bug touches their trigger areas.
 9. Use `verify-tests` for production-impacting, security-sensitive regressions or when the regression test might not fail for the right reason.
-10. Run verification.
+10. Run verification and use `validate-feature` to reproduce the fix in the affected runtime/platform. Carry any device, environment or manual-proof gap explicitly; a passing regression test may not prove the full runtime requirement.
 
 ## Do Not
 
@@ -54,7 +56,10 @@ Security:
 <secure-code/secure-api/secure-deploy result | skipped and why>
 
 Verification:
-<commands run>
+<validate-feature verdict, commands/runtime evidence and remaining gaps>
+
+Work distribution:
+<direct work or worker route, evidence, escalation and primary disposition>
 
 ADRs:
 <none | governing ADRs followed or ADR update needed>

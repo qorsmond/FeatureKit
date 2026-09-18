@@ -1,9 +1,9 @@
 ---
 name: setup-featurekit
-description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before other FeatureKit engineering skills, or when work tracker, domain docs, stack commands, security notes, deployment notes, or workflow locations change. User-invoked setup skill.
+description: Configure a target product repo for FeatureKit by discovering repo conventions and writing lightweight docs under docs/agents. Use once before engineering work, or when commands, runtime validation, worker routes, security, deployment, or workflow locations change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Setup FeatureKit
@@ -22,6 +22,8 @@ Inspect the repo before asking questions. Look for:
 - `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/`,
 - package manifests and scripts,
 - test, lint, typecheck, build, and CI config,
+- target runtimes/platforms, simulators/emulators/devices, hardware/native integrations and existing runtime tests,
+- existing worker/model configuration and advertised native tools; inspect installed external CLI help/status only for intended backends, without reading secrets,
 - database, migration, auth, security, secrets, CI/CD, and deployment config,
 - existing docs, specs, work folders, or scratch folders.
 
@@ -74,6 +76,20 @@ Record:
 - backend framework if any,
 - database and migration approach if discoverable,
 - lint, typecheck, test, build, and dev commands.
+
+### Verification And Runtime
+
+Extend `docs/agents/verification.md` with acceptance-to-evidence guidance using `validate-feature`: commands and fixtures, target runtimes/platforms, simulator/emulator vs device requirements, environment prerequisites, hardware limitations, and manual procedures/evidence. Record known unavailable checks. Discover affected Android/iOS, web, service or desktop targets instead of treating a browser as the universal runtime. A build alone does not prove a feature.
+
+### Optional Worker Routes
+
+Use `orchestrate-work` for the shared policy. If the user wants configured routes, record `docs/agents/orchestration.md` with verified choices:
+
+| Capability | Backend / mechanism | Model or alias / effort | Preference | Auth / usage pool | Tools / restrictions |
+| --- | --- | --- | --- | --- | --- |
+| routine / standard / deep | Available native worker or installed CLI | Actual supported selection, or unknown | User's relative cost preference | Verified subscription/API mode; pool if known | Context, permissions, runtime and data limits |
+
+Record a concurrency ceiling (default two, within host limits) and any provider restrictions. Do not copy placeholder values as usable routes or hardcode a model catalogue. Configuration is optional: one model, one provider and direct execution remain valid. Prefer existing authenticated subscriptions; do not enable API spend, install a backend, change global settings or expose secrets as part of discovery. Unknown cost/model/auth fields remain unknown; an unverified external billing route is not ready to run.
 
 ### Deployment
 
@@ -131,6 +147,8 @@ Write or update:
 - `docs/agents/deployment.md`,
 - `docs/agents/workflow-locations.md`.
 
+Write `docs/agents/orchestration.md` only when configured routes or restrictions are useful and confirmed. Its absence is valid. If an existing configuration already owns those choices, reference it rather than duplicating the values.
+
 Update the existing instruction file:
 
 - Prefer `AGENTS.md` if it exists.
@@ -150,6 +168,8 @@ This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agent
 - Domain docs: see `docs/agents/domain.md`.
 - Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.
 - Stack and commands: see `docs/agents/stack.md` and `docs/agents/verification.md`.
+- Work distribution: use `orchestrate-work`; see `docs/agents/orchestration.md` if configured. Workers do not own the overall completion decision.
+- Feature evidence: use `validate-feature` and `docs/agents/verification.md` for runtime/platform proof and explicit gaps; use `verify-tests` for test quality.
 - Security: see `docs/agents/security.md`.
 - Deployment: see `docs/agents/deployment.md`.
 - Workflow locations: see `docs/agents/workflow-locations.md`.

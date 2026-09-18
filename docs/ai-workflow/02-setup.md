@@ -33,6 +33,8 @@ Setup groups these into short, clear rounds through the harness question UI when
 5. How security notes should record auth, authorization, sensitive data, APIs, secrets, dependencies, CI/CD checks, deployment security, logging, and incident contacts.
 6. Where PRDs, slices, ADRs, prototypes, and handoffs should be saved.
 
+For teams that use delegated work, setup may also record an optional `docs/agents/orchestration.md` routing table. It is safe to omit: missing mappings, models, workers, authentication, or permissions fall back to direct work in the current session when capable and authorized; otherwise report the prerequisite. Prefer an available native worker or authenticated subscription CLI; do not add automatic API spend. Keep actual provider/model choices in that product-repo file; the shared workflow remains stack- and provider-neutral. Extend `docs/agents/verification.md` with applicable runtimes, platforms, commands, fixtures, devices or simulators, environment prerequisites, and hardware limits so validation can report missing evidence explicitly.
+
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
 Each question should cover one decision, include its own short context, use the user's words and concrete outcomes, explain what the options cause, and recommend a default based on what the agent found. Uncertainty stays unresolved and is explained and re-asked in simpler language.

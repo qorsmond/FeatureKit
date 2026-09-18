@@ -3,7 +3,7 @@ name: handoff
 description: Prepare compact continuation context or create a fresh implementation task for substantial work after an approved artifact and explicit user selection. Use when context is long, work is pausing, a prototype result needs to return to planning, or work moves to another session, agent, developer, or tool.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Handoff
@@ -20,6 +20,7 @@ Capture the current state without dumping the whole conversation.
 6. Capture decisions, risks, security follow-ups, gotchas, and relevant ADRs.
 7. Recommend `/record-adr` for unrecorded durable architecture decisions.
 8. Record the repository or project, relevant working-tree state, verification commands, and available context-efficiency tools such as Serena or RTK.
+   Preserve the `orchestrate-work` ledger when relevant: accepted findings, worker routes/models where observed, failed attempts, pending ownership and escalations. Stop or explicitly coordinate active workers before transferring write ownership. Ordinary worker packets use `orchestrate-work`; they do not trigger this fresh-task flow.
 9. Write the handoff to the configured location, defaulting to `docs/handoff/<slug>.md`, when a durable note is useful or the destination cannot receive a complete prompt directly.
 
 ## Fresh Implementation Task
@@ -78,7 +79,10 @@ Suggested next skill:
 <skill>
 
 Verification:
-- <commands and expected evidence>
+- <validate-feature verdict; actual results and code/runtime/platform tested, remaining procedures and proof gaps>
+
+Work distribution:
+- <relevant routing/results/escalations, active worker ownership, and reusable findings; unknown usage stays unknown>
 
 Context tools:
 - <Serena, RTK, equivalent tools, or bounded shell fallbacks>

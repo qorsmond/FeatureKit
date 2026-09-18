@@ -1,8 +1,9 @@
 {
   "name": "featurekit",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "skills": [
     "./skills/productivity/using-featurekit",
+    "./skills/productivity/orchestrate-work",
     "./skills/engineering/ask-featurekit",
     "./skills/engineering/setup-featurekit",
     "./skills/engineering/record-adr",
@@ -20,6 +21,7 @@
     "./skills/engineering/secure-api",
     "./skills/engineering/secure-deploy",
     "./skills/engineering/tdd",
+    "./skills/engineering/validate-feature",
     "./skills/engineering/verify-tests",
     "./skills/engineering/diagnosing-bugs",
     "./skills/engineering/review-change",

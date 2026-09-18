@@ -305,8 +305,8 @@ Run the verification commands from docs/agents/verification.md.
 Expected execution behavior:
 
 - executes slices in dependency order,
-- uses subagents when available,
-- reviews after each slice,
+- routes bounded work when useful,
+- validates each slice against its acceptance criteria; use separate review when risk or uncertainty warrants it,
 - stops for blockers, ADR conflicts, unresolved P0/P1 security findings, failing verification, or unclear scope,
 - does not commit, push, merge, or open a PR.
 

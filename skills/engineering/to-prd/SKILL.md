@@ -3,7 +3,7 @@ name: to-prd
 description: Turn a clarified product idea, plan, or conversation into a concise PRD for a full-stack product change. Use explicitly after grilling or when a durable spec is needed before implementation. Writes or drafts a PRD in the repo's configured workflow location.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # To PRD
@@ -15,7 +15,7 @@ Create a durable product spec from the current context.
 1. Read `docs/agents/workflow-locations.md`, `docs/agents/security.md` if present, relevant project context, and relevant ADRs.
 2. Use the clarified idea, existing plan, or conversation as input.
 3. Do not restart the interview unless a critical decision is missing.
-4. Write a concise PRD that can drive slice planning and review.
+4. Write a concise PRD that can drive slice planning and review. Use `validate-feature` to plan acceptance evidence from `docs/agents/verification.md`, including target runtimes/platforms and unavailable device or manual checks. Do not report planned checks as executed.
 5. Include accepted ADRs that constrain the PRD and decisions that need `/record-adr`.
 6. Use `secure-design` for work that touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 7. Save it to the configured PRD location, defaulting to `docs/prd/<slug>.md`.
@@ -64,7 +64,7 @@ Create a durable product spec from the current context.
 <observable completion criteria>
 
 ## Verification
-<tests, checks, security review, manual review>
+<criterion-to-evidence plan: tests/checks, target runtimes/platforms, security review, manual/physical proof, prerequisites and known gaps>
 ```
 
 ## Done

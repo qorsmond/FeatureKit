@@ -42,7 +42,7 @@ Task:
 - Do not add unrequested features, abstractions, flexibility, configurability, or impossible-case error handling.
 - Touch only files and lines required by the request, match existing style, and mention unrelated cleanup instead of doing it.
 - If the skill says to interview, build a design tree and choose product or implementation-ready depth from the intended artifact and risk. State the depth so the user can correct it.
-- Find facts in the pasted context instead of asking. If independent agents are available, use them for useful fact searches and missing-branch audits; otherwise inspect and audit directly.
+- Find facts in the pasted context instead of asking. Prefer deterministic direct tools; when a bounded worker adds useful independent progress, use a small packet with clear ownership and evidence requirements.
 - Track settled, ready, blocked, and removed decisions. Name the unsettled prerequisite or fact search for each block. Ask ready decisions in rounds of no more than three because this prompt targets models without a native question UI.
 - Put one or two short context sentences inside every question so it explains the current situation and why the answer matters without relying on earlier commentary.
 - Use the user's words and concrete outcomes, ask one decision per question, and put the recommended answer first with a short reason. Each option should say what happens when chosen.
@@ -57,6 +57,7 @@ Task:
 - After an implementation-ready artifact is approved and implementation was requested, continue focused work in the current session without asking where to run it. Ask about a fresh implementation session, the current session, or stopping after planning only for substantial work such as a multi-slice batch, a broad cross-system change, or a planning session with too little context remaining. Do not offer implementation from a product-depth result that still needs a PRD or slices.
 - Create a fresh session only after the user selects it. Start it from the same project checkout and active branch without creating a worktree, branch, clone, or isolated checkout. Pass the approved artifact, scope, decisions, constraints, repository state, verification, and exact implementation skill without a transcript or repeated interview; otherwise provide one exact copy-paste prompt.
 - For approved ordered slices, use `execute-slices` only when the user explicitly asks to execute them and the model has enough context for the PRD, slice queue, relevant files, and verification output.
+- Use `orchestrate-work` for capability routing and bounded worker packets, and `validate-feature` for acceptance-criterion evidence across the actual runtime. Ordinary workers are distinct from fresh user-facing task handoffs.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.
 - For security-sensitive work, paste and apply `docs/agents/security.md` plus `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` as the selected workflow requires.
@@ -76,13 +77,15 @@ For a new product feature:
 6. `to-slices` if it needs multiple implementation slices.
 7. Review and approve the written PRD, plan, or slices.
 8. `implement` for one approved slice at a time, or `execute-slices` for approved ordered slices.
-9. `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the work touches their security surfaces.
-10. `tdd` inside implementation whenever behavior can be tested.
-11. `verify-tests` when generated or changed tests need deeper proof.
-12. `adr-guidance` whenever planning, implementation, or review touches architecture.
-13. `security-review` for focused security review.
-14. `review-change` before human review.
-15. `handoff` when context needs to move to another session.
+9. `orchestrate-work` when bounded routing or delegation is useful.
+10. `validate-feature` when acceptance criteria need runtime evidence.
+11. `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the work touches their security surfaces.
+12. `tdd` inside implementation whenever behavior can be tested.
+13. `verify-tests` when generated or changed tests need deeper proof.
+14. `adr-guidance` whenever planning, implementation, or review touches architecture.
+15. `security-review` for focused security review.
+16. `review-change` before human review when risk or uncertainty warrants it.
+17. `handoff` when context needs to move to another session.
 
 For a bug:
 

@@ -36,6 +36,7 @@ npx skills@latest add /absolute/path/to/FeatureKit \
   --skill implement \
   --skill execute-slices \
   --skill handoff \
+  --skill orchestrate-work \
   --skill record-adr \
   --skill adr-guidance \
   --skill secure-design \
@@ -44,6 +45,7 @@ npx skills@latest add /absolute/path/to/FeatureKit \
   --skill secure-deploy \
   --skill tdd \
   --skill verify-tests \
+  --skill validate-feature \
   --skill review-change \
   --skill security-review
 ```
@@ -126,13 +128,21 @@ After `npx skills@latest update`, this value should match the latest FeatureKit 
 
 ## Update Later
 
-Update installed skills:
+For a FeatureKit release, rerun `add` with the agent and skill selections you use, including any newly introduced skills. For example, a repo already using all FeatureKit skills in Codex and Claude Code can refresh the full set with:
+
+```bash
+npx skills@latest add qorsmond/FeatureKit -a codex -a claude-code --skill '*' -y
+```
+
+This includes optional tooling skills. For a core-only install, reuse the explicit selection above instead. Releases 0.6.0 and later add `orchestrate-work` and `validate-feature`; updating existing entries alone is not a discovery check for new skills.
+
+The CLI can also update previously installed skills across sources:
 
 ```bash
 npx skills@latest update
 ```
 
-If a skill still looks stale, restart the coding agent.
+Confirm the installed `metadata.featurekit-version`, then start a fresh agent session so it loads the updated instructions. Existing `docs/agents/` setup remains valid; follow [Start an orchestrated session](./09-orchestration.md#start-an-orchestrated-session) to configure routing and try the read-only smoke test.
 
 ## Series Navigation
 

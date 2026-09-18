@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # To Slices
@@ -16,6 +16,7 @@ Split a PRD into independently reviewable implementation slices.
 - When code inspection is needed and Serena or an equivalent semantic tool is available, activate the project and prefer symbol overviews, symbol lookup, and reference lookup over full-file reads.
 - When RTK is available, use its appropriate wrappers for noisy searches, reads, diffs, and verification discovery. Otherwise use scoped paths and bounded output. Do not install optional tools unless the user asks.
 - Keep each slice self-contained with only the context needed to implement it. Reference shared PRD sections and ADRs instead of copying the whole PRD or repeating common material in every slice.
+- Use `orchestrate-work` for useful bounded investigations; keep decomposition and dependencies with the primary. These slices also provide the context for later worker packets, not a separate task-spec format.
 
 ## Process
 
@@ -36,6 +37,7 @@ Each slice must:
 - have clear acceptance criteria,
 - fit in a small PR,
 - include verification guidance,
+- use `validate-feature` to name affected runtimes/platforms, evidence per criterion, and device/manual prerequisites or gaps,
 - include security verification when the slice touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input,
 - avoid unrelated cleanup,
 - respect accepted ADRs,
@@ -68,7 +70,10 @@ Acceptance criteria:
 - <criterion>
 
 Verification:
-- <tests or commands>
+- <criterion, tests/commands or procedure, target runtime/platform, required evidence and known gaps>
+
+Ownership when delegated:
+<allowed paths/actions and shared resources, or determine before dispatch>
 
 Depends on:
 <none | slice numbers>

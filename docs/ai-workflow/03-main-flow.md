@@ -37,7 +37,7 @@ The agent should:
 - read project context first,
 - choose and state the planning depth from the next artifact and the feature's risk,
 - map decisions as a dependency tree and discover repo facts instead of asking for them,
-- use subagents for independent facts or coverage checks when useful, without delaying unrelated questions,
+- use direct tools or bounded workers for independent facts or coverage checks when useful, without delaying unrelated questions,
 - ask ready decisions in short rounds through the harness's question UI,
 - put one or two short context sentences inside every question so it is understandable without earlier commentary,
 - use the user's words and concrete outcomes, ask one decision, and recommend an answer with a short reason,
@@ -157,7 +157,7 @@ When a PRD and ordered slices are approved and you explicitly want autonomous ba
 /execute-slices
 ```
 
-The agent should execute slices sequentially, use subagents when available, review after each slice, run verification, and stop for blockers, ADR conflicts, unresolved P0/P1 security findings, failing checks, or unclear scope. It should not create branches, commit, push, or open PRs.
+The agent should execute slices sequentially, route bounded work when useful, validate each slice against its acceptance criteria, and stop for blockers, ADR conflicts, unresolved P0/P1 security findings, failing checks, or unclear scope. Review remains risk-based rather than mandatory after every slice. It should not create branches, commit, push, or open PRs.
 
 Use `/implement` instead when you want one focused slice.
 

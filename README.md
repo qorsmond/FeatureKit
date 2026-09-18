@@ -36,6 +36,8 @@ npx skills@latest add . \
   --skill secure-api \
   --skill secure-deploy \
   --skill tdd \
+  --skill orchestrate-work \
+  --skill validate-feature \
   --skill verify-tests \
   --skill review-change \
   --skill security-review
@@ -79,6 +81,8 @@ rg "featurekit-version" .agents/skills
 12. Use `security-review` for focused security review and `review-change` before human review.
 13. Use `/handoff` when a session needs to pause or continue elsewhere.
 
+Within these workflows, `orchestrate-work` chooses direct tools or bounded workers by capability, configured cost preference and available proof. `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional model/backend mappings live in the product repo's `docs/agents/orchestration.md`; single-model use still works. See [Orchestration](./docs/ai-workflow/09-orchestration.md).
+
 ## Optional Tooling Skills
 
 FeatureKit also includes misc skills for repo guardrails and specialized setup:
@@ -103,6 +107,7 @@ The detailed usage guide is the source of truth:
 - [End-to-End Example](./docs/ai-workflow/06-end-to-end-example.md)
 - [Troubleshooting](./docs/ai-workflow/07-troubleshooting.md)
 - [Security Workflow](./docs/ai-workflow/08-security.md)
+- [Orchestration](./docs/ai-workflow/09-orchestration.md)
 
 ## Local LLMs
 

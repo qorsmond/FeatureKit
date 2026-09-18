@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.1 - 2026-09-18
+
+- Made human-visible routing feedback mandatory during work: planned destination, requested model/effort, acknowledged run ID, source-labeled runtime metadata, progress, reroutes and primary validation outcomes.
+- Distinguished dispatched/running/worker-finished/accepted states and unknown model identity so the conversation can be used to debug actual routing without a separate dashboard.
+- Added visible-feedback behavioral trials, including mismatched model settings, failed dispatch and direct/current-session execution.
+- Documented upgrades that include newly added skills, primary-versus-worker model selection, and a read-only first-session orchestration smoke test.
+
+## 0.6.0 - 2026-09-18
+
+- Added `orchestrate-work` for capability-based routing, bounded native or authenticated CLI workers, focused context, evidence-driven escalation, safe parallelism, and a compact work ledger.
+- Added `validate-feature` for acceptance evidence in web, service, mobile, native, desktop and hardware runtimes, with explicit unverified gaps and primary-agent ownership of completion.
+- Integrated both disciplines into existing planning, implementation, diagnosis, review and handoff flows; preserved approval gates, sequential slices and single-model operation.
+- Extended setup with optional product-specific model/backend mappings and runtime verification guidance, and updated install, workflow and local-model documentation.
+- Added packaging checks and repeatable behavioral trials with a live HTTP scratch fixture; external providers and physical-device checks remain conditional on available environments.
+
 ## 0.5.4 - 2026-09-01
 
 - Continued focused implementation in the current task without an unnecessary post-approval destination question.

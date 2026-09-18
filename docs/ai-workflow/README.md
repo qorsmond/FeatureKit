@@ -14,7 +14,8 @@ If this is your first time using FeatureKit in a repo, read the install and setu
 6. [Working With Agents](./04-working-with-agents.md)
 7. [Local LLMs](./05-local-llms.md)
 8. [End-to-End Example](./06-end-to-end-example.md)
-9. [Security Workflow](./08-security.md)
-10. [Troubleshooting](./07-troubleshooting.md)
+9. [Orchestration](./09-orchestration.md)
+10. [Security Workflow](./08-security.md)
+11. [Troubleshooting](./07-troubleshooting.md)
 
 After that, keep `using-featurekit` in session-start instructions when available so raw features begin interviewing automatically. Use `/grill-with-docs` to start the same interview explicitly, and `/ask-featurekit` when you are not sure which skill to run.

@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable design-tree interview for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs dependency-aware questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Grilling
@@ -46,6 +46,7 @@ Within the selected depth, include every material decision that can change produ
 
 ## Discover Facts And Audit Coverage
 
+- After the question-tool gate clears, use `orchestrate-work` to choose direct discovery or bounded fact/audit workers. Read-only discovery does not require implementation approval; production edits do. Do not reload stable findings or let workers re-interview the user.
 - Find facts from the repo, tools, and available context. Never ask the user for a fact the agent can discover.
 - When useful and available, send independent fact searches to subagents. A running search blocks only the decisions that need its result; ask unrelated frontier questions now. If every remaining decision needs the result, wait for it instead of asking the user for the fact.
 - The primary agent owns the tree and asks every user question. Subagents report facts or possible missing branches; they do not make user decisions.

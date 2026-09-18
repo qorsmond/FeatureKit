@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Grill With Docs
@@ -16,7 +16,7 @@ Before reading repository context, apply the `grilling` question-tool gate. Choo
 
 ## Process
 
-1. After the Question Tool Gate clears, read `AGENTS.md`, `docs/agents/`, `CONTEXT.md`, relevant ADRs, and relevant code.
+1. After the Question Tool Gate clears, read `AGENTS.md`, relevant `docs/agents/` files, relevant `CONTEXT.md` sections and ADRs, and only the code needed for open decisions. Reuse current findings; use `orchestrate-work` for bounded fact/audit assignments.
 2. Choose product depth for a later PRD or implementation-ready depth for a small direct plan. Expand the depth for architecture, security, migration, rollout, or irreversible choices. State the choice so the user can correct it.
 3. Build a design tree. Each decision records its prerequisites and is settled, ready, blocked, or removed by an earlier answer. Name the unsettled prerequisite or fact search for every blocked decision. The frontier is every ready decision whose prerequisites are settled.
 4. Include every material decision within the selected depth that can change behavior, domain rules, user experience, security, architecture, migration, rollout, or verification.
@@ -84,7 +84,7 @@ Acceptance criteria:
 <observable outcomes>
 
 Verification:
-<tests, checks, and manual proof>
+<tests, checks, target runtimes/platforms, manual or hardware proof and known gaps; use validate-feature to plan evidence>
 
 ADR updates:
 <none | decisions to record with /record-adr>

@@ -88,7 +88,7 @@ Implementation should discover context progressively instead of loading the repo
 - use scoped searches, targeted reads, quiet flags, and failure-only output as portable fallbacks,
 - expand only the failing target when compact output omits a needed diagnostic,
 - run narrow verification per slice and broader repo verification once after the queue is stable,
-- avoid subagents for routine slices; use them only when isolation or independent high-risk review justifies their additional context.
+- choose the least expensive route likely to succeed: a direct tool for deterministic work, or a bounded worker when it adds useful independent progress. Keep slices sequential and parallelize only clearly independent work.
 
 [Serena](https://github.com/oraios/serena) and [RTK](https://github.com/rtk-ai/rtk) are optional. FeatureKit uses them when the harness exposes them and continues with portable fallbacks when it does not. Their absence should not block a slice or trigger an installation without user approval.
 
@@ -100,11 +100,11 @@ For coding, refactoring, review, and verification sessions, require the agent to
 - keep simplicity first by writing the minimum code that solves the request and avoiding unrequested flexibility or impossible-case handling,
 - make surgical changes by touching only required files and lines, matching existing style, and leaving unrelated cleanup as a note.
 
-## Review Every Diff
+## Review Every Diff Before Acceptance
 
 Never accept generated changes blindly.
 
-Before opening a PR:
+Before accepting a change or opening a PR:
 
 - read every changed file,
 - understand why each change exists,
@@ -114,11 +114,13 @@ Before opening a PR:
 - confirm new or changed tests would fail if the intended behavior were wrong,
 - remove out-of-scope edits,
 - run the verification commands,
-- ask `review-change` to review the diff.
+- ask `review-change` when the change's risk, size, or uncertainty warrants a separate review.
 
 Use `verify-tests` when test quality is uncertain, behavior is high-risk, or you explicitly want mutation testing such as Stryker. Do not make mutation testing part of every normal review.
 
 Use `security-review` for focused review of auth, authorization, tenant isolation, sensitive data, API, deployment, secrets, generated-code, or other exploitable risk.
+
+For routing levels, work packets, runtime evidence, and bounded retries, see the [Orchestration guide](./09-orchestration.md). Native workers and ordinary authenticated CLI workers are execution mechanisms; a fresh user-facing task is a separate handoff that still requires the existing user choice.
 
 ## ADR Discipline
 

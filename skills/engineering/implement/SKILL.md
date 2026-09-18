@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or slice is approved and ready to build. Requires a written plan or slice.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Implement
@@ -29,6 +29,12 @@ A clarified feature summary is not enough by itself. Accepting an interview reco
 
 Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
 
+## Work Distribution And Proof
+
+The primary uses `orchestrate-work` to choose direct work or bounded workers from the approved slice, with explicit file ownership and acceptance evidence. An assigned implementation worker follows its packet and this process without further delegation or a new interview. The primary retains architecture, integration, escalation, and completion decisions.
+
+Use `validate-feature` to plan and evaluate proof from `docs/agents/verification.md`: applicable commands, runtime/platforms, and device/manual checks. Preserve any known validation gaps before coding; do not substitute a build or browser preview for required native/runtime behavior.
+
 ## Context Budget
 
 Use progressive disclosure so repository exploration and command output stay proportional to the slice:
@@ -52,7 +58,8 @@ Use progressive disclosure so repository exploration and command output stay pro
 9. Do not include unrelated refactors.
 10. Use `verify-tests` when new or changed tests look weak, high-risk, generated, security-sensitive, or explicitly need proof.
 11. Run narrow slice verification first, then each required broader verification command once after the change is stable.
-12. Report the outcome and any divergence from the plan.
+12. Evaluate acceptance evidence with `validate-feature` after integration. Inspect worker changes and results before acceptance; reuse checks only if still valid for the resulting tree.
+13. Report the outcome and any divergence from the plan. If required evidence is missing, distinguish implementation finished from validation incomplete.
 
 ## Implementation Rules
 
@@ -72,7 +79,10 @@ Implemented:
 <what changed>
 
 Verification:
-<commands run and results>
+<validate-feature verdict; criterion/evidence rows with code/runtime/platform, actual results and gaps>
+
+Work distribution:
+<compact orchestrate-work ledger or direct work and reason; no invented model/usage data>
 
 Tests:
 <new or updated tests>

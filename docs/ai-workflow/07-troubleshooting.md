@@ -135,7 +135,7 @@ Use `/execute-slices` only after the PRD and ordered slices are approved and you
 Tell the agent:
 
 ```text
-Use the FeatureKit context budget. Start from the approved artifact, use semantic symbol lookup before full-file reads, keep searches and command output bounded, run narrow verification first, and expand only the failing target. Do not use subagents for routine slices.
+Use the FeatureKit context budget. Start from the approved artifact, use semantic symbol lookup before full-file reads, keep searches and command output bounded, run narrow verification first, and expand only the failing target. Prefer direct tools for deterministic routine work; use a bounded worker when it adds useful progress and the packet has clear ownership.
 ```
 
 When available, enable Serena or an equivalent semantic code tool for symbol-level discovery and RTK or an equivalent output filter for noisy shell commands. If neither is available, the implementation skills fall back to targeted `rg`, narrow file ranges, quiet test modes, and compact handoffs. Do not trade away acceptance criteria, security constraints, or necessary failure diagnostics merely to reduce tokens.

@@ -3,7 +3,7 @@ name: ask-featurekit
 description: Start clarification for a raw feature or route another product or engineering request to the right FeatureKit flow. Use explicitly when the user is unsure what to run or has a new idea, bug, PRD, slice, implementation, review, prototype, or handoff need. User-invoked router; do not write production code inside this skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Ask FeatureKit
@@ -48,6 +48,8 @@ Route the user to the right FeatureKit flow.
 - One approved slice ready to build and explicitly requested now: `/implement`.
 - Hard bug or unclear cause: `diagnosing-bugs`.
 - Need proof that generated or changed tests protect the right behavior: `verify-tests`.
+- Need feature/runtime evidence or an assessment of validation gaps: `validate-feature`.
+- Need capability-based work distribution: `orchestrate-work` within the active workflow, after any interview gate; this router does not dispatch workers.
 - Mutation testing or Stryker request: `verify-tests`.
 - Need runnable evidence before deciding: `/prototype`.
 - Need review before PR: `review-change`.

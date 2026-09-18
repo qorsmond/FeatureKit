@@ -3,7 +3,7 @@ name: execute-slices
 description: Execute multiple approved FeatureKit implementation slices from a written PRD or plan. Use explicitly when ordered slices already exist and the user wants autonomous batch execution with verification, review checkpoints, optional subagents, and no branch, commit, push, or PR actions.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Execute Slices
@@ -46,26 +46,22 @@ A clarified feature summary or a newly generated slice list is not enough by its
    - implement only that slice,
    - use `secure-code`, `secure-api`, or `secure-deploy` when the slice touches their trigger areas,
    - use `tdd` for testable logic, bug fixes, services, API behavior, and data transformations,
-   - run the narrow slice verification,
+   - use `orchestrate-work` to select direct work or bounded workers within the slice,
+   - run the narrow slice verification and assess runtime/platform evidence with `validate-feature`,
    - use `verify-tests` when tests look weak, high-risk, generated, assertion-light, or security-sensitive,
    - compare the scoped diff with the slice acceptance criteria before moving on,
    - use `review-change` at a checkpoint when the slice is high-risk, cross-cutting, surprising, or difficult to reverse, and for the final combined review when it has not already been covered,
    - use `security-review` when the checkpoint has material security risk,
    - fix blocking review findings before continuing.
-5. Stop when blocked by missing context, ADR conflict, failing verification, unclear scope, or a required user decision.
+5. Stop when blocked by missing context, ADR conflict, failing verification, missing required runtime proof, unclear scope, or a required user decision. Workers return evidence for the primary to assess; their completion status does not close the slice.
 6. After all slices pass, run each broader repo verification command once.
 7. Report changed areas, verification, review results, and any remaining work.
 
-## Subagents
+## Workers
 
-Do not use subagents by default. Use one only when separate context materially improves correctness, such as an isolated complex investigation or an independent high-risk review, and the expected benefit justifies the additional token cost.
+Use `orchestrate-work` for capability selection, bounded packets, parallelism, escalation and the work ledger. Consider cheaper workers for suitable routine/standard work; use direct tools or the current agent when that costs less overall. Do not dispatch an implementer and reviewer for every slice.
 
-- Give a subagent only the approved artifact, current slice, relevant ADRs and constraints, relevant files or symbols, and verification commands.
-- Do not dispatch an implementer and reviewer for every routine slice.
-- Inspect the subagent result and scoped diff before continuing.
-- Do not run slices in parallel in this version.
-
-Normally execute the queue in the current session. For each slice, follow the `implement` process for the coding work and use `review-change` and `verify-tests` only where their gates apply.
+Keep the queue sequential. Only independent jobs within the current slice may run concurrently, with explicit ownership and nonconflicting input snapshots/runtime resources. No worker recursively delegates. Inspect each result and scoped diff, then validate integrated behavior before continuing. Follow `implement` for coding and existing `review-change`, `security-review` and `verify-tests` gates for review.
 
 ## Boundaries
 
@@ -84,7 +80,10 @@ Executed slices:
 <slice list and status>
 
 Verification:
-<commands run and results>
+<validate-feature verdict; commands/runtime/platform evidence, criterion results and gaps>
+
+Work distribution:
+<orchestrate-work ledger: routes, observed models, results, escalations and primary disposition>
 
 Reviews:
 <review-change or subagent review results>

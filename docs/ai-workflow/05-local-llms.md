@@ -19,7 +19,7 @@ For a local model, keep context tight:
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
 3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
-4. `using-featurekit` plus `grilling` for a raw feature, or one focused FeatureKit `SKILL.md`; paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` too when the focused skill tells the model to use one.
+4. `using-featurekit` plus `grilling` for a raw feature, or one focused FeatureKit `SKILL.md`; paste `orchestrate-work` or `validate-feature` when the task needs them, and paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the focused skill tells the model to use one.
 5. Your exact task.
 
 Do not paste the whole repo unless the local model has enough context and you really need it.
@@ -111,6 +111,7 @@ With local LLMs:
 - ask for plans before code, and approve the written plan or slice before implementation,
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
+- use the [orchestration guide](./09-orchestration.md) for capability routing and runtime evidence, and consult the provider reference linked there for CLI mechanics,
 - use fresh sessions only for substantial work or when the current session is context-constrained, and reopen the same checkout and branch.
 
 The workflow still works because the skills are plain Markdown.

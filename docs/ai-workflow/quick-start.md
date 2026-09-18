@@ -4,6 +4,8 @@ Use this path when FeatureKit is already installed and the product repo has alre
 
 FeatureKit does not replace your product stack. It gives your coding agent a repeatable workflow: read the repo context, clarify the feature, write a plan, get approval, implement the approved slice, verify it, review it, and hand off cleanly.
 
+For bounded worker routing and runtime-aware acceptance evidence, see the [Orchestration guide](./09-orchestration.md).
+
 Need install? See [Install](./01-install.md).
 
 Need repo setup? See [Setup](./02-setup.md). A prepared repo should have FeatureKit skills available, `/setup-featurekit` already run, and repo guidance under `docs/agents/`.

@@ -2,7 +2,7 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, slice, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.5.4"
+  featurekit-version: "0.6.1"
 ---
 
 # Review Change
@@ -11,6 +11,8 @@ Review for bugs, security risk, scope drift, and missing verification.
 
 Apply the target repo's `Agent Operating Principles` when checking scope, simplicity, and unrelated changes.
 
+Use `orchestrate-work` when independent context or a bounded cheaper reviewer adds value. Review a stable diff against requirements and evidence without inheriting the implementer's rationale. Assigned reviewers do not delegate; the primary decides how findings affect completion.
+
 ## Process
 
 1. Read the PRD, slice, or stated goal.
@@ -18,7 +20,7 @@ Apply the target repo's `Agent Operating Principles` when checking scope, simpli
 3. Read the diff or changed files.
 4. Check spec match first.
 5. Check accepted ADRs and repo conventions from `AGENTS.md` and `docs/agents/`.
-6. Check tests and verification.
+6. Check tests and verification with `validate-feature`: criterion coverage, actual runtime/platform, current code state, and missing hardware/manual evidence. Review cannot turn an unrun check into a pass.
 7. Check security-sensitive changes with `secure-code`, `secure-api`, or `secure-deploy` as applicable.
 8. Use `security-review` when the diff touches material auth, authorization, tenant isolation, secrets, sensitive data, APIs, deployment, generated code, or other exploitable risk.
 9. Use `verify-tests` when tests look weak, generated, assertion-light, high-risk, security-sensitive, or mutation testing was requested.

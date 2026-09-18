@@ -68,6 +68,8 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 - `diagnosing-bugs`
 - `review-change`
 - `codebase-design`
+- `orchestrate-work`
+- `validate-feature`
 
 `using-featurekit` is the lightweight model-invoked bootstrap. Put it in session-start instructions, use it after context compaction, or let capable agents invoke it automatically. A raw feature request begins the design-tree interview without making you repeat the idea. `/grill-with-docs` starts the same interview explicitly, and `/ask-featurekit` begins it for a raw feature or routes other work.
 
@@ -76,6 +78,8 @@ Model-invoked skills are reusable disciplines the agent may use when the task fi
 The security suite is model-invoked except for `security-review`. Planning, implementation, and review workflows should reach for `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` when work touches auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
 
 `verify-tests` is also model-invoked. Agents should use it when generated or changed tests look weak, high-risk, or explicitly need mutation testing. It does not run expensive mutation tests by default.
+
+`orchestrate-work` routes bounded work to a direct tool, native worker, or authenticated CLI when that is useful. `validate-feature` maps acceptance criteria to runtime evidence; a build or test result alone does not prove every feature criterion. See the [Orchestration guide](./09-orchestration.md).
 
 Optional misc tooling skills:
 

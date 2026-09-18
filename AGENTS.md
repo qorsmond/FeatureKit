@@ -43,6 +43,7 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 - Model-invoked skills hold reusable discipline such as ADR guidance, TDD, secure design/code/API/deploy guidance, bug diagnosis, review, domain modeling, and codebase design.
 - `tdd` must remain model-invoked so implementation and bug-fix skills can reach for it automatically. Do not add `disable-model-invocation: true` to it.
 - `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` must remain model-invoked so planning, implementation, and review skills can reach for them automatically.
+- `orchestrate-work` and `validate-feature` remain model-invoked shared disciplines. The primary owns completion; model mappings belong in target-repo configuration, and required runtime evidence cannot be replaced by a successful build.
 - Prefer instructions over scripts unless deterministic execution is genuinely needed.
 - Do not hardcode a product stack, work tracker, deployment platform, database, framework, or architecture into FeatureKit core.
 - If a skill needs repo-specific choices, it should read `docs/agents/` in the target repo.
@@ -85,7 +86,7 @@ Use these checks before shipping changes to FeatureKit:
 
 ```bash
 npx skills@latest add . --list
-npx skills@latest add . -a codex -a claude-code -a opencode --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill grill-with-docs --skill grilling --skill to-prd --skill to-slices --skill implement --skill execute-slices --skill handoff --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill tdd --skill verify-tests --skill review-change --skill security-review -y
+npx skills@latest add . -a codex -a claude-code -a opencode --skill using-featurekit --skill ask-featurekit --skill setup-featurekit --skill grill-with-docs --skill grilling --skill to-prd --skill to-slices --skill implement --skill execute-slices --skill handoff --skill record-adr --skill adr-guidance --skill secure-design --skill secure-code --skill secure-api --skill secure-deploy --skill tdd --skill orchestrate-work --skill validate-feature --skill verify-tests --skill review-change --skill security-review -y
 npx skills@latest use . --skill using-featurekit
 npx skills@latest use . --skill grill-with-docs
 npx skills@latest use . --skill grilling
@@ -95,6 +96,9 @@ npx skills@latest use . --skill implement
 npx skills@latest use . --skill execute-slices
 npx skills@latest use . --skill record-adr
 npx skills@latest use . --skill security-review
+npx skills@latest use . --skill orchestrate-work
+npx skills@latest use . --skill validate-feature
+python3 tests/check_packaging.py
 rg "featurekit-version: \"$(cat VERSION)\"" skills
 ```
 
@@ -114,3 +118,5 @@ For user-answerable questions and implementation handoff, run these behavioral s
 6. Choose fresh implementation task. Confirm the destination uses the same saved project checkout and active branch without creating a worktree, branch, clone, or isolated checkout, and that installed FeatureKit skills and project-scoped tools such as Serena remain available. Confirm it receives the approved artifact, objective, scope and out-of-scope boundaries, decisions, ADR and security constraints, repository state, verification commands, available project tools, and exact `/implement` or `/execute-slices` route. Confirm it receives no transcript and does not restart the interview. If suitable task creation is unavailable or disabled, confirm the source gives the exact remedy or one self-contained prompt instead.
 
 For documentation changes, follow the guide end to end in a scratch product repo and fix any confusing step.
+
+For orchestration/runtime changes, run the behavioral trials in `tests/scenarios.md`. Record observed choices and artifacts separately from simulated host conditions, and report unavailable external CLI/device checks without claiming they passed.
