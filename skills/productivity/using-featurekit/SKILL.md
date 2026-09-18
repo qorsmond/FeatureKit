@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Lightweight FeatureKit bootstrap and router. Use at the start of FeatureKit sessions, after context compaction, or when a user asks for product or engineering work in a repo that may use FeatureKit, so the agent checks setup, chooses the right FeatureKit skill, and avoids coding before an approved written plan.
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Using FeatureKit
@@ -25,7 +25,7 @@ After this gate clears, discover repo facts and refine the provisional ledger th
 
 ## Work Distribution
 
-After the interview gate clears, use `orchestrate-work` when the selected workflow distributes substantive work. It chooses direct tools, the current agent, or bounded workers by capability and available proof. Read optional repo mappings from `docs/agents/orchestration.md`; missing mappings or workers do not block the workflow. Worker dispatch does not create a fresh user task or transfer ownership. Assigned workers follow their packet without restarting routing or interviewing.
+When the request enters an interview, clear its gate first. Then use `orchestrate-work` for substantive work in the selected workflow; requests without an interview use it directly. It chooses direct tools, the current agent, or bounded workers and selects actual worker models/effort from current host capabilities without requiring a repeated user prompt or model list. Read optional constraints/overrides from `docs/agents/orchestration.md`; a missing mapping does not disable runtime selection. Unavailable workers do not block capable direct work. Worker dispatch does not create a fresh user task or transfer ownership. Assigned workers follow their packet without restarting routing or interviewing.
 
 Make the selected workflow and execution route visible to the user, following `orchestrate-work`'s live-feedback contract. Show requested versus runtime-reported model/effort, worker IDs when available, and meaningful changes in status; do not leave these only in a private ledger. Preserve the interview gate before any additional discovery.
 

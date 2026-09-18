@@ -1,6 +1,6 @@
 # Worker Backends
 
-Read only the section for the selected route. The live tool schema and installed CLI help take precedence over these examples. Model identifiers and supported reasoning settings come from the product repo's `docs/agents/orchestration.md` or verified native configuration.
+Read only the section for the selected route. The live tool schema and installed CLI help take precedence over these examples. Discover model identifiers and supported effort from advertised host capabilities or verified backend configuration, respecting optional repo constraints/overrides in `docs/agents/orchestration.md`. A repo model table is not required.
 
 ## Common Contract
 

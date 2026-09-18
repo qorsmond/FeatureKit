@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Interview the user about a product or engineering idea while reading and updating repo context such as AGENTS.md, docs/agents, CONTEXT.md, and ADRs. Use explicitly before PRDs or implementation when scope, domain language, risks, or success criteria need clarification. User-invoked planning skill; do not write production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Grill With Docs

@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or slice is approved and ready to build. Requires a written plan or slice.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Implement

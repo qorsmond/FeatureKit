@@ -2,7 +2,7 @@
 name: orchestrate-work
 description: Choose direct tools, the current agent, or bounded workers by capability, cost preference, risk, and verifiable outcomes. Use within FeatureKit planning, implementation, diagnosis, and review when distributing substantive work; does not replace their approval gates or create user-facing tasks.
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Orchestrate Work
@@ -15,7 +15,7 @@ If you are already an assigned worker, execute your packet directly and return i
 
 1. Follow the active workflow first. For interviews, clear the `grilling` question-tool gate before discovery or delegation. Read-only fact workers may then help before approval; production-edit workers require the approved written scope and implementation intent. A worker receiving approved scope does not restart the interview.
 2. Use a deterministic tool directly when it can answer the question or perform the check. Otherwise consider a bounded cheaper worker before doing substantive routine work on a premium model. Delegate only when briefing, checking, and likely recovery cost less than doing the work here, or independent context materially improves confidence. Do not spawn a worker just to run one command.
-3. Read the relevant part of `docs/agents/orchestration.md` when present. Resolve explicit user choices, repo mappings, available native tools and installed CLI capabilities. Discover once; recheck after a route fails or relevant configuration changes. Do not inspect secrets to discover authentication.
+3. The orchestrator owns model selection. Read constraints and explicit overrides from `docs/agents/orchestration.md` when present, then discover current advertised native models/tools and relevant installed CLI capabilities. A missing mapping is the normal automatic-selection path, not a reason to skip available workers or ask the user to choose model names. Discover once per session; recheck after a route fails or relevant configuration changes. Do not inspect secrets to discover authentication.
 4. Choose the least expensive **available and adequate** capability, including required tools, context, permissions, runtime access and validation strength. A job title alone does not establish the needed judgment:
 
    | Capability | Starting candidates |
@@ -24,7 +24,7 @@ If you are already an assigned worker, execute your packet directly and return i
    | Standard | Normal implementation, debugging, integration, and review with bounded uncertainty. |
    | Deep | Ambiguous requirements, architecture, difficult decomposition/debugging/integration, high-risk judgment, conflicting evidence, or failed lower-level attempts. |
 
-5. Map capability to an actual model/alias and backend through repo/native configuration or the current tool's advertised choices. Verify supported reasoning settings. Never hardcode model names in workflow rules, silently substitute a model, or equate a low reasoning setting with a cheaper model. If relative cost is unknown, record that and use configured preference or known suitability without claiming savings.
+5. Select and explicitly pass an actual model/alias and supported effort through the available backend, respecting deliberate user/repo overrides. Use current capability/cost information rather than a fixed role-to-model catalogue or inherited premium defaults. Never hardcode model names in workflow rules, silently substitute a pinned model, or equate a low reasoning setting with a cheaper model. If relative cost is unknown, record that and use known suitability or configured preference without claiming savings. Revalidate pinned routes; report an unavailable pin and choose an authorized fallback only when the constraint permits it. Do not persist automatically selected models as mandatory repo pins.
 6. If no suitable worker, model override, or external backend is available, continue in the current session when capable. Record the limitation. If the task needs unavailable judgment or proof, return the unresolved decision/gap instead of lowering the requirement. One model/provider and manual local-model use are valid modes.
 
 For native or external execution, read [backends.md](references/backends.md) only for the selected backend. Prefer an existing authenticated subscription route; API-funded fallback needs explicit authorization. A separate process does not imply a separate usage pool.

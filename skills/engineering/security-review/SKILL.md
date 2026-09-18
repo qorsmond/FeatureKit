@@ -3,7 +3,7 @@ name: security-review
 description: Perform a focused security review of a PRD, plan, slice, diff, pull request, API change, deployment plan, generated code, or suspicious implementation. Use explicitly when the user asks for security review, hardening review, OWASP review, threat review, secure code review, API security review, deployment security review, or when review-change finds material security risk.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Security Review

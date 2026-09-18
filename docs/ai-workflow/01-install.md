@@ -106,13 +106,15 @@ You should see the FeatureKit skills from `skills/engineering/`, `skills/product
 
 ## Session Bootstrap
 
-FeatureKit does not ship hook scripts in v1. To get session-start behavior, add a short startup instruction in the agent or harness you use:
+Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit does not need a custom hook script.
+
+Only if your host does not load repo instruction files, put this instruction in its persistent custom instructions or supply the required context manually:
 
 ```text
 At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
 ```
 
-If your harness supports session-start hooks or persistent custom instructions, put that sentence there. Otherwise, include it in the first prompt of the session.
+See [Setup](./02-setup.md) for initialization and [Local LLMs](./05-local-llms.md) for hosts without automatic skill discovery.
 
 ## Confirm Installed Version
 
@@ -142,7 +144,7 @@ The CLI can also update previously installed skills across sources:
 npx skills@latest update
 ```
 
-Confirm the installed `metadata.featurekit-version`, then start a fresh agent session so it loads the updated instructions. Existing `docs/agents/` setup remains valid; follow [Start an orchestrated session](./09-orchestration.md#start-an-orchestrated-session) to configure routing and try the read-only smoke test.
+Confirm the installed `metadata.featurekit-version`, then start a fresh agent session so it loads the updated skills. If upgrading a repo without the persistent orchestration instruction, run `/setup-featurekit` once to refresh its FeatureKit block; existing repo choices remain valid. Future sessions load orchestration from `AGENTS.md` or equivalent without a repeated prompt or model roster. See [Start an orchestrated session](./09-orchestration.md#start-an-orchestrated-session) for the optional smoke test.
 
 ## Series Navigation
 

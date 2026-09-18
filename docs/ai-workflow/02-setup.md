@@ -33,7 +33,7 @@ Setup groups these into short, clear rounds through the harness question UI when
 5. How security notes should record auth, authorization, sensitive data, APIs, secrets, dependencies, CI/CD checks, deployment security, logging, and incident contacts.
 6. Where PRDs, slices, ADRs, prototypes, and handoffs should be saved.
 
-For teams that use delegated work, setup may also record an optional `docs/agents/orchestration.md` routing table. It is safe to omit: missing mappings, models, workers, authentication, or permissions fall back to direct work in the current session when capable and authorized; otherwise report the prerequisite. Prefer an available native worker or authenticated subscription CLI; do not add automatic API spend. Keep actual provider/model choices in that product-repo file; the shared workflow remains stack- and provider-neutral. Extend `docs/agents/verification.md` with applicable runtimes, platforms, commands, fixtures, devices or simulators, environment prerequisites, and hardware limits so validation can report missing evidence explicitly.
+Setup enables orchestration through the repo's persistent agent instructions. The orchestrator chooses available models, backends and effort at runtime; you do not need to provide a model list. Setup asks only about unresolved human constraints such as allowed providers, spending or an explicit preference. An optional `docs/agents/orchestration.md` stores those constraints or deliberate overrides; its absence does not disable delegation. Unavailable workers, authentication or permissions fall back to capable, authorized direct work or a stated prerequisite. Prefer existing authenticated routes and do not add automatic API spend. Extend `docs/agents/verification.md` with applicable runtimes, platforms, commands, fixtures, devices or simulators, environment prerequisites, and hardware limits so validation can report missing evidence explicitly.
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
@@ -55,7 +55,7 @@ It also updates the existing `AGENTS.md` or `CLAUDE.md` with a short `Agent skil
 
 Setup also adds the `Agent Operating Principles` section so every new coding, refactoring, review, or verification session starts with explicit assumptions, simplicity, and surgical-change rules.
 
-Setup also adds a short FeatureKit bootstrap note and planning gate. Agents should use `using-featurekit` at the start of FeatureKit sessions or after context compaction. Raw feature requests then begin the design-tree interview automatically, and production code waits until the complete written plan, PRD, or slice has been shown and approved through its final approval question.
+Setup also adds the FeatureKit bootstrap, planning gate, explicit delegation instruction and live-routing feedback. Agents use `using-featurekit` at session start and after context compaction, then `orchestrate-work` for substantive work. You give ordinary requests; the orchestrator chooses worker models and explains the choices. Raw feature requests begin the design-tree interview automatically, and production code waits for final approval of the written plan, PRD or slice.
 
 ## What Setup Should Not Do
 
@@ -70,7 +70,7 @@ Setup should not:
 
 ## Rerunning Setup
 
-Rerun `/setup-featurekit` only when the repo's workflow changes: a new work tracker, new security posture, new deployment platform, new verification commands, or a changed docs layout.
+Rerun `/setup-featurekit` when a FeatureKit upgrade needs a new persistent instruction or the repo's workflow changes. Existing choices are preserved; setup drafts only the missing or changed instructions and affected docs rather than repeating the full interview. Updating installed skills alone does not rewrite the product repo's `AGENTS.md`.
 
 For small edits, update `docs/agents/*.md` directly.
 

@@ -4,28 +4,27 @@ FeatureKit can route bounded work to the simplest capable mechanism while keepin
 
 ## Start an orchestrated session
 
-1. [Update the installed skills](./01-install.md#update-later), including `orchestrate-work` and `validate-feature`, and start a fresh session in the product repo.
-2. Choose the primary model in your host. Use a strong primary for architecture, payment/security judgment or difficult integration; routine work can start with a more economical primary. Maximum reasoning is not a FeatureKit prerequisite. The primary remains on the model you selected; worker routing does not automatically switch the main conversation's model.
-3. Choose worker models and supported effort settings from the host's available choices. Put repeatable preferences in the optional `docs/agents/orchestration.md` table below, or supply them in the session prompt. FeatureKit instructions request delegation when useful, but the host must expose and permit worker tools.
-4. State delegation explicitly for the first trial. Replace the placeholders before sending:
+1. [Install or update the skills](./01-install.md#update-later), including `orchestrate-work` and `validate-feature`.
+2. Run `/setup-featurekit` once in the product repo. It writes the bootstrap, automatic orchestration and live-feedback instructions into the existing `AGENTS.md` or equivalent. For an older installation, ask setup to refresh its FeatureKit instruction block; it preserves established repo choices and shows the focused patch.
+3. Start a fresh session and give the agent your normal feature request or approved `/implement` scope. The repo instructions load the workflow. You do not need a repeated orchestration prompt or a model list.
 
-```text
-Use using-featurekit and orchestrate-work. Delegate suitable bounded work to native subagents: routine work to <available routine model> at <supported effort>, standard work to <available standard model> at <supported effort>. Keep architecture, security-sensitive decisions, integration and acceptance in the primary. Use direct tools for deterministic checks and at most two independent workers. Show live routing, requested versus reported model/effort, run IDs, retries and validation outcomes. Use existing authentication; do not add API-funded fallback.
-```
+The orchestrator discovers the currently available models/backends and selects a suitable model and effort for each delegated job. It balances capability, risk, known cost and verification overhead, respects repo restrictions, and escalates from evidence. Direct tools and work retained in the primary are valid routing decisions. Actual choices appear in the live feedback.
 
-In Codex, an unconfigured subagent can inherit the primary's model and effort. Selecting a powerful primary therefore does not itself select cheaper workers. Specify worker settings through the prompt or repo mapping and verify the visible dispatch. Higher reasoning effort can increase latency and token use; total savings depend on briefing and validation overhead. See [Codex subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+Choose the primary model in your host as usual. A strong primary can help with difficult architecture or integration; maximum reasoning is not a FeatureKit prerequisite. Worker routing does not automatically switch the main conversation's model. In Codex, unconfigured workers can inherit the parent's settings, so the orchestrator explicitly selects supported worker settings. See [Codex subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+
+This uses persistent repo instructions and installed skills, not a background scheduler. The host must load those instructions and expose permitted worker controls; otherwise FeatureKit reports the limitation and continues directly when capable.
 
 ### Read-only smoke test
 
-Append this to the configured starter prompt:
+Optionally run this once after setup to see routing in action; it is not a session-start requirement:
 
 ```text
-Run a read-only orchestration smoke test on one existing feature. Delegate a bounded trace of its implementation and relevant tests to one routine worker, using the repo's configured navigation tools. Require file references and explicit evidence gaps. While it works, inspect the documented acceptance constraints in the primary. Check the returned references yourself, then explain the behavior and what remains unverified. Do not edit product code, commit, publish or launch a device/build workflow.
+Run a read-only orchestration smoke test on one existing feature. Choose an available model and effort yourself and delegate a bounded trace of its implementation and relevant tests to one suitable worker, using the repo's configured navigation tools. Require file references and explicit evidence gaps. While it works, inspect the documented acceptance constraints in the primary. Check the returned references yourself, then explain the behavior and what remains unverified. Do not edit product code, commit, publish or launch a device/build workflow.
 ```
 
 Confirm that the conversation shows a planned route with an exact requested model/effort, an acknowledged worker ID, host-supported lifecycle states, worker completion followed by primary checking, and acceptance or rejection. Open the host's worker activity to compare IDs and available model metadata. An unavailable route must be reported as unavailable; direct fallback does not prove worker orchestration. Unexposed effective model identity remains unknown. This trial checks delegation and evidence handling, not that the feature passes its runtime acceptance criteria.
 
-For normal work, replace the smoke-test paragraph with your feature request or approved `/implement` or `/execute-slices` scope. The usual planning and approval gates still apply. Save successful model preferences in `docs/agents/orchestration.md` if you want later sessions to reuse them.
+For normal work, give your feature request or approved `/implement` or `/execute-slices` scope. The usual planning and approval gates still apply.
 
 ## Choose a capability level
 
@@ -39,9 +38,9 @@ Capability levels describe the judgment required, not a provider, price, or job 
 
 Try a direct tool first when it is sufficient. Otherwise start with one useful worker and use at most two independent workers by default when ownership, dependencies, and shared resources are clear. Keep ordered slices sequential. Do not create recursive workers or turn a worker into a new user-facing task.
 
-Product repositories may add an optional `docs/agents/orchestration.md` routing table with verified backend mechanisms, supported model IDs or aliases, reasoning settings, preferences, authentication notes, and restrictions. Shared FeatureKit docs intentionally leave those values configurable. For provider command mechanics, read [the orchestration backend reference](../../skills/productivity/orchestrate-work/references/backends.md) when that skill is installed.
+Runtime selection is the default. An optional `docs/agents/orchestration.md` can record constraints such as allowed providers, subscription-only use, concurrency limits or a deliberate model override. It need not contain a model roster. Shared FeatureKit instructions do not pin models. For provider command mechanics, read [the orchestration backend reference](../../skills/productivity/orchestrate-work/references/backends.md) when that skill is installed.
 
-Copy this table into the target repo only when delegated work is useful, then replace every placeholder with a verified value. Placeholder rows are not usable routes; an absent or incomplete file should fall back to direct work. Native harness settings remain authoritative. If a model or worker is missing, continue directly when feasible and record the limitation. An external CLI being unavailable on one machine is an environment example, not a global fact.
+Use this table only if you intentionally want fixed route preferences; the orchestrator otherwise chooses from current host capabilities. Replace every placeholder with a verified value. Placeholder rows are not usable routes; an absent or incomplete mapping does not disable discovery of permitted native workers. Native harness settings remain authoritative. If no suitable worker is available, continue directly when feasible and record the limitation.
 
 ```markdown
 # Orchestration Mapping (Optional)
@@ -59,10 +58,10 @@ The primary shows routing updates in the conversation by default. You should not
 
 Before dispatch, each job shows its objective, backend/provider, capability, exact requested model/alias and effort, and the reason for that choice. After dispatch it shows the real run ID/link when available and separately identifies runtime-reported model/effort with the source. If the host does not expose those settings, it says so; requesting a model is not proof that it ran. Work retained in the primary session and direct tool execution are identified too.
 
-For example, with values filled from your configured routes:
+For example, with values filled from the orchestrator's runtime selection:
 
 ```text
-[W1 · planned] Inspect the expiry path → Codex native worker · routine · requested <configured model>, medium effort. Reason: bounded factual search.
+[W1 · planned] Inspect the expiry path → Codex native worker · routine · requested <selected available model>, <supported effort>. Reason: bounded factual search.
 [W1 · dispatched] Run <host-provided ID> · reported model/effort: not exposed; requested settings only.
 [W1 · checking] Worker finished; checking its references against the current code.
 [W1 · accepted] References match. Implementation remains with the primary.

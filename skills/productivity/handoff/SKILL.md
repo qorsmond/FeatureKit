@@ -3,7 +3,7 @@ name: handoff
 description: Prepare compact continuation context or create a fresh implementation task for substantial work after an approved artifact and explicit user selection. Use when context is long, work is pausing, a prototype result needs to return to planning, or work moves to another session, agent, developer, or tool.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.1"
+  featurekit-version: "0.6.2"
 ---
 
 # Handoff

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.2 - 2026-09-18
+
+- Made setup persist explicit orchestration and live-feedback instructions in the product repo's agent file; existing installs receive a focused refresh without repeating settled setup decisions.
+- Made the orchestrator own runtime model/backend/effort selection without a required model roster or per-session prompt; repo mappings remain optional constraints or deliberate overrides.
+- Replaced manual session-start instructions with initialize-once guidance and added setup-refresh and changing-host behavioral trials.
+- Made the main README cover full installation and repeatable upgrades, including new skills, fresh-session loading, persistent setup refresh and version checks.
+
 ## 0.6.1 - 2026-09-18
 
 - Made human-visible routing feedback mandatory during work: planned destination, requested model/effort, acknowledged run ID, source-labeled runtime metadata, progress, reroutes and primary validation outcomes.

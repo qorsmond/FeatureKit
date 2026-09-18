@@ -6,56 +6,58 @@ FeatureKit is a private, framework-agnostic skill harness. It follows the Matt P
 
 Current release: see [VERSION](./VERSION) and [CHANGELOG.md](./CHANGELOG.md).
 
-## Quickstart
+## Install And Initialize A Product Repo
 
-Install from the repo:
-
-```bash
-npx skills@latest add qorsmond/FeatureKit
-```
-
-For local development inside this repo:
+Run this in the **product repo where you want to use FeatureKit**, such as your app's root directory. FeatureKit is private, so your GitHub authentication must have access.
 
 ```bash
-npx skills@latest add . --list
-npx skills@latest add . \
-  --skill using-featurekit \
-  --skill ask-featurekit \
-  --skill setup-featurekit \
-  --skill grill-with-docs \
-  --skill grilling \
-  --skill to-prd \
-  --skill to-slices \
-  --skill implement \
-  --skill execute-slices \
-  --skill handoff \
-  --skill record-adr \
-  --skill adr-guidance \
-  --skill secure-design \
-  --skill secure-code \
-  --skill secure-api \
-  --skill secure-deploy \
-  --skill tdd \
-  --skill orchestrate-work \
-  --skill validate-feature \
-  --skill verify-tests \
-  --skill review-change \
-  --skill security-review
+npx skills@latest add qorsmond/FeatureKit \
+  -a codex -a claude-code -a opencode --skill '*' -y
 ```
 
-Then run this in your coding agent when setting up a product repo:
+This installs the complete skill set, including optional tooling skills. Remove any `-a` options for agents you do not use. For a smaller selection or installation from a local FeatureKit checkout, see [Install](./docs/ai-workflow/01-install.md).
+
+Open a fresh coding-agent session in that same product repo so it loads the installed skills, then initialize it once:
 
 ```text
 /setup-featurekit
 ```
 
-After setup, keep `using-featurekit` in session-start instructions when available. A raw feature request starts the design-tree interview automatically. You can also invoke `/grill-with-docs` directly. When you are unsure which skill fits, ask explicitly:
+Setup previews and updates the existing `AGENTS.md` or equivalent instruction file and records repo conventions under `docs/agents/`. It saves session bootstrap, automatic orchestration and live routing feedback. The orchestrator chooses available worker models and effort; no model roster or repeated orchestration prompt is required. Future sessions need only your normal request.
+
+A raw feature request starts the design-tree interview automatically. You can also invoke `/grill-with-docs` directly. When you are unsure which skill fits, ask explicitly:
 
 ```text
 /ask-featurekit
 ```
 
 For a raw feature, `/ask-featurekit` begins the interview instead of returning only a route. Interview questions carry their own plain-language context and consequences, and uncertainty is explained and re-asked rather than inferred. For other work it routes you through planning, security, PRDs, slices, implementation, test verification, review, prototyping, debugging, and handoff.
+
+## Update An Existing Product Repo
+
+Run the same full-install command from the product repo after a FeatureKit release:
+
+```bash
+npx skills@latest add qorsmond/FeatureKit \
+  -a codex -a claude-code -a opencode --skill '*' -y
+```
+
+Keep the `-a` selections appropriate for your agents. Re-running `add` refreshes installed FeatureKit skills and includes newly added ones. `npx skills@latest update` updates existing skill entries; use the full `add` command above to pick up the complete current set.
+
+Start a fresh coding-agent session in the same repo, then run:
+
+```text
+/setup-featurekit
+
+Refresh this repo's FeatureKit setup to the installed release. Update missing
+or outdated FeatureKit instructions and affected docs/agents files. Preserve
+existing project rules and settled choices; do not repeat the full setup
+interview or add fixed model selections. Show the focused changes before writing.
+```
+
+Both steps matter: installation updates the skills, while setup refreshes the instructions saved in the product repo. Setup updates existing blocks in place; repeated runs should make no unnecessary changes or duplicate sections. Use this flow after upgrades; normal work sessions load the saved policy automatically.
+
+Confirm the version below. To see delegation in action once after setup, use the [read-only orchestration smoke test](./docs/ai-workflow/09-orchestration.md#read-only-smoke-test).
 
 ## Confirm Version
 
@@ -65,10 +67,12 @@ Project installs copy FeatureKit skills into `.agents/skills/`. Each installed `
 rg "featurekit-version" .agents/skills
 ```
 
+All FeatureKit entries should match the installed release's [VERSION](./VERSION). After upgrading, confirm that `orchestrate-work` and `validate-feature` are present too.
+
 ## The Main Flow
 
 1. Start with `/setup-featurekit` once per product repo.
-2. Keep `using-featurekit` as the lightweight session bootstrap so raw features begin interviewing automatically.
+2. Let the setup-written repo instructions load `using-featurekit` and orchestration in each session.
 3. Use `/ask-featurekit` when you are unsure which flow fits; it also begins interviewing raw features immediately.
 4. Use `/grill-with-docs` when you want to start the same design-tree interview explicitly against product context.
 5. Use `/record-adr` when a durable architectural decision is made or changed.
@@ -81,7 +85,7 @@ rg "featurekit-version" .agents/skills
 12. Use `security-review` for focused security review and `review-change` before human review.
 13. Use `/handoff` when a session needs to pause or continue elsewhere.
 
-Within these workflows, `orchestrate-work` chooses direct tools or bounded workers by capability, configured cost preference and available proof. `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional model/backend mappings live in the product repo's `docs/agents/orchestration.md`; single-model use still works. See [Orchestration](./docs/ai-workflow/09-orchestration.md).
+Within these workflows, `orchestrate-work` chooses direct tools or bounded workers and selects available worker models/effort by capability, risk and known cost. `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional repo restrictions or explicit overrides live in `docs/agents/orchestration.md`; no model roster is required, and single-model use still works. See [Orchestration](./docs/ai-workflow/09-orchestration.md).
 
 ## Optional Tooling Skills
 

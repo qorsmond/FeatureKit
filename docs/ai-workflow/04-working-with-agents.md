@@ -4,13 +4,9 @@ FeatureKit works best when you treat the agent like a fast engineer that needs c
 
 ## Session Bootstrap
 
-At the start of FeatureKit sessions, give the agent this bootstrap instruction:
+Run `/setup-featurekit` once to persist `using-featurekit`, orchestration and live-routing feedback in the repo's agent instructions. Future sessions load those instructions; give your normal request without repeating a bootstrap prompt or choosing worker models. For hosts that cannot load repo instructions, use their persistent instructions or the [manual local-model flow](./05-local-llms.md).
 
-```text
-Use `using-featurekit` before acting.
-```
-
-If your harness supports session-start hooks, pinned instructions, or saved custom instructions, put that sentence there. FeatureKit does not ship hook scripts in v1; the bootstrap is the portable skill and instruction. A raw feature request begins interviewing automatically. Invoke `/grill-with-docs` when you want the same interview explicitly, or use `/ask-featurekit` when you are unsure which workflow fits.
+A raw feature request begins interviewing automatically. Invoke `/grill-with-docs` when you want the same interview explicitly, or use `/ask-featurekit` when you are unsure which workflow fits.
 
 ## Good Prompts
 
