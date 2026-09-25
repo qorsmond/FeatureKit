@@ -85,7 +85,7 @@ Treat every JEV use as a separate data scope:
 
 - metadata routing sends only bounded task metadata and never authorizes source, diffs, logs, raw output, transcripts, or secrets;
 - source review requires explicit focused code/diff sharing and excludes unrelated repository content;
-- context pruning requires permission for the candidate text sent outside the host;
+- deterministic context pruning runs locally and sends no text anywhere; JEV pruning is not provided;
 - Claude transcript compaction requires explicit transcript permission and keeps native compaction as fallback.
 
 Keep `TYPESAFE_API_KEY` and compatibility aliases in the launching environment, never in repo files, prompts, capsules, traces, caches, or command arguments. Do not use another provider to bypass a repo/user data restriction. Deterministic approval, security, authorization, evidence, and verification gates remain authoritative regardless of a JEV score or route suggestion.

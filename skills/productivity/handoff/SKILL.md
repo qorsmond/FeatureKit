@@ -3,7 +3,7 @@ name: handoff
 description: Preserve compact continuation state or create a user-selected fresh implementation task without replaying the conversation. Use for pauses, long context, or substantial approved work.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.1"
+  featurekit-version: "0.10.2"
 ---
 
 # Handoff
@@ -19,7 +19,7 @@ Record once:
 - changed paths/relevant symbols and repository snapshot;
 - governing decisions, ADRs, security constraints, risks and gotchas;
 - actual verification/runtime/platform evidence and gaps;
-- relevant worker routes/results, failed attempts, pending ownership and escalation;
+- relevant worker routes/results, attempt-ledger state, failed attempts with their escalation packet, pending ownership;
 - available repo tools and the exact next FeatureKit skill.
 
 Use stable paths and hashes instead of copied source, diffs, logs, repeated checks, or worker prose. Stop or coordinate active writers before transferring ownership. Write `docs/handoff/<slug>.md` only when a durable note is useful or the destination cannot receive the complete prompt directly.

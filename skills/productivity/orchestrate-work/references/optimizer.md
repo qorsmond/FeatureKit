@@ -6,7 +6,7 @@ The optional optimizer is a metadata-only adviser invoked through `scripts/optim
 - Read `TYPESAFE_API_KEY` from the environment; `JEV_API_KEY` is a compatibility alias. Never put either value in repo files, command arguments, traces, or output.
 - Send one bounded request per phase. Reject source, diffs, transcripts, raw output, unknown fields, and oversized values.
 - Treat task-family labeling as optional metadata. A weak label is omitted without discarding independently confident capability and effort advice.
-- Deterministic work, pending user decisions, and hard risk floors skip JEV. Risk-flagged requests keep baseline execution/context; low confidence, a small top-two margin, contradictions, unavailable routes, timeout, rate limit, network failure, or malformed answers produce partial advice, `hold`, or `unavailable` while preserving the baseline route.
+- Deterministic work, pending user decisions, and hard risk floors skip JEV. Hard-risk requests keep the baseline; caution-flagged routes may only move up (`up_only`), and risk flags mask optional execution/context advice; low confidence, a small top-two margin, contradictions, unavailable routes, timeout, rate limit, network failure, or malformed answers produce partial advice, `hold`, or `unavailable` while preserving the baseline route.
 - Record only content-free identity, route, confidence/margin gates, token counts reported by TypeSafe, latency, cache status, and reason codes.
 
 Prefer the connected FeatureKit JEV server's single `route` tool. It exposes this schema directly and performs the provider call outside the coding sandbox. If that tool is unavailable, run `node scripts/optimizer.mjs` from this skill directory with one JSON request on stdin. Do not read the script or tests to discover the schema. Use exactly this shape and replace only values:
@@ -48,7 +48,7 @@ The same script accepts `mode: "capsule"` without contacting JEV:
 
 The primary is the only capsule writer. Workers receive a projection path and return bounded result/evidence references for the primary to validate and import. Missing, corrupt, unsupported, or stale state falls back to the approved artifact and current repository evidence.
 
-For a host preflight, store the validated request above as `capsule.route.request`, set `capsule.work.status` to `ready`, and keep `capsule.authority.level` equal to `request.task.approval`. The bundled `UserPromptSubmit` hook ignores the user prompt and runs only when exactly one valid approved capsule matches; zero or multiple matches produce no output. Its compact result is advisory and replaces the later model-called route request, not the baseline route.
+For a host preflight, store the validated request above as `capsule.route.request`, set `capsule.work.status` to `ready`, and keep `capsule.authority.level` equal to `request.task.approval`. The bundled `UserPromptSubmit` hook ignores the user prompt and runs only when exactly one valid approved capsule matches; zero or multiple matches produce no output. It replaces the later model-called route request. In `shadow` its compact result is advisory; in `enforce` it carries the binding route and the exact attempt-ledger command. An explicit host `FEATUREKIT_JEV_ROUTING` wins over shell startup.
 
 ## Exact fact receipts
 

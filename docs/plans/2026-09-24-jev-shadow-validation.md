@@ -774,3 +774,41 @@ Verdict: **validated for Codex; no saving for Claude**. The Codex lean profile i
 - **Global instructions:** `--ignore-user-config` still loads the user's global Codex instructions. In lean pair 3, one command the worker ran through `rtk`, as those instructions request, failed in the worker's environment. The worker recovered, and the acceptance still passed. Launched workers inherit global instruction files, so profile-dependent tooling in them should degrade gracefully.
 - **Transcripts:** Codex does not rewrite transcripts. Its compaction support remains the pointer-only `SessionStart` hook.
 - **Measurement:** every reading is host-reported usage from live runs. Nothing was simulated.
+
+## Slice 10 — release documentation and packaged rollout — 2026-09-25
+
+Verdict: **validated** for packaging, installation, the installed feature flow, and documentation consistency. Nothing was simulated.
+
+- **Documentation audit.** A read-only audit of every user guide, the local-model prompt, the scenarios, and the orchestration skills and references against 0.10.1 behavior found:
+  - 6 wrong statements, including shadow-only wording in the install and setup guides, the old review-selector scenario, caution flags described as always keeping the baseline, and pruning described as needing a sharing permission;
+  - 10 stale statements;
+  - 8 gaps, including no Codex hook upgrade step, no rollout path, and no enforce scenarios.
+
+  All wrong and stale items and the material gaps were fixed. Two optional additions to budget-capped skill files were left to their references, and all skill and reference edits stayed within the context budgets.
+- **Packaging and install.**
+  - `npx skills@latest add <checkout> --list` listed 30 skills.
+  - The 22-skill install for Codex, Claude Code, and OpenCode succeeded in a disposable Git repo.
+  - Every `skills use` smoke in `AGENTS.md` passed.
+  - The installed `orchestrate-work` carried `optimizer.mjs`, `route-hook.mjs`, `mcp-server.mjs`, and `compaction-hook.mjs`.
+  - `check_packaging.py` passed (30 skills and the release version), and `rg featurekit-version` matched all 30 skills.
+- **Installed-copy walkthrough.** In the disposable repo, the installed optimizer (not the checkout) produced the following:
+
+  | Check | Result |
+  | --- | --- |
+  | `off` | no call |
+  | `enforce` (one live metadata-only JEV call, 1,345 / 461 tokens) | `enforced` `routine-low` |
+  | Repeat | cache hit |
+  | Receipt, unchanged | hit |
+  | Receipt, after a relevant edit | miss |
+  | Review, small code change with a weak route | one `routine`/`low` review |
+  | Review, small docs change | checks only |
+  | Review, `off` | status `off` |
+  | Failed routed attempt | `escalate-baseline` with `continue_from` |
+  | Pruning, 10% saving | refused (`use_pruned: false`) |
+  | Pruning, 77% saving | accepted |
+  | Cache stats | eliminated calls counted |
+  | Traces | no queries or facts |
+
+  The installed prompt hook in the documented Codex command form injected the enforced route while `.zshrc` exported `shadow`, and produced no output under `off`.
+- **Deterministic.** `node --test tests/optimizer.test.mjs` passed 32 tests. The context budgets, `git diff --check`, and every script syntax check passed.
+- **Not run.** The interactive question-tool and fresh-task behavioral smokes in `AGENTS.md` need a human-driven host UI. The new `enforce` scenario rows are specified for future host trials; their mechanics are covered by the deterministic tests and the earlier live trials recorded above.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.2 - 2026-09-25
+
+- Release documentation for 0.8.0 through 0.10.1 (Slice 10):
+  - Install, setup, working-with-agents, security, troubleshooting, and orchestration guides now describe all three routing modes, harness-chosen models, verified route facts, the attempt ledger and escalation packets, simple receipt keys, measured review selection, and local-only pruning.
+  - The orchestration guide adds a staged rollout (`off`, then `shadow`, then `enforce`, with per-family back-off) and a table of switches and privacy scopes for each capability.
+  - Install and troubleshooting add the upgrade step for a Codex `route-hook.mjs` entry from before 0.8.0, plus a symptom entry for a host setting overridden by shell startup.
+  - Skills and references are corrected: caution-flagged routes move up only, rather than always keeping the baseline; pruning needs no sharing permission; enforced routes drive delegation and the ledger; handoffs carry ledger state and escalation packets; the Claude CLI example passes `--effort`.
+  - Behavioral scenarios and the benchmark matrix cover `enforce`.
+
 ## 0.10.1 - 2026-09-25
 
 - Documented an optional lean launch for Codex CLI workers: `--ignore-user-config` with explicit model, effort, sandbox, and approval policy, never `--ignore-rules`. In paired trials it cut median worker input by 57% with equal results, and it stopped user MCP servers from writing files into the repo. Extra Claude isolation flags were measured cost-neutral and are documented for isolation only. The Claude compaction pilot remains off and untouched.

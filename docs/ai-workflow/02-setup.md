@@ -57,7 +57,7 @@ Setup also adds the `Agent Operating Principles` section so every new coding, re
 
 Setup also adds the FeatureKit bootstrap, planning gate, explicit delegation instruction and live-routing feedback. Agents use `using-featurekit` at session start and after context compaction, then `orchestrate-work` for substantive work. You give ordinary requests; the orchestrator chooses worker models and explains the choices. Raw feature requests begin the design-tree interview automatically, and production code waits for final approval of the written plan, PRD or slice.
 
-JEV is separate from repo setup. `/setup-featurekit` never asks for an API key, writes one to the repo, enables provider calls, or grants source/transcript sharing. Installations remain on the normal route unless the user configures metadata-only `shadow` routing as described in [Orchestration](./09-orchestration.md); source review and Claude transcript compaction require their own explicit scopes.
+JEV is separate from repo setup. `/setup-featurekit` never asks for an API key, writes one to the repo, enables provider calls, or grants source/transcript sharing. Installations remain on the normal route unless the user sets `FEATUREKIT_JEV_ROUTING=enforce`; `shadow` only records advice. See [Orchestration](./09-orchestration.md). Source review and Claude transcript compaction require their own explicit scopes.
 
 ## What Setup Should Not Do
 

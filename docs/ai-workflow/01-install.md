@@ -108,7 +108,7 @@ You should see the FeatureKit skills from `skills/engineering/`, `skills/product
 
 Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit does not need a separate bootstrap hook; plugin installs include the optional JEV preflight hook described below.
 
-JEV routing is optional and remains off after skill installation. To connect its one local MCP tool and choose `off` or advisory-only `shadow`, follow [Optional JEV shadow routing](./09-orchestration.md#optional-jev-shadow-routing).
+JEV routing is optional and remains off after skill installation. To connect its one local MCP tool and choose `off`, advisory `shadow`, or `enforce` (JEV's confident level runs approved tasks), follow [Optional JEV routing](./09-orchestration.md#optional-jev-routing).
 
 Only if your host does not load repo instruction files, put this instruction in its persistent custom instructions or supply the required context manually:
 
@@ -146,7 +146,7 @@ The CLI can also update previously installed skills across sources:
 npx skills@latest update
 ```
 
-Confirm the installed `metadata.featurekit-version`, then start a fresh agent session so it loads the updated skills. If upgrading a repo without the persistent orchestration instruction, run `/setup-featurekit` once to refresh its FeatureKit block; existing repo choices remain valid. Future sessions load orchestration from `AGENTS.md` or equivalent without a repeated prompt or model roster. See [Start an orchestrated session](./09-orchestration.md#start-an-orchestrated-session) for the optional smoke test.
+Confirm the installed `metadata.featurekit-version`, then start a fresh agent session so it loads the updated skills. If `~/.codex/hooks.json` has a FeatureKit `route-hook.mjs` entry from before 0.8.0, replace its command with the current one in [Optional JEV routing](./09-orchestration.md#optional-jev-routing) and re-trust it in Codex `/hooks`; otherwise an explicit `off` or `enforce` can be overridden by your shell startup file. If upgrading a repo without the persistent orchestration instruction, run `/setup-featurekit` once to refresh its FeatureKit block; existing repo choices remain valid. Future sessions load orchestration from `AGENTS.md` or equivalent without a repeated prompt or model roster. See [Start an orchestrated session](./09-orchestration.md#start-an-orchestrated-session) for the optional smoke test.
 
 ## Series Navigation
 

@@ -1,6 +1,6 @@
 # Worker Backends
 
-Read only the section for the selected route. The live tool schema and installed CLI help take precedence over these examples. Discover model identifiers and supported effort from advertised host capabilities or verified backend configuration, respecting optional repo constraints/overrides in `docs/agents/orchestration.md`. A repo model table is not required.
+Read only the section for the selected route. The live tool schema and installed CLI help take precedence over these examples. Discover model identifiers and supported effort from advertised host capabilities, respecting optional overrides in `docs/agents/orchestration.md`; no repo model table is required.
 
 ## Common Contract
 
@@ -15,7 +15,7 @@ Read only the section for the selected route. The live tool schema and installed
 
 Discover the worker tool and its actual schema. Set a model/effort override only when supported and authorized. Prefer a fresh context with the packet rather than inheriting the full conversation. In Codex tools exposing `fork_turns`, use `none` for a self-contained packet; a full-history fork can inherit the parent's model and prevent overrides. Other harnesses may expose roles, profiles or session settings instead.
 
-Native worker selection and a new user task are different operations. Use worker/subagent controls to dispatch, await, steer, and stop work. Keep `handoff` and explicit fresh-task selection for transferring the overall task. Do not simulate worker scheduling through repeated task creation.
+Native workers are not user tasks. Use worker controls to dispatch, await, steer, and stop work. Keep `handoff` and explicit fresh-task selection for transferring the overall task. Do not simulate worker scheduling through repeated task creation.
 
 Workers inherit host permission boundaries; a role called “read-only” is not proof of an enforced filesystem sandbox. Use available restrictions and inspect results. If tools cannot support the requested restriction, choose a safer route or report the limitation. Existing native custom agents may be reused; FeatureKit does not need to install an agent family.
 
@@ -23,7 +23,7 @@ Codex can use explicit model settings, native defaults, and custom-agent setting
 
 ## Codex CLI
 
-Inspect `codex --help`, `codex exec --help`, and `codex login status`. Confirm the intended subscription mode and model route before launch; do not extract authentication material. Preserve existing configuration and sandbox restrictions.
+Inspect `codex --help`, `codex exec --help`, and `codex login status`. Confirm subscription mode and model route before launch; never extract authentication material. Keep sandbox restrictions; [hosts.md](hosts.md) covers the optional lean `--ignore-user-config` launch.
 
 For a bounded read-only investigation, set `FK_REPO`, `FK_PACKET` and `FK_RESULT` to the intended paths, and `FK_MODEL` and `FK_EFFORT` to the configured model and its verified supported reasoning effort. Pass both explicitly so the worker does not inherit an expensive parent/default effort:
 
@@ -47,7 +47,7 @@ Run only in a trusted checkout whose loaded hooks, MCP configuration and project
 For read-only file investigation, use the installed version's supported equivalents of this pattern, with working directory set to `FK_REPO` by the host:
 
 ```sh
-claude -p --model "$FK_MODEL" --output-format json --max-turns 8 \
+claude -p --model "$FK_MODEL" --effort "$FK_EFFORT" --output-format json --max-turns 8 \
   --permission-mode dontAsk --tools "Read,Glob,Grep" \
   --disallowedTools "mcp__*" < "$FK_PACKET" > "$FK_RESULT"
 ```

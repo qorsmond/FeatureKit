@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit plan or slice using repository conventions, tests, and runtime evidence. Use explicitly after final approval and implementation intent.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.1"
+  featurekit-version: "0.10.2"
 ---
 
 # Implement
@@ -17,7 +17,7 @@ Confirm explicit implementation intent; final approval of the written artifact; 
 ## Process
 
 1. Read the approved artifact and minimum governing/repository context. Locate likely paths or symbols before reading bodies; use Serena-style semantic navigation and RTK-style bounded output when available.
-2. Use `orchestrate-work` only when a bounded worker is cheaper or materially improves isolation. The primary keeps integration and completion.
+2. Use `orchestrate-work` for enforced routes or a cheaper or better-isolated bounded worker. The primary keeps integration and completion.
 3. Apply `secure-code` for untrusted input, secrets, storage, files, network calls, dependencies, errors, logging, auth, or authorization; add `secure-api` or `secure-deploy` for their boundaries.
 4. Use `tdd` for logic, transformations, services, API behavior, bugs, and other testable behavior: failing focused check, smallest implementation, passing check.
 5. Make only the approved change. Preserve user work, existing style, interfaces, migrations, and security requirements. Ask before adding production dependencies.

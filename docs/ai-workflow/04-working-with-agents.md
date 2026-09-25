@@ -73,7 +73,7 @@ Use `/handoff` when moving between tasks. Keep a fresh task on the same saved pr
 
 After an implementation-ready artifact is approved, focused work should continue in the current task without another question. For substantial work, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript, and runs from the existing checkout and branch.
 
-For long orchestrated work, keep the local task capsule current and pass worker, reviewer, escalation, or handoff projections instead of replaying history. Reuse repository facts only through exact snapshot/hash receipts. Before a large escalation or handoff, deterministic metadata pruning may remove duplicates and recoverable referenced content while keeping authority, requirements, constraints, failures, evidence, ownership, and tool pairs. Failure uses the unpruned packet.
+For long orchestrated work, keep the local task capsule current and pass worker, reviewer, escalation, or handoff projections instead of replaying history. Reuse repository facts only through exact snapshot/hash receipts. Before a large escalation or handoff, deterministic metadata pruning may remove duplicates and recoverable referenced content while keeping authority, requirements, constraints, failures, evidence, ownership, and tool pairs. When pruning saves too little, or fails, the unpruned packet is used.
 
 ## Token-Efficient Execution
 
@@ -114,7 +114,7 @@ Before accepting a change or opening a PR:
 - confirm new or changed tests would fail if the intended behavior were wrong,
 - remove out-of-scope edits,
 - run the verification commands,
-- ask `review-change` when the change's risk, size, or uncertainty warrants a separate review.
+- run `review-change`; its measured review selection decides the tier (checks only for a small docs-only change, at least one cheap review for any code change, deep/security for hard risk).
 
 Use `verify-tests` when test quality is uncertain, behavior is high-risk, or you explicitly want mutation testing such as Stryker. Do not make mutation testing part of every normal review.
 

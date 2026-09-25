@@ -2,7 +2,7 @@
 name: orchestrate-work
 description: Route substantive work to direct tools, the current agent, or one bounded worker using capability, effort, risk, and evidence. Use inside an active FeatureKit workflow.
 metadata:
-  featurekit-version: "0.10.1"
+  featurekit-version: "0.10.2"
 ---
 
 # Orchestrate Work
@@ -30,7 +30,7 @@ Load only the routed reference in `references/`; API-funded fallback requires ex
 
 ## Worker Boundary
 
-Delegate only when briefing, checking, and likely recovery cost less than direct work, or isolated context materially improves the result. Use [workers.md](references/workers.md) for packets, visible status, concurrency, and return contracts. Default to one worker; use at most two only for independent ownership and resources.
+Delegate for an `enforced` route, or when briefing, checking, and recovery cost less than direct work, or isolation materially helps. Use [workers.md](references/workers.md) for packets, visible status, concurrency, and return contracts. Default to one worker; use at most two only for independent ownership and resources.
 
 Before dispatch, show job label, bounded objective, backend, capability, requested model/effort, and reason. After dispatch, show the actual run ID and runtime-reported settings, or say they are not exposed. Keep `worker finished; validation pending` distinct from primary acceptance. Do not invent usage, cost, progress, execution state, or model identity.
 
@@ -40,4 +40,4 @@ Inspect the scoped result against the packet and current tree. Reuse evidence on
 
 For failure, follow [recovery.md](references/recovery.md): one corrected retry for a concrete mistake, stronger reasoning for unresolved uncertainty, another authorized route for environment/auth failure, or the user for a material decision. Never repeat an unchanged failure or let an old writer continue during reassignment.
 
-Keep a compact ledger only when useful: job, route requested/reported, run/attempt status, evidence, gaps, and primary disposition. Unknown values stay unknown.
+Keep a compact ledger (`attempt` records under `enforce`): job, route requested/reported, attempt status, evidence, gaps, disposition. Unknown values stay unknown.

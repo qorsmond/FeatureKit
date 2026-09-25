@@ -3,7 +3,7 @@ name: execute-slices
 description: Execute multiple approved FeatureKit implementation slices from a written PRD or plan. Use explicitly when ordered slices already exist and the user wants autonomous batch execution with verification, review checkpoints, optional subagents, and no branch, commit, push, or PR actions.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.1"
+  featurekit-version: "0.10.2"
 ---
 
 # Execute Slices
