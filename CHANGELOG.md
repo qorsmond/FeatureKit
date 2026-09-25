@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.1 - 2026-09-25
+
+- Made an explicit `FEATUREKIT_JEV_ROUTING=off` in the Claude Code host environment stop the plugin `UserPromptSubmit` hook before its interactive-shell fallback can re-enable routing from shell startup files; an unset value keeps the existing fallback.
+- Recorded live Claude Code plugin, MCP, context-deferral, and pre-model hook validation; three paired Claude manual-routing runs with equivalent verified output and a median 86,272-token frontier reduction after JEV approved routine capability at low effort; and a one-session `fast-jev-compaction` pilot. Routing enforcement and transcript compaction remain off by default.
+
 ## 0.7.0 - 2026-09-24
 
 - Reduced recurring FeatureKit context by moving orchestration invariants, worker lifecycle, recovery, and optimizer mechanics into on-demand references; added deterministic context-budget regression checks.

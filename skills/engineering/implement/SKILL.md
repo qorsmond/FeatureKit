@@ -3,7 +3,7 @@ name: implement
 description: Implement one approved FeatureKit plan or slice using repository conventions, tests, and runtime evidence. Use explicitly after final approval and implementation intent.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.7.0"
+  featurekit-version: "0.7.1"
 ---
 
 # Implement

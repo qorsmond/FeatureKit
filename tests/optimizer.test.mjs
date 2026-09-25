@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, readdir, rm, stat } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -403,6 +404,33 @@ test("prompt hook injects one approved capsule route and skips ambiguity", async
     assert.equal(calls, 1);
   } finally {
     await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
+test("Claude plugin prompt hook honors an explicit host off setting before shell startup", async () => {
+  const home = await mkdtemp(path.join(tmpdir(), "featurekit-hook-shell-"));
+  const marker = path.join(home, "zshrc-loaded");
+  const root = path.resolve(import.meta.dirname, "..");
+  const { hooks } = JSON.parse(await readFile(path.join(root, "hooks", "hooks.json"), "utf8"));
+  const command = hooks.UserPromptSubmit[0].hooks[0].command;
+  const run = (routing) => {
+    const env = { PATH: process.env.PATH, HOME: home, ZDOTDIR: home, CLAUDE_PLUGIN_ROOT: root };
+    if (routing) env.FEATUREKIT_JEV_ROUTING = routing;
+    return spawnSync("/bin/sh", ["-c", command], { env, input: JSON.stringify({ hook_event_name: "UserPromptSubmit", cwd: home }), encoding: "utf8" });
+  };
+  try {
+    await writeFile(path.join(home, ".zshrc"), `touch "${marker}"\nexport FEATUREKIT_JEV_ROUTING=shadow\n`);
+    const off = run("off");
+    assert.equal(off.status, 0);
+    assert.equal(off.stdout, "");
+    await assert.rejects(stat(marker));
+    const inherited = run(null);
+    assert.equal(inherited.status, 0);
+    assert.equal(inherited.stdout, "");
+    assert.ok((await stat(marker)).isFile());
+  } finally {
+    await rm(home, { recursive: true, force: true });
   }
 });
 
