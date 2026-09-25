@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0 - 2026-09-25
+
+- Added a reversible `FEATUREKIT_JEV_ROUTING=enforce` mode. JEV's confident capability (`routine`, `standard` or `deep`) and effort choice decides the level that runs every approved task; the harness picks the actual model from those it offers at runtime. FeatureKit and product repos name no models; `docs/agents/orchestration.md` holds only optional user overrides.
+- Enforcement keeps FeatureKit's gates. Unapproved work, pending decisions, hard risks, and exact lookups skip JEV. A `hold`, provider failure, or weak answer keeps the baseline, and routes never go below request floors. Caution-flagged work (`migration`, `ambiguous`, `prior-failure`, `missing-evidence`) is routed up-only. A `minimal` effort floor becomes `low`. `off` or an unset value still makes no provider call.
+- Added a local attempt ledger that records requested and runtime-reported model/effort (unknown stays `null`), allows a routed attempt only first, and escalates one failed routed attempt to the baseline, counted against that route. The prompt hook now injects the enforced route with the exact ledger command.
+- The Claude plugin hook and the documented Codex hook keep an explicit host `FEATUREKIT_JEV_ROUTING` value instead of one re-exported by interactive shell startup; the 0.7.1 `off` early exit is unchanged.
+- Route requests accept five optional verified facts (`existing_check`, `spec_exact`, `follows_existing_pattern`, `new_dependencies`, `lines_estimate`). The guidance now asks for a concrete objective and acceptance. On a medium task this lifted JEV capability confidence from about 0.37 to 0.85, so fewer tasks stall on `hold`. The policy version is now 7; thresholds, floors, and gates are unchanged.
+- Fact receipts accept a simple `key` (repo, query, tool, contract version, index head, paths); the script derives the exact identity locally from git state and file hashes, so reuse costs one call. Added diff-bound `review` receipts, a one-day host model catalogue cache keyed by exact host version, and content-free cache stats showing hits, misses, stale results, and eliminated calls.
+- `execute-slices` routes each slice under `enforce` and runs an enforced slice as one fresh worker session on the routed level and effort, preferring a CLI worker that accepts both.
+- Only routine, low-effort implementation has paired complete-task cost evidence. The other levels are enforced by user decision without paired economics, which departs from the plan's promotion gate; see the validation record.
+
 ## 0.7.1 - 2026-09-25
 
 - Made an explicit `FEATUREKIT_JEV_ROUTING=off` in the Claude Code host environment stop the plugin `UserPromptSubmit` hook before its interactive-shell fallback can re-enable routing from shell startup files; an unset value keeps the existing fallback.

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ \"$FEATUREKIT_JEV_ROUTING\" = off ] || exec /bin/zsh -ic 'exec node \"$CLAUDE_PLUGIN_ROOT/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
+            "command": "[ \"$FEATUREKIT_JEV_ROUTING\" = off ] || FEATUREKIT_JEV_HOST_ROUTING=\"$FEATUREKIT_JEV_ROUTING\" exec /bin/zsh -ic 'exec node \"$CLAUDE_PLUGIN_ROOT/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
             "timeout": 6
           }
         ]

@@ -21,7 +21,10 @@ function atLeast(actual, minimum, order) {
 
 export function evaluateCalibration(testCase, result) {
   const violations = [];
-  if (result.baseline_preserved !== true) violations.push("BASELINE_NOT_PRESERVED");
+  if (result.status === "enforced") {
+    if (testCase.skip_reason) violations.push("UNSAFE_ENFORCEMENT");
+    if (testCase.request.policy.risk_flags.length && result.route?.up_only !== true) violations.push("FLAGGED_NOT_UP_ONLY");
+  } else if (result.baseline_preserved !== true) violations.push("BASELINE_NOT_PRESERVED");
   if (testCase.skip_reason) {
     if (result.status !== "skipped" || !result.reason_codes?.includes(testCase.skip_reason)) violations.push("DETERMINISTIC_GATE_MISSED");
     return violations;
@@ -36,7 +39,7 @@ export function evaluateCalibration(testCase, result) {
   return violations;
 }
 
-async function cases() {
+export async function calibrationCases() {
   const normal = await load("route-request.json");
   const mechanical = await load("mechanical-edit.json");
   const unknownDebugging = await load("unknown-debugging.json");
@@ -73,6 +76,13 @@ async function cases() {
       minimum: { capability: "routine", effort: "minimal" },
       allowed: { execution: ["direct-deterministic", "current-primary", "isolated-worker"], context: ["pointers", "targeted", "broad"], review_floor: ["deterministic", "jev-review", "general", "deep-security"] },
     }),
+    make("routine-implementation", normal, {
+      task: { id: "cal-routine-implementation", objective: "Implement one approved bounded response change with an existing focused check", scope: ["server.py"], acceptance: ["The existing focused check passes"] },
+      facts: { files_estimate: 1, existing_check: true, spec_exact: true, follows_existing_pattern: true, new_dependencies: false, lines_estimate: 10 },
+    }, {
+      minimum: { capability: "routine", effort: "low" },
+      allowed: { execution: ["direct-deterministic", "current-primary", "isolated-worker"], context: ["pointers", "targeted", "broad"], review_floor: ["deterministic", "jev-review", "general", "deep-security"] },
+    }),
     make("normal-implementation", normal, { task: { id: "cal-normal" }, policy: { capability_floor: "standard", effort_floor: "low" } }, normalRoute),
     make("cross-module", normal, {
       task: { id: "cal-cross-module", objective: "Add one approved behavior across the API and persistence boundary", scope: ["src/api", "src/storage", "tests/integration"] },
@@ -80,6 +90,11 @@ async function cases() {
       policy: { capability_floor: "standard", effort_floor: "medium" },
     }, { ...normalRoute, minimum: { capability: "standard", effort: "medium" }, allowed: { ...normalRoute.allowed, context: ["broad"], review_floor: ["general", "deep-security"] } }),
     make("architecture", architecture, { task: { id: "cal-architecture" } }, deepRoute),
+    // Optimistic facts on consequential work must not pull the route below its floors.
+    make("architecture-optimistic-facts", architecture, {
+      task: { id: "cal-architecture-optimistic" },
+      facts: { existing_check: true, spec_exact: true, follows_existing_pattern: true, new_dependencies: false, lines_estimate: 40 },
+    }, deepRoute),
     make("known-root-debugging", normal, {
       task: { id: "cal-known-debug", operation: "debug", objective: "Fix the evidenced off-by-one expiry defect", scope: ["src/session", "tests/session"] },
       facts: { files_estimate: 3, current_failure: true },
@@ -120,8 +135,9 @@ async function cases() {
 
 async function main() {
   const rows = [];
-  for (const testCase of await cases()) {
-    const result = await optimizeRoute(testCase.request, { routingMode: "shadow" });
+  const routingMode = process.argv.includes("--enforce") ? "enforce" : "shadow";
+  for (const testCase of await calibrationCases()) {
+    const result = await optimizeRoute(testCase.request, { routingMode });
     const violations = evaluateCalibration(testCase, result);
     rows.push({
       family: testCase.family,
@@ -132,6 +148,7 @@ async function main() {
       reason_codes: result.reason_codes,
       signals: result.signals || null,
       violations,
+      route_class: result.route?.class || null,
       paired_trial_candidate: result.status === "shadow" && violations.length === 0,
     });
   }
@@ -142,7 +159,7 @@ async function main() {
   }), { input_tokens: 0, output_tokens: 0 });
   const report = {
     schema: 1,
-    mode: "jev-shadow-calibration",
+    mode: `jev-${routingMode}-calibration`,
     cases: rows.length,
     unsafe: rows.filter((row) => row.violations.length).length,
     inconclusive: rows.filter((row) => ["hold", "unavailable", "off"].includes(row.status)).length,

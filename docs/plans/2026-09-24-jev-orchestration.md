@@ -1,6 +1,6 @@
 # JEV max-savings architecture for FeatureKit
 
-Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement and review replacement remain gated by clean paired economics, repeated quality trials, and Claude Code evidence. JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
+Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement shipped in 0.8.0 with amendments 1–2 (every level, harness-chosen models, richer metadata), and Slice 5 exact reuse is complete; review replacement remains gated by clean paired economics, repeated quality trials, and Claude Code evidence. JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
 
 Baseline inspected: FeatureKit `0.6.2` at commit `36d2cfe`. The only working-tree addition during this analysis is this plan.
 
@@ -693,6 +693,65 @@ Acceptance:
 - routine/standard families show a complete-task frontier-token/call reduction;
 - retry-adjusted economics remain positive;
 - `JEV off` or absent key restores baseline routing.
+
+#### Slice 4 amendment — route every level (2026-09-25, user decision)
+
+The first 0.8.0 implementation obeyed JEV only for one class: easy (`routine`) work at `low` effort. It also required each product repo to name models. The user decided that JEV should route every level and that FeatureKit and product repos should not name models. This amendment replaces the one-class gate.
+
+**Behavior in `enforce` mode:**
+
+- **Enforced route.** Any JEV result that approves both capability and effort becomes an enforced route (`routine`, `standard`, or `deep`, plus an effort) for every operation that passes the approval gate. Unapproved work, pending user decisions, hard risks (security, authz, privacy, destructive, irreversible), and deterministic lookups still skip JEV and keep the baseline. A `hold`, `unavailable`, or weak capability/effort signal also keeps the baseline. Routes never go below the request's capability and effort floors.
+- **Caution flags are up-only.** `migration`, `ambiguous`, `prior-failure`, and `missing-evidence` routes are marked `up_only`. The harness applies them only when they are at least as strong as the baseline model and effort; otherwise it runs the baseline.
+- **The harness picks models.** It maps the level to a model discovered at runtime: `routine` gets the cheapest available tier, `standard` a middle tier, and `deep` the strongest. It also chooses a supported effort. FeatureKit and product repos name no models. `docs/agents/orchestration.md` may still hold an optional user override, but none is required.
+- **Effort floor.** Both hosts expose `low` as their lowest effort, so enforcement raises a `minimal` effort floor to `low` before asking JEV.
+- **Where it applies: everywhere.** A task launched headless or as a batch worker starts on the routed model. In a live session, the primary hands the work to one worker on the routed model.
+- **Records.** The ledger records requested and runtime model/effort. A setting the host cannot pass or report stays `null`.
+- **Escalation.** A route that fails verification escalates once to the baseline, and the escalation is counted against that route.
+- **Unchanged.** Review still runs; JEV only chooses the model that reviews. Review replacement, JEV pruning, semantic cache, and transcript compaction remain out of scope.
+
+**Evidence status.** Only `routine`/`low` implementation has paired complete-task evidence. The other levels are enforced by user decision without paired economics. This departs from gate I4, and the changelog and validation doc must say so. In-host delegation saved little on a small task in the 0.8.0 trials; that result stays recorded.
+
+**Acceptance:**
+
+- TDD for the policy change.
+- Zero enforced routes below the safety-corpus minimums or floors, including against an adversarial always-cheapest JEV mock.
+- Flagged tasks are up-only, and hard-risk tasks stay on baseline.
+- `off` or an unset value restores the baseline exactly, and the hook off switch still works.
+- Metadata-only requests; the key is never printed.
+- `optimizer.test.mjs`, context budget, packaging, and `git diff --check` pass.
+- The live corpus runs in `enforce`. Live end-to-end trials per host run on `tests/fixtures/service` with harness-chosen models and no repo mapping, plus one `off` trial. Results are recorded as live or simulated.
+
+#### Slice 4 amendment 2 — richer route metadata (2026-09-25, user decision)
+
+**Problem.** In the medium-task benchmark, JEV held on 5 of 6 `enforce` runs because capability confidence sat at 0.48–0.59, around the 0.55 gate. A metadata-only probe of 12 calls on the same task measured capability confidence as follows:
+
+- current request: 0.35–0.39;
+- concrete objective and itemized acceptance only: 0.65–0.67;
+- five new facts only: 0.64–0.66;
+- both: 0.83–0.87.
+
+Effort stayed `low` at 0.81–0.94, and the consequence signal stayed low.
+
+**Change.**
+
+- Add five **optional** `facts` fields to the route request:
+  - `existing_check` (bool): the acceptance names an automated check that already exists in the repo;
+  - `spec_exact` (bool): the approved plan states exact inputs, outputs, and error behavior;
+  - `follows_existing_pattern` (bool): the change mirrors an existing pattern in the repo;
+  - `new_dependencies` (bool);
+  - `lines_estimate` (integer).
+- Omit any field that is not verified from the approved plan or repository. An absent field is never treated as favorable. Unknown fields are still rejected.
+- Guidance: write `objective` and `acceptance` as the concrete approved spec (field rules, status codes, file placement) within the existing size limits. They still carry no source, diffs, or transcripts.
+- Bump the policy version to 7 so old cache entries are not reused. Confidence and margin thresholds, floors, gates, `up_only`, and escalation are unchanged. Update the MCP schema and the optimizer reference example.
+
+**Safety.** Richer facts can only change JEV's answer; request floors and deterministic gates still bound every route. The safety corpus gains honest facts, plus one family where hard work carries optimistic facts; it must still route no lower than its floors. The live corpus must show zero unsafe routes.
+
+**Acceptance.**
+
+- TDD for the schema and validation, including optional presence, type rejection, and cache-key change.
+- `optimizer.test.mjs`, context budget, packaging, and `git diff --check` pass.
+- The live corpus in `enforce` shows 0 unsafe routes.
+- The paired medium-task benchmark is rerun, three pairs per host, with enriched metadata and recorded against the previous run.
 
 ### Slice 5 — Exact repository reuse and cache receipts
 

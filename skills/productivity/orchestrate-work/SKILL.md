@@ -2,7 +2,7 @@
 name: orchestrate-work
 description: Route substantive work to direct tools, the current agent, or one bounded worker using capability, effort, risk, and evidence. Use inside an active FeatureKit workflow.
 metadata:
-  featurekit-version: "0.7.1"
+  featurekit-version: "0.8.0"
 ---
 
 # Orchestrate Work
@@ -24,7 +24,7 @@ Apply the [workflow invariants](references/invariants.md). The primary owns requ
 
 Pass an actual supported model/alias and effort when the backend allows it. Explicit user/repo pins, provider restrictions, approval, security floors, and required proof win. Missing or uncertain metadata never justifies a downgrade. If no worker is suitable, continue here when capable or report the judgment/proof gap.
 
-Reuse exact fact receipts before discovery. Use hook advice; never call JEV twice. Otherwise use connected `route` or [optimizer.md](references/optimizer.md) once. Shadow never changes execution; failure keeps the baseline.
+Reuse exact fact receipts before discovery. Use hook advice; never call JEV twice. Otherwise use connected `route` or [optimizer.md](references/optimizer.md) once. Only an `enforced` result changes execution; failure keeps the baseline.
 
 Load only the routed reference in `references/`; API-funded fallback requires explicit authorization.
 

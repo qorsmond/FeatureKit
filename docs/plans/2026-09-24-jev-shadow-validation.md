@@ -407,3 +407,238 @@ Retries and escalations were zero in every arm, and every diff passed `git diff 
 - No automatic routing path exists yet.
 
 Promotion evidence for this manual class is met: three equivalent passing pairs, zero unsafe downgrades, no unresolved material tool confound, and positive median frontier reduction. Narrow enforcement for the routine implementation class is economically justified on both Codex and Claude. The remaining production step is a separately approved, reversible, family-specific enforcement path followed by an end-to-end enforced trial in each host.
+
+## Slice 4 enforced routing — FeatureKit 0.8.0 — 2026-09-25
+
+Verdict: **validated** for the mechanism and safety of the single enforced class `routine-implement-low`, when the routed model runs the task session itself. That class covers approved-write `implement` tasks with no risk flags, a routine capability floor, no cross-boundary work, no unknown root cause, no current failure, and no prior attempt, where JEV approves routine capability at a `low` effort floor. Policy v6 thresholds are unchanged, and every other family remains advisory. **Economics failed** when an in-host frontier primary delegates the same task to a routed worker; see "In-host primary trials" below.
+
+**Implementation.**
+
+- `FEATUREKIT_JEV_ROUTING=enforce` is a third mode. An unset value or `off` still returns `status: off` with no provider call.
+- For the eligible class, the optimizer raises the effort floor to `low` before the single JEV request. A `shadow`-quality answer approving routine and low becomes `status: enforced`, `baseline_preserved: false`, and the semantic route above. Any `hold`, `skipped`, `unavailable`, weak dimension, high-consequence signal, or ineligible request returns the unchanged baseline-preserving result.
+- The target repo's `docs/agents/orchestration.md` `routine` row maps the route to a model, resolved against runtime discovery. Core names no models.
+- A local `attempts.json` ledger records requested and runtime-reported model/effort (`null` when unreported). A routed attempt is allowed only first; its failure returns `escalate-baseline` once, counted against the routed class.
+- The live trial exposed a precedence bug. With the host set to `enforce`, the hook's `/bin/zsh -ic` fallback re-sourced a `.zshrc` exporting `shadow`, silently downgrading the mode. The hook now passes an explicit host value as `FEATUREKIT_JEV_HOST_ROUTING`, which `route-hook.mjs` prefers. The 0.7.1 `off` early exit is unchanged. A regression test failed before the fix and passes after. The documented Codex hook snippet gained the same prefix; it was exercised by command form below, not inside the Codex hook runner.
+
+**Deterministic evidence.** `node --test tests/optimizer.test.mjs` passed 27 tests; the new ones were written red first. They cover:
+
+- the eligible route and the `low` floor raise;
+- twenty ineligible or weak cases that never enforce;
+- an adversarial always-routine/low mock across the 15-family safety corpus, where only `routine-implementation` enforces and any other enforced family is flagged `UNSAFE_ENFORCEMENT`;
+- off, missing, and invalid modes making no provider call;
+- attempt-ledger escalation, content rejection, and 0600 permissions;
+- hook enforced-text injection and host-mode precedence;
+- the unchanged 0.7.1 off-switch test.
+
+Removing the operation, risk-flag, prior-attempt, or floor-raise clause makes a test fail. A `risk_floor_applied` clause proved unreachable, because high consequence already forces `deep` capability, and was removed. `check_context_budget.py`, `check_packaging.py` (30 skills, release 0.8.0), script syntax checks, and `git diff --check` passed.
+
+**Live safety corpus.** `node tests/run_jev_shadow.mjs --enforce` ran against TypeSafe `jev-1.13.0`. Results: 15 cases, 3 deterministic skips, 12 provider calls, 1 `hold` (known-root debugging), **0 unsafe**, and exactly one enforced family, `routine-implementation`. Reported usage was 15,920 input / 5,481 output JEV tokens.
+
+**End-to-end trials.** All trials were live. Each ran in a fresh disposable Git repo outside the checkout, built from `tests/fixtures/service` plus a mapping table and plan (tree `4278be9c252ca5f47828e95334cddafe840f21f6`). `python3 check_health.py` failed before every run.
+
+- A coordinating script acted as the primary's deterministic steps: capsule write, the real hook command, mapping resolution, one child dispatch, external acceptance, and the ledger. No in-host primary made these choices.
+- A `https.request` wrapper recorded only the host, path, and body of TypeSafe calls. Every body contained only `model`, `state` (the task/facts/policy metadata), and `questions`. The hook-input prompt canary and all source were absent, and the key was never read or recorded.
+- Children ran with `FEATUREKIT_JEV_ROUTING=off` and no MCP. Claude children used `--strict-mcp-config`, no session persistence, 20 max turns, and fixture-scoped tools. Codex children used `--ignore-user-config --ignore-rules`, an ephemeral session, and the workspace-write sandbox.
+
+| Trial | Hook result (JEV usage) | Requested model / effort | Runtime model / effort | Child usage | Acceptance | Files | Ledger |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Claude `enforce` (plugin `hooks/hooks.json` command, `.zshrc` exporting `shadow`) | `enforced`, full advisory, 1 call, floor sent `low` (1,342 / 463) | `haiku` / `low` from repo row; `--effort low` confirmed in CLI | `claude-haiku-4-5-20251001` / `null` | 34 + 84,803 cache-read + 9,256 cache-write in; 1,155 out; 4 turns; 18.4 s; $0.0328 reported | pass | `server.py` | `validate`, 0 escalations |
+| Codex `enforce` (documented Codex hook command form) | `enforced`, partial advisory, 1 call, floor sent `low` (1,341 / 463) | `gpt-5.6-luna` / `low` from repo row; confirmed listed with `low` by `codex debug models` | `null` / `null` (not reported) | 51,150 in (44,032 cached); 777 out (108 reasoning); 26.8 s | pass | `server.py` | `validate`, 0 escalations |
+| Claude `off` (plugin command, `.zshrc` exporting `shadow`) | no output; **0** TypeSafe calls; no trace | host default / host default | `claude-opus-5-5` / `null` | 8 + 76,683 cache-read + 11,004 cache-write in; 1,115 out; 6 turns; 17.1 s; $0.1257 reported | pass | `server.py` | `validate` |
+
+Every diff passed `git diff --check`, and no untracked files were created. In the Claude enforced trial, zero frontier (Opus) tokens were used; the off-mode baseline used 95,695 Opus input tokens on the same task. That is one observation per arm, not a paired benchmark; the three-pair economics above remain the promotion evidence.
+
+**Simulated, unavailable, or not run.**
+
+- Nothing was simulated.
+- In-host Codex primary orchestration was not exercised; the in-host Claude trials are below.
+- The Codex hook ran through the documented command form, not the Codex app's trusted hook runner.
+- Runtime effort is unreported by both hosts, and Codex runtime model is unreported.
+- Review replacement, JEV pruning, semantic cache, and transcript compaction remain out of scope and unchanged.
+
+Disposable repos were deleted after recording; content-free summaries were kept only in session scratch space.
+
+### Live escalation (induced failure)
+
+The Claude `enforce` trial was repeated with the routed child limited to one turn, so it could not finish. The hook returned `enforced` from one JEV call (1,345 / 463 tokens). The routed `haiku`/`low` child ran as `claude-haiku-4-5-20251001`, ended with an error after 2 turns ($0.0184 reported), and left the tree unchanged. External acceptance failed, and the ledger returned `escalate-baseline`. The coordinator restored the tree and ran the baseline once, which ran as `claude-opus-5-5` and passed after 5 turns ($0.1187), changing only `server.py`. The final ledger held two attempts (`routed` failed, then `baseline` passed) and `escalations: {"routine-implement-low": 1}`, with runtime effort `null` for both. The failure was induced by the coordinator and is labeled as such; it tests the escalation mechanics, not the routed model's quality.
+
+### In-host primary trials (Claude)
+
+A real non-interactive Claude primary ran `/featurekit:implement docs/plan.md` in fresh disposable repos. It used the FeatureKit 0.8.0 plugin loaded with `--plugin-dir`, host default `claude-opus-5-5`, and the same fixture, mapping and capsule. The plugin hook ran before the first model turn. In `enforce` runs it made exactly one metadata-only TypeSafe call with the floor sent as `low`; in the `off` run it made none.
+
+| Run | Hook text | Primary behavior | Opus input (uncached + cache-read + cache-write) | Haiku input | Turns | Reported cost | Acceptance / files |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| `off` | none | edited directly | 194,475 (14 + 176,432 + 18,029) | 0 | 9 | $0.229 | pass / `server.py` |
+| `enforce` #1 | original enforced text | read plan, mapping and source, then dispatched `Agent` with `model: haiku` and verified | 193,023 (14 + 174,950 + 18,059) | 80,729 | 9 | $0.261 | pass / `server.py` |
+| `enforce` #2 | revised: dispatch immediately, pass paths, record ledger | dispatched `Agent` with `model: haiku` right after reading the plan and mapping, verified, then searched for and wrote the attempt ledger | 286,151 (20 + 265,408 + 20,723) | 66,626 | 11 | $0.309 | pass / `server.py` |
+
+Findings:
+
+- **Routing:** the enforced route, the repo mapping and model identity were honored in-host. The worker ran as `claude-haiku-4-5-20251001`.
+- **Effort:** Claude's `Agent` tool takes a model but no effort, so the routed `low` effort could not be passed to the in-host worker. The primary nevertheless recorded requested effort `low` in run #2, which is inaccurate; the hook text says such a setting is `null`. It also recorded the runtime model as `null`, although the host's `modelUsage` reported Haiku to the coordinator.
+- **Economics:** with one observation per arm, in-host delegation did not reduce frontier tokens. The change was −0.7% in run #1 and +47% in run #2, and cost was higher in both runs. The primary's own turns (skill loading, plan reading, dispatch, verification, reporting) dominate this small task, and ledger lookups added turns. The revised hook text is kept because it removes the source pre-read, but it does not make in-host delegation economic here.
+- **Where the saving comes from:** every trial with a positive frontier reduction ran the whole task session on the routed model. That covers the three-pair Codex and Claude benchmarks and the coordinator-driven trials above. That is the configuration Slice 4's economics support.
+
+### Packaged install
+
+In a disposable Git repo, `npx skills@latest add <checkout> --list` and the 22-skill install for Codex, Claude Code and OpenCode succeeded. Every `skills use` smoke listed in `AGENTS.md` passed. The installed `orchestrate-work` copy contained `scripts/optimizer.mjs` and the `Enforced route` reference, with `featurekit-version: "0.8.0"`. All 30 skill files carry the release version.
+
+## Slice 4 amendment — every level enforced, harness-chosen models — 2026-09-25
+
+The user approved the plan amendment "route every level". JEV's confident capability and effort choice is enforced at every level. The harness picks models at runtime, and repos name no models. Caution-flagged routes are up-only, and routing applies everywhere. This supersedes the one-class gate and the repo model table in the section above. The earlier trial rows remain valid evidence for `routine`/`low`.
+
+Verdict: **validated** for safety, gates, and host behavior; **economics mixed**. Tasks launched on the routed model save frontier tokens. A live primary that delegates a small task does not reliably save: roughly −15% on Claude and +105% on Codex in single runs.
+
+**Deterministic.**
+
+- `node --test tests/optimizer.test.mjs` passed 27 tests; changed tests were red first. They cover:
+  - enforcement at `routine`, `standard`, and `deep`, and across operations;
+  - floors are never undercut;
+  - flagged routes are `up_only`;
+  - hard-risk, unapproved, pending-decision, lookup, hold, unclear, provider-failure, and malformed cases keep the baseline;
+  - an adversarial always-cheapest JEV mock across the corpus stays at or above every minimum;
+  - the ledger accepts only `<capability>-<effort>` route classes;
+  - the hook text names no models, embeds the exact ledger command, and treats environment-blocked checks as gaps.
+- Mutations disabling `up_only`, the floor raise, or the mode check each fail tests. A redundant approved-dimension check was removed.
+- Context budget, packaging (30 skills, 0.8.0), and `git diff --check` passed.
+
+**Live corpus (`run_jev_shadow.mjs --enforce`, TypeSafe `jev-1.13.0`).**
+
+- 15 cases, 12 provider calls, 15,920 / 5,481 JEV tokens, **0 unsafe**.
+- Enforced routes: `routine-low` for routine edit and routine implementation; `standard-low` for normal implementation; `standard-medium` for cross-module, long-context, large discovery, and large review; `deep-high` for architecture, unknown-root debugging, prior failure, and misleading completion. Every flagged case was `up_only`.
+- One `hold` (known-root debugging) kept the baseline. Lookup, pending decision, and security/destructive were skipped.
+
+**Live end-to-end trials.** All ran in fresh disposable repos with **no model table**; the `off` rows were rerun on the final code.
+
+| Trial | How JEV reached the primary | Model chosen by harness | Frontier input | Worker input | Result |
+| --- | --- | --- | ---: | ---: | --- |
+| Claude in-host `enforce` (`/featurekit:implement`, plugin hook) | live plugin hook | Opus primary chose `Agent` `haiku`; effort recorded `null` because the tool cannot pass it | 164,887 Opus, 6 turns | 102,340 Haiku | pass, `server.py` only; ledger 1 routed attempt passed; $0.252 |
+| Claude in-host `off` (0.8.0 run above) | none | — | 194,475 Opus, 9 turns | 0 | pass; $0.229 |
+| Codex in-host `enforce`, run 1 | live hook (Codex command form), delivered through the prompt | `gpt-5.6-sol`/`xhigh` primary chose worker `gpt-5.6-luna`/`low` | 293,647 sol (268,672 cached) | not reported | final tree pass. The sandbox blocked the check's localhost bind; the primary misread this as a routed failure and escalated to baseline. Two worker-start retries. |
+| Codex in-host `enforce`, run 2 (after the environment-gap rule) | same | worker `gpt-5.6-luna`/`low` | 184,941 sol (168,192 cached) | not reported | pass, `server.py` only; the bind block was reported as a gap and not escalated; ledger 1 routed attempt passed |
+| Codex in-host `off` | none (0 calls) | — | 90,212 sol (83,328 cached) | 0 | pass |
+| Claude launched `off` (coordinator, plugin hook command) | none (0 calls, 0 traces) | host default `claude-opus-5-5` | 6 turns, $0.1259 | 0 | pass |
+
+Codex run 1 exposed a real defect: an environment-blocked check was counted as a routed failure. The hook and optimizer reference now say an environment-blocked check is a gap, not a routed failure. The new assertion failed before the change, and run 2 confirmed the fix.
+
+**Simulated or unavailable.**
+
+- The Codex primary received the live hook's output through its prompt, not through Codex's trusted hook runner. The user's `~/.codex/hooks.json` entry predates the new command and was not modified.
+- Codex does not report worker usage or runtime model/effort in `exec` JSON, so the Codex worker cost is unknown. Claude reports no runtime effort.
+- Levels other than `routine`/`low` have route-only live evidence, not paired complete-task economics.
+- Each in-host figure is a single run.
+
+## Paired in-host benchmark on a medium task — 2026-09-25
+
+Verdict: **quality validated; savings shown in 1 of 6 `enforce` runs**. JEV held on 5 of 6 `enforce` runs for this task, and those runs used the baseline as designed. The one routed run halved Opus usage with equal quality. Codex produced no routed run, so its savings are unmeasured.
+
+**Fixture.** A disposable three-module Python inventory service (`app/store.py`, `app/validation.py`, `app/server.py`). The approved plan adds `POST /items` with strict validation, `GET /items`, and `GET /items/<id>`, with JSON errors. `check_items.py` runs 27 in-memory assertions against the real handler, covering validation edges, ids, ordering, and 404 and 400 bodies. It needs no port binding, so sandboxes cannot block it. The check failed on the fixture and passed against a coordinator reference implementation before the trials. The fixture lived only in session scratch space.
+
+**Procedure.**
+
+- Three pairs per host, all live, each run in a fresh disposable repo. Run order was `off`/`enforce`, `enforce`/`off`, `off`/`enforce`.
+- Claude: `/featurekit:implement PLAN.md` with the plugin loaded and the host default Opus. The plugin hook was live.
+- Codex: `codex exec` on `gpt-5.6-sol`/`xhigh` with multi-agent enabled and the live hook's output delivered through the prompt.
+- No run had a model table. Route metadata: implement, approved-write, 3 files, no flags, floor `routine`/`minimal` (raised to `low`).
+
+| Host | Pair | Mode | JEV | Frontier input | Worker input | Turns | Cost | Acceptance |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| Claude | 1 | off | — | 298,976 Opus | 0 | 17 | $0.352 | pass |
+| Claude | 1 | enforce | `hold` (capability 0.48 conf / 0.22 margin) | 330,027 Opus | 0 | 15 | $0.359 | pass |
+| Claude | 2 | enforce | `enforced` `routine-low` (0.59 / 0.38) | 142,695 Opus | 195,390 Haiku (chosen by primary; effort `null`) | 5 | $0.311 | pass |
+| Claude | 2 | off | — | 367,211 Opus | 0 | 15 | $0.387 | pass |
+| Claude | 3 | off | — | 295,101 Opus | 0 | 15 | $0.359 | pass |
+| Claude | 3 | enforce | `hold` | 235,295 Opus | 0 | 14 | $0.326 | pass |
+| Codex | 1 | off | — | 178,395 sol (163,072 cached) | 0 | — | — | pass |
+| Codex | 1 | enforce | `hold` | 138,735 sol (126,720 cached) | 0 | — | — | pass |
+| Codex | 2 | enforce | `hold` | 185,318 sol (157,952 cached) | 0 | — | — | pass |
+| Codex | 2 | off | — | 216,229 sol (193,408 cached) | 0 | — | — | pass |
+| Codex | 3 | off | — | 139,104 sol (112,128 cached) | 0 | — | — | pass |
+| Codex | 3 | enforce | `hold` | 198,940 sol (175,872 cached) | 0 | — | — | pass |
+
+Each JEV call used about 1,360 input / 463 output tokens, reported separately.
+
+**Findings.**
+
+- **Routing signal:** on this medium task, JEV leaned `routine` (effort `low` at 0.9 confidence) but with borderline capability confidence of 0.48–0.59 against the 0.55 gate. It held 5 of 6 times and never chose `standard`. Every `hold` kept the baseline without an extra model turn. Hold runs fell within baseline variance: Claude 330k and 235k against 295k–367k; Codex 139k–199k against 139k–216k.
+- **The routed run:** the Opus primary dispatched one Haiku worker and verified the result in 5 turns. Opus input fell to 142,695, **−52%** against the `off` median of 298,976, and reported cost fell 13% ($0.311 against a $0.359 median), with equivalent passing output. This contrasts with the tiny fixture, where delegation overhead erased the saving. With n = 1 routed run, this is indicative, not a promotion result.
+- **Quality:** all 12 runs passed and changed only `app/`. There were no escalations.
+- **Unavailable:** Codex routed economics (no routed run), Codex worker usage, and runtime effort on both hosts. No condition was simulated except the Codex hook-to-prompt delivery.
+
+## Richer route metadata (policy v7) — medium-task rerun — 2026-09-25
+
+Verdict: **validated** for routing confidence, safety, and quality; **economics mixed** for in-host delegation.
+
+**Probe.** Twelve metadata-only calls on the medium task (17,292 / 5,541 JEV tokens) measured capability confidence:
+
+| Request variant | Capability confidence / margin |
+| --- | --- |
+| Previous request | 0.35–0.39 / 0.02–0.10 (never passes 0.55) |
+| Concrete objective and acceptance | 0.65–0.67 / 0.48–0.50 |
+| Five optional facts only | 0.64–0.66 / 0.46–0.50 |
+| Both | 0.83–0.87 / 0.74–0.80 |
+
+Effort was `low` at 0.81–0.94 in every variant, and the consequence signal stayed at 0.10–0.18.
+
+**Deterministic.** `node --test tests/optimizer.test.mjs` passed 28 tests. The new optional-facts test was red first; it covers strict types, unknown and missing required fields, cache-key change, the policy-v7 trace, and the MCP schema. Context budget, packaging, and `git diff --check` passed.
+
+**Live corpus (`--enforce`, policy v7).** 16 cases, 13 provider calls, 17,345 / 5,936 JEV tokens, **0 unsafe**. The new `architecture-optimistic-facts` family carried all favorable facts and still routed `deep-high`; JEV itself answered `deep`. The honest-facts routine implementation routed `routine-low`.
+
+**Paired rerun.** The procedure, fixture, and order match the previous benchmark; only the route metadata was enriched. All 12 runs passed the 27-assertion check and changed only the three `app/` files. **JEV routed 6 of 6 `enforce` runs to `routine-low`**, against 1 of 6 before.
+
+| Host | Pair | Off frontier input | Enforce frontier input | Frontier change | Off cost | Enforce cost | Worker |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| Claude | 1 | 367,528 Opus | 346,387 Opus | −5.8% | $0.383 | $0.442 | Haiku 156,969 in |
+| Claude | 2 | 342,457 | 239,827 | −30.0% | $0.405 | $0.360 | Haiku 181,543 in |
+| Claude | 3 | 328,161 | 271,968 | −17.1% | $0.370 | $0.360 | Haiku 175,411 in |
+| Codex | 1 | 110,783 sol (32,447 uncached) | 116,571 (11,099 uncached) | +5.2% total, −66% uncached | — | — | `gpt-5.6-luna`/`low`, usage not reported |
+| Codex | 2 | 115,783 (10,439) | 211,483 (14,235) | +82.7% total, +36% uncached | — | — | same, two waits |
+| Codex | 3 | 182,329 (30,393) | 156,228 (12,228) | −14.3% total, −60% uncached | — | — | same |
+
+**Findings.**
+
+- **Claude:** median frontier reduction was 56,193 Opus input tokens (−17%), positive in all three pairs. Reported cost was flat overall: $1.158 off against $1.161 enforced, with pair differences of +15%, −11%, and −3%. The Haiku worker's cost offsets most of the Opus saving.
+- **Codex:** median total `gpt-5.6-sol` input rose by 5,788 tokens. Median uncached input fell by 18,165 tokens, lower in 2 of 3 pairs. Worker usage is not reported, so complete-task cost is unknown.
+- **Speed:** enforced runs were slower on both hosts (Claude 108–122 s against 71–78 s; Codex 125–159 s against 95–133 s).
+- **Records:** the primary recorded the routed ledger attempt in 5 of 6 runs (Claude pair 1 omitted it). Requested model came from the harness's own choice (`haiku`; `gpt-5.6-luna`/`low`). Claude effort is `null` because its worker tool cannot pass effort; runtime settings are unreported.
+- **Conclusion:** richer verified metadata turns JEV's borderline holds into confident routes without unsafe downgrades. Delegation from a frontier primary now reliably cuts Claude frontier usage, but it does not cut total cost or time on this medium task. The large complete-task savings measured earlier remain specific to running the whole task session on the routed model. Only the Codex hook-to-prompt delivery was simulated.
+
+## Slice 5 — exact repository reuse — 2026-09-25
+
+Verdict: **validated**. A repeated question on an unchanged repository skipped all source reads. A relevant change forced rediscovery and produced the new answer, with no stale reuse.
+
+**Implementation.**
+
+- Receipts accept a `key` (repo, query, tool, contract version, index head, paths). The optimizer derives the exact identity locally from:
+  - HEAD;
+  - a dirty digest of the tracked diff plus untracked file contents, excluding the scratch area;
+  - the query hash;
+  - per-path content hashes.
+
+  Nothing leaves the machine, and the earlier full `identity` form still works.
+- `review` receipts are bound to the exact diff.
+- A host model catalogue is cached for 24 hours per exact host version.
+- `mode: "cache", action: "stats"` reports hit, miss, stale, and written counts plus eliminated calls. Traces carry only kind, tool, status, and reason codes, never queries or fact values.
+- `execute-slices` now routes each slice under `enforce` and prefers a fresh CLI worker session at the routed level and effort. That batch path is documented, not yet live-tested.
+
+**Deterministic.** `node --test tests/optimizer.test.mjs` passed 30 tests; the new ones were red first. Coverage:
+
+- a real temporary Git repo hits, then misses on a contract, query, relevant-file, or dirty-tree change, and hits again once content is restored;
+- review receipts, a stale Repowise index, path-escape and mixed-form rejection;
+- catalogue hit, version miss, and 24-hour stale, plus unknown-field and size rejection;
+- stats counts, and traces free of fact values and queries.
+
+Mutations removing the path guard, catalogue expiry, or elimination counting each fail tests. A redundant `git status` digest was removed; tracked diff plus untracked contents already cover it. Context budget, packaging, and `git diff --check` passed.
+
+**Live trial.**
+
+- Setup: three fresh non-interactive Claude sessions (host default `claude-opus-5-5`, no MCP, no plugin) asked the same question in a disposable repo containing the implemented items API. The prompt gave the exact receipt read/write commands.
+- Source paths: `app/server.py` and `app/validation.py`.
+
+| Session | Repo state | Receipt | Source reads | Turns | Opus input | Cost | Answer |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 1 | committed | miss → written | 2 | 5 | 88,050 | $0.132 | correct |
+| 2 | unchanged | **hit** | **0** | 2 | 42,511 | $0.023 | correct (from receipt) |
+| 3 | `app/validation.py` message edited | miss → written | 2 | 5 | 88,110 | $0.120 | correct **new** message |
+
+Session 2 removed both source reads, 52% of input tokens, and 82% of reported cost against session 1. Final stats: receipt 1 hit, 2 misses, 2 written; eliminated calls `{"source": 1}`. Nothing was simulated. Receipt use was prompted explicitly, not discovered by the model from skill text, and the disposable repo was deleted after recording.

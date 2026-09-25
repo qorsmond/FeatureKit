@@ -16,7 +16,7 @@ const STRING_ARRAY = (maxItems, maxLength) => ({
 
 export const ROUTE_TOOL = {
   name: "route",
-  description: "Advise on a FeatureKit route from bounded metadata only. Never send source, diffs, transcripts, logs, raw output, credentials, or secrets. FEATUREKIT_JEV_ROUTING=off makes no provider call; shadow returns advisory data while preserving the baseline route.",
+  description: "Advise on a FeatureKit route from bounded metadata only. Never send source, diffs, transcripts, logs, raw output, credentials, or secrets. FEATUREKIT_JEV_ROUTING=off makes no provider call; shadow returns advisory data while preserving the baseline route; enforce returns JEV's confident level as the route to run.",
   inputSchema: {
     type: "object",
     additionalProperties: false,
@@ -47,6 +47,11 @@ export const ROUTE_TOOL = {
           unknown_root_cause: { type: "boolean" },
           current_failure: { type: "boolean" },
           attempts: { type: "integer", minimum: 0, maximum: 10 },
+          existing_check: { type: "boolean", description: "Only when verified: the acceptance names an automated check already in the repo." },
+          spec_exact: { type: "boolean", description: "Only when verified: the approved plan states exact inputs, outputs, and error behavior." },
+          follows_existing_pattern: { type: "boolean", description: "Only when verified: the change mirrors an existing repo pattern." },
+          new_dependencies: { type: "boolean" },
+          lines_estimate: { type: "integer", minimum: 0, maximum: 1000000 },
         },
       },
       policy: {

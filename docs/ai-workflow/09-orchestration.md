@@ -16,24 +16,32 @@ This uses persistent repo instructions and installed skills, not a background sc
 
 ## Optional JEV shadow routing
 
-FeatureKit can ask TypeSafe JEV one batched metadata-only question about capability, effort, execution shape, context breadth, optional references, and provisional review. It is disabled by default and currently runs in **shadow** only: the normal FeatureKit route still executes, so weak or incorrect advice cannot downgrade work.
+FeatureKit can ask TypeSafe JEV one batched metadata-only question about capability, effort, execution shape, context breadth, optional references, and provisional review. It is disabled by default. In **shadow** the normal FeatureKit route still executes, so weak or incorrect advice cannot downgrade work. In **enforce**, JEV's confident capability and effort choice decides which model level runs the task.
 
 | Setting | Effect |
 | --- | --- |
 | unset or `FEATUREKIT_JEV_ROUTING=off` | No TypeSafe call. FeatureKit uses its normal route. |
 | `FEATUREKIT_JEV_ROUTING=shadow` | One bounded JEV advisory may run and cache. The normal route still wins. |
+| `FEATUREKIT_JEV_ROUTING=enforce` | Same call. When JEV is confident, the task runs at JEV's level (routine, standard or deep) and effort on a model the harness picks. Otherwise, and for gated work, the normal route runs. |
 
-There is no enforcement setting in this release. Switching back to `off` is always safe and does not require removing the key or deleting the cache.
+Switching back to `off` is always safe and does not require removing the key or deleting the cache.
 
-Configure the key in the user's environment, never in the repository:
+### Enforced routing
 
-```sh
-export TYPESAFE_API_KEY='your-key'
-export JEV_API_KEY="$TYPESAFE_API_KEY" # compatibility with upstream jev-review
-export FEATUREKIT_JEV_ROUTING=shadow
-```
+JEV decides the level: `routine`, `standard` or `deep`, plus an effort. The harness decides the model. Claude Code or Codex picks from the models it offers right now: the cheapest tier for routine work, a middle tier for standard, and the strongest for deep. FeatureKit and product repos name no models. `docs/agents/orchestration.md` can hold an optional override if you want to force one.
 
-Restart Codex or Claude Code after changing the setting so its MCP process inherits the new value. Keep `off` while installing or troubleshooting; use `shadow` when collecting advisory evidence. On macOS, Codex Desktop does not read `.zshrc` itself, so use the shell-backed Codex registration below when the variables live there.
+Some things never change:
+
+- Unapproved work, pending user decisions, security, authorization, privacy, destructive and irreversible work never go to JEV. They run on the normal route.
+- A `hold`, provider failure or weak answer runs the normal route.
+- A route never goes below the task's own minimum capability and effort.
+- Tasks flagged as a migration, ambiguous, previously failed or missing evidence can only move up. The harness uses JEV's route only if it is at least as strong as the normal model.
+- A `minimal` effort floor is raised to `low`, the lowest effort both hosts run.
+- Richer, verified task details make JEV more decisive. Describe the approved spec concretely. When the plan or repo confirms them, add the optional facts: an existing automated check, an exact spec, following an existing pattern, new dependencies, and a size estimate. Leave out anything unconfirmed.
+
+A launched task (headless or batch worker) starts on the routed model. In a live session, the primary hands the work to one worker on that model, or works directly if it already runs on it. If a routed attempt fails verification, FeatureKit reruns it once on the normal route and counts that against the route. The local `attempts.json` ledger records requested and runtime-reported model/effort; unknown values stay `null`.
+
+Only routine, low-effort implementation has paired cost evidence so far. Other levels are enforced by choice and should be watched in the ledger and traces. In the 0.8.0 trials, launched tasks saved frontier tokens. A live primary handing a small task to a worker saved little, because the primary's own turns dominate. Claude Code's in-session worker tool accepts a model but not an effort.
 
 Both harnesses use the same dependency-free optimizer and optional local MCP server. The server exposes one read-only `route` tool whose schema prevents the model from reading implementation source just to construct the request. It receives only bounded metadata and reads the key from its process environment.
 
@@ -59,7 +67,7 @@ For a Codex skills-only installation, merge this group into the `hooks.UserPromp
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/zsh -ic 'exec node \"/absolute/path/to/FeatureKit/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
+            "command": "[ \"$FEATUREKIT_JEV_ROUTING\" = off ] || FEATUREKIT_JEV_HOST_ROUTING=\"$FEATUREKIT_JEV_ROUTING\" exec /bin/zsh -ic 'exec node \"/absolute/path/to/FeatureKit/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
             "timeout": 6,
             "statusMessage": "Checking FeatureKit route"
           }
@@ -70,7 +78,7 @@ For a Codex skills-only installation, merge this group into the `hooks.UserPromp
 }
 ```
 
-In Codex, open `/hooks`, choose **Review hooks**, open **UserPromptSubmit**, select the FeatureKit command ending in `route-hook.mjs`, and press `t` until it shows **Trusted** and enabled. Trust this entry rather than all pending hooks. Repeat after its definition changes, then start a new task. Claude Code applies its normal plugin trust flow; restart it or run `/reload-plugins` after plugin changes. Check the MCP connection with `codex mcp get featurekit-jev` or `/mcp` respectively.
+The prefix keeps an explicit host `off` or `enforce` from being replaced by a value your shell startup file exports; an unset value still comes from shell startup. In Codex, open `/hooks`, choose **Review hooks**, open **UserPromptSubmit**, select the FeatureKit command ending in `route-hook.mjs`, and press `t` until it shows **Trusted** and enabled. Trust this entry rather than all pending hooks. Repeat after its definition changes, then start a new task. Claude Code applies its normal plugin trust flow; restart it or run `/reload-plugins` after plugin changes. Check the MCP connection with `codex mcp get featurekit-jev` or `/mcp` respectively.
 
 The MCP process and hook make the TypeSafe call outside the coding workspace sandbox. If either is absent or fails, the normal route continues. Do not loosen the sandbox, retry, or read optimizer source/tests to work around it; the exact compact request and capsule shapes are in the installed optimizer reference.
 
@@ -88,7 +96,7 @@ Use the installed [`compaction.md`](../../skills/productivity/orchestrate-work/r
 
 The route contract accepts bounded objective, scope, acceptance IDs/summaries, deterministic facts, floors, risk flags, and available semantic capability levels. It rejects unknown fields, oversized input, source, diffs, transcripts, and raw output. A pending user decision, hard risk floor, missing key, network/provider error, malformed answer, unavailable choice, low confidence, or small probability margin preserves the affected baseline dimensions. Risk-flagged requests never optimize execution or context. Local traces contain only identifiers, decisions, usage counts, latency, cache status, and reason codes.
 
-`source_review`, context pruning, and `transcript_compaction` are separate privacy scopes and are not enabled by metadata routing. Keep `FEATUREKIT_JEV_ROUTING=shadow` until the paired trials in [`tests/scenarios.md`](../../tests/scenarios.md) show zero unsafe downgrades for the promoted task families.
+`source_review`, context pruning, and `transcript_compaction` are separate privacy scopes and are not enabled by metadata routing. Only routine, low-effort implementation has passed paired cost trials; track the other enforced levels against [`tests/scenarios.md`](../../tests/scenarios.md) and switch back to `shadow` if a family shows unsafe downgrades.
 
 ### Optional JEV source-review pilot
 

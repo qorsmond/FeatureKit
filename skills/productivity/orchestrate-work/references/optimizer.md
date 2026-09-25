@@ -2,7 +2,7 @@
 
 The optional optimizer is a metadata-only adviser invoked through `scripts/optimizer.mjs`. It never plans, edits, dispatches, approves, or overrides FeatureKit gates.
 
-- Default mode is `off`; `shadow` calls JEV but never changes execution. No enforcement mode exists in this release.
+- `FEATUREKIT_JEV_ROUTING` is `off` (default when unset), `shadow`, or `enforce`. `off` makes no call; `shadow` never changes execution; `enforce` changes execution only when the result status is `enforced` (see below).
 - Read `TYPESAFE_API_KEY` from the environment; `JEV_API_KEY` is a compatibility alias. Never put either value in repo files, command arguments, traces, or output.
 - Send one bounded request per phase. Reject source, diffs, transcripts, raw output, unknown fields, and oversized values.
 - Treat task-family labeling as optional metadata. A weak label is omitted without discarding independently confident capability and effort advice.
@@ -15,7 +15,27 @@ Prefer the connected FeatureKit JEV server's single `route` tool. It exposes thi
 {"schema":1,"mode":"route","task":{"id":"T1","operation":"implement","objective":"bounded outcome","approval":"approved-write","scope":["path"],"acceptance":["criterion"]},"facts":{"files_estimate":1,"cross_boundary":false,"unknown_root_cause":false,"current_failure":false,"attempts":0},"policy":{"capability_floor":"routine","effort_floor":"minimal","risk_flags":[],"available_capabilities":["routine","standard","deep"]}}
 ```
 
+Optional `facts`, sent only when verified from the approved plan or repository (omit when unsure; absence is never favorable): `existing_check` (the acceptance names an automated check already in the repo), `spec_exact` (the plan states exact inputs, outputs, and errors), `follows_existing_pattern`, `new_dependencies`, `lines_estimate`. Write `objective` and `acceptance` as the concrete approved spec (field rules, status codes, file placement) within their limits. On a measured medium task this raised JEV's capability confidence from about 0.37 to 0.85. Floors and gates still bound every route.
+
 Operations: `lookup`, `edit`, `implement`, `debug`, `architecture`, `review`, `handoff`, `other`. Approvals: `read-only`, `approved-write`, `not-approved`. Risk flags: `security`, `authz`, `privacy`, `destructive`, `irreversible`, `migration`, `ambiguous`, `prior-failure`, `missing-evidence`, `user-decision-pending`. If the result is `off`, `skipped`, `hold`, or `unavailable`, use the baseline once; do not retry or inspect optimizer internals.
+
+## Enforced route
+
+In `enforce`, the optimizer raises a `minimal` effort floor to `low`, the lowest effort both hosts can run, then asks JEV once. Any `shadow`-quality answer becomes `status: "enforced"` with `route: {"class":"<capability>-<effort>","capability":"routine|standard|deep","effort":"...","up_only":false,"escalation":"baseline-once"}`. It applies to every operation that passes the approval gate. Deterministic skips (not approved, pending decision, hard risk, exact lookup), `hold`, `unavailable`, and weak signals keep the baseline. Routes never go below the request floors. A request with any caution flag (`migration`, `ambiguous`, `prior-failure`, `missing-evidence`) is marked `up_only`: use it only when it is at least as strong as the baseline model and effort.
+
+On `enforced`:
+
+1. The harness picks the model from those the host offers at runtime: `routine` = cheapest tier, `standard` = middle, `deep` = strongest. Pass the routed effort when the host supports it. A user override in `docs/agents/orchestration.md` wins; none is required, and FeatureKit names no models.
+2. If the chosen model is the one already running, work directly. Otherwise dispatch one worker immediately with plan and scope paths, not pre-read source, and verify with the acceptance checks and diff. For batch or slice work, prefer a fresh [CLI worker](backends.md) session: it runs the whole slice on the routed model and can take the routed effort, which Claude Code's in-session worker tool cannot. The measured savings come from this configuration; in-session delegation reduced frontier tokens but not total cost on a medium task.
+3. Record each attempt; any setting the host could not pass or did not report is `null`:
+
+```json
+{"schema":1,"mode":"attempt","action":"record","task_id":"T1","attempt":{"route":"routed","route_class":"routine-low","requested":{"model":"<chosen>","effort":"low"},"runtime":{"model":null,"effort":null},"outcome":"failed","evidence_ref":"path/to/check-output"}}
+```
+
+The ledger (`tasks/<id>/attempts.json`) returns `next`. A check blocked by the environment (sandbox, network, authentication) is not a routed failure: run it outside the restriction or report the gap. A failed routed attempt returns `escalate-baseline`: rerun once on the baseline with `route: "baseline"` and `route_class: null`, counted against the routed route. A routed attempt is accepted only as the first attempt. Baseline failures follow normal [recovery](recovery.md). The prompt hook injects these instructions with the exact ledger command.
+
+Only `routine`/`low` implementation has paired complete-task evidence; other levels are enforced by user decision without paired economics.
 
 ## Task capsule
 
@@ -30,13 +50,27 @@ For a host preflight, store the validated request above as `capsule.route.reques
 
 ## Exact fact receipts
 
-The script also accepts local `mode: "receipt"` requests without contacting JEV. Use these before repeating repository discovery:
+Check a receipt before repeating repository discovery, and write one after discovering a durable fact. Pass a `key`; the script derives the exact identity locally from git state and file hashes:
 
-- `action: "write"` requires `task_id`, `identity`, and a bounded `fact` with `id`, `value`, and `ref`.
-- `action: "read"` requires the same `task_id` and `identity`; an exact match returns `status: "hit"`, while changed or missing state returns `miss`.
-- `identity` contains the capsule `snapshot`, a SHA-256 `query_hash`, `tool` (`repowise`, `serena`, or `source`), `contract_version`, `index_head` (only for Repowise), and a non-empty map of relevant paths to SHA-256 content hashes.
+```json
+{"schema":1,"mode":"receipt","action":"read","task_id":"T1","key":{"repo":"/abs/repo","query":"Where is POST /items validated?","tool":"source","contract_version":1,"index_head":null,"paths":["app/validation.py"]}}
+```
 
-FeatureKit/policy version, repo/head/dirty state, artifact hashes, query, tool contract, index head, and relevant file hashes all participate in the exact key. A Repowise index behind the snapshot returns `stale` and is never stored as current proof. Keep values concise and local; store references, not source, diffs, logs, transcripts, or secrets.
+- `write` adds `"fact":{"id":"items-validation","value":"concise fact","ref":"path#symbol"}`. `read` returns `hit` with the fact, or `miss`.
+- `tool` is `repowise`, `serena`, `source`, or `review`. Set `index_head` only for Repowise. An index behind HEAD returns `stale` and is never stored as current proof.
+- The identity covers FeatureKit/policy version, repo, HEAD, and a dirty-tree digest (tracked diff plus untracked contents, excluding the scratch area). It also covers the query, tool contract, index head, and the content hash of every listed path. Any change is a miss; restoring identical content hits again.
+- A `review` receipt with the changed paths as `paths` is bound to the exact diff. Reuse a review result only on a hit.
+- The full `identity` object from earlier releases remains accepted in place of `key`.
+
+Keep values concise and local. Store references, not source, diffs, logs, transcripts, or secrets.
+
+Cache the host's runtime model list once a day, keyed by exact host version, so the harness need not rediscover it every session:
+
+```json
+{"schema":1,"mode":"catalogue","action":"write","host":{"name":"codex","version":"0.150.1"},"models":[{"id":"<model id>","efforts":["low","medium"]}]}
+```
+
+`read` with the same `host` returns `hit` with the models, `miss` for another version, or `stale` after 24 hours. `{"schema":1,"mode":"cache","action":"stats"}` reports receipt, catalogue, and JEV route hit/miss/stale counts and the calls each hit eliminated. Traces hold only kind, tool, status, and reason codes.
 
 ## Review tier selection
 

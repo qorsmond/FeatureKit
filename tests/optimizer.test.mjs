@@ -9,16 +9,20 @@ import {
   optimizeRoute,
   projectCapsule,
   pruneContext,
+  cacheStats,
+  readCatalogue,
   readReceipt,
+  recordAttempt,
   selectReviewTier,
   validateRouteRequest,
   writeCapsule,
+  writeCatalogue,
   writeReceipt,
 } from "../skills/productivity/orchestrate-work/scripts/optimizer.mjs";
 import { handleMcpRequest, ROUTE_TOOL } from "../skills/productivity/orchestrate-work/scripts/mcp-server.mjs";
 import { runRouteHook } from "../skills/productivity/orchestrate-work/scripts/route-hook.mjs";
 import { runCompactionHook } from "../skills/productivity/orchestrate-work/scripts/compaction-hook.mjs";
-import { evaluateCalibration } from "./run_jev_shadow.mjs";
+import { calibrationCases, evaluateCalibration } from "./run_jev_shadow.mjs";
 
 
 const routeRequest = (overrides = {}) => ({
@@ -82,6 +86,39 @@ const jevResponse = {
 test("route input rejects source-like and unknown fields", () => {
   assert.throws(() => validateRouteRequest({ ...routeRequest(), diff: "secret patch" }), /unknown field: diff/);
   assert.throws(() => validateRouteRequest(routeRequest({ task: { ...routeRequest().task, objective: "x".repeat(1025) } })), /objective/);
+});
+
+
+test("route input accepts only verified optional facts with strict types", async () => {
+  const rich = { existing_check: true, spec_exact: true, follows_existing_pattern: false, new_dependencies: false, lines_estimate: 80 };
+  const withFacts = (facts) => routeRequest({ facts: { ...routeRequest().facts, ...facts } });
+  assert.doesNotThrow(() => validateRouteRequest(withFacts(rich)));
+  assert.doesNotThrow(() => validateRouteRequest(withFacts({ spec_exact: true })));
+  assert.throws(() => validateRouteRequest(withFacts({ existing_check: "yes" })), /existing_check must be boolean/);
+  assert.throws(() => validateRouteRequest(withFacts({ lines_estimate: -1 })), /lines_estimate/);
+  assert.throws(() => validateRouteRequest(withFacts({ lines_estimate: 1.5 })), /lines_estimate/);
+  assert.throws(() => validateRouteRequest(withFacts({ easy: true })), /unknown field: easy/);
+  const { files_estimate, ...missingRequired } = routeRequest().facts;
+  assert.throws(() => validateRouteRequest(routeRequest({ facts: { ...missingRequired, ...rich } })), /missing field: facts.files_estimate/);
+
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-facts-"));
+  const sent = [];
+  const options = { routingMode: "shadow", apiKey: "test-key", scratchRoot, callJev: async (payload) => { sent.push(payload); return jevResponse; } };
+  try {
+    await optimizeRoute(routeRequest(), options);
+    await optimizeRoute(withFacts(rich), options);
+    assert.equal(sent.length, 2, "optional facts change the exact cache key");
+    assert.deepEqual(Object.keys(sent[0].state.facts).sort(), Object.keys(routeRequest().facts).sort());
+    assert.deepEqual(sent[1].state.facts, withFacts(rich).facts);
+    const trace = (await readFile(path.join(scratchRoot, "traces", "jev.jsonl"), "utf8")).trim().split("\n").map((line) => JSON.parse(line));
+    assert.ok(trace.every((entry) => entry.policy_version === 7));
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+
+  const factsSchema = ROUTE_TOOL.inputSchema.properties.facts;
+  assert.deepEqual(factsSchema.required, ["files_estimate", "cross_boundary", "unknown_root_cause", "current_failure", "attempts"]);
+  for (const key of Object.keys(rich)) assert.ok(key in factsSchema.properties, key);
 });
 
 
@@ -322,6 +359,209 @@ test("shadow calibration flags unsafe advisory dimensions", () => {
 });
 
 
+const routineLowResponse = () => {
+  const response = structuredClone(jevResponse);
+  response.answers.required_capability = choice("routine", ["routine", "standard", "deep", "unclear"]);
+  response.answers.required_effort = choice("low", ["minimal", "low", "medium", "high", "extra-high", "unclear"]);
+  return response;
+};
+
+
+const enforceRoute = async (request, callJev = async () => routineLowResponse()) => {
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-enforce-"));
+  try {
+    return await optimizeRoute(request, { routingMode: "enforce", apiKey: "test-key", scratchRoot, callJev });
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+};
+
+
+test("enforce mode obeys JEV at every approved level with a low effort floor", async () => {
+  let sent;
+  const routine = await enforceRoute(routeRequest(), async (payload) => { sent = payload; return routineLowResponse(); });
+  assert.equal(sent.state.policy.effort_floor, "low");
+  assert.equal(routine.status, "enforced");
+  assert.equal(routine.baseline_preserved, false);
+  assert.deepEqual(routine.route, { class: "routine-low", capability: "routine", effort: "low", up_only: false, escalation: "baseline-once" });
+  assert.ok(routine.reason_codes.includes("ENFORCED"));
+  assert.ok(!routine.reason_codes.includes("SHADOW_ONLY"));
+
+  const standard = await enforceRoute(routeRequest(), async () => structuredClone(jevResponse));
+  assert.equal(standard.route.class, "standard-low");
+  const consequential = routineLowResponse();
+  consequential.answers.high_consequence_if_wrong.noul = 0.9;
+  const deep = await enforceRoute(routeRequest(), async () => consequential);
+  assert.deepEqual([deep.status, deep.route.capability, deep.route.effort], ["enforced", "deep", "high"]);
+
+  const withTask = (task) => routeRequest({ task: { ...routeRequest().task, ...task } });
+  const withFacts = (facts) => routeRequest({ facts: { ...routeRequest().facts, ...facts } });
+  for (const request of [withTask({ operation: "debug" }), withTask({ operation: "review", approval: "read-only" }), withFacts({ attempts: 1, cross_boundary: true })]) {
+    assert.equal((await enforceRoute(request)).status, "enforced", request.task.operation);
+  }
+  const floored = await enforceRoute(routeRequest({ policy: { ...routeRequest().policy, capability_floor: "standard", effort_floor: "medium" } }));
+  assert.deepEqual([floored.route.capability, floored.route.effort], ["standard", "medium"], "routes never go below the request floors");
+
+  const shadowRoot = await mkdtemp(path.join(tmpdir(), "featurekit-shadow-"));
+  const shadow = await optimizeRoute(routeRequest(), { routingMode: "shadow", apiKey: "test-key", scratchRoot: shadowRoot, callJev: async () => routineLowResponse() });
+  await rm(shadowRoot, { recursive: true, force: true });
+  assert.equal(shadow.status, "shadow");
+  assert.equal(shadow.baseline_preserved, true);
+  assert.equal(shadow.route, undefined);
+});
+
+
+test("enforce mode marks caution-flagged routes up-only and keeps the baseline for gates and weak signals", async () => {
+  const withPolicy = (policy) => routeRequest({ policy: { ...routeRequest().policy, ...policy } });
+  const withTask = (task) => routeRequest({ task: { ...routeRequest().task, ...task } });
+  for (const flag of ["migration", "ambiguous", "prior-failure", "missing-evidence"]) {
+    const result = await enforceRoute(withPolicy({ risk_flags: [flag] }));
+    assert.equal(result.status, "enforced", flag);
+    assert.equal(result.route.up_only, true, flag);
+  }
+  const weakEffort = routineLowResponse();
+  weakEffort.answers.required_effort.confidence = 0.4;
+  const unclearCapability = routineLowResponse();
+  unclearCapability.answers.required_capability = choice("unclear", ["routine", "standard", "deep", "unclear"]);
+  const baselineCases = [
+    ["weak effort hold", routeRequest(), async () => weakEffort],
+    ["unclear capability", routeRequest(), async () => unclearCapability],
+    ["provider failure", routeRequest(), async () => { throw Object.assign(new Error("down"), { code: "TIMEOUT" }); }],
+    ["malformed answer", routeRequest(), async () => ({ answers: {} })],
+    ["hard risk", withPolicy({ risk_flags: ["security"], capability_floor: "deep" })],
+    ["destructive", withPolicy({ risk_flags: ["destructive"] })],
+    ["pending decision", withPolicy({ risk_flags: ["user-decision-pending"] })],
+    ["unapproved", withTask({ approval: "not-approved" })],
+    ["read-only write", withTask({ approval: "read-only" })],
+    ["deterministic lookup", withTask({ operation: "lookup", approval: "read-only" })],
+  ];
+  for (const [name, request, callJev] of baselineCases) {
+    const result = await enforceRoute(request, callJev);
+    assert.notEqual(result.status, "enforced", name);
+    assert.equal(result.baseline_preserved, true, name);
+    assert.equal(result.route, undefined, name);
+  }
+});
+
+
+test("enforce mode never routes the safety corpus below its minimums even with adversarial cheapest advice", async () => {
+  // The adversary always claims the cheapest level; optional advice stays unclear so it cannot mask the gate under test.
+  const adversary = routineLowResponse();
+  adversary.answers.required_effort = choice("minimal", ["minimal", "low", "medium", "high", "extra-high", "unclear"]);
+  adversary.answers.execution_shape = choice("unclear", ["direct-deterministic", "current-primary", "isolated-worker", "specialist", "unclear"]);
+  adversary.answers.context_breadth = choice("unclear", ["pointers", "targeted", "broad", "unclear"]);
+  adversary.answers.provisional_review_tier = choice("unclear", ["deterministic", "jev-review", "general", "deep-security", "unclear"]);
+  let enforced = 0;
+  for (const testCase of await calibrationCases()) {
+    const result = await enforceRoute(testCase.request, async () => adversary);
+    assert.deepEqual(evaluateCalibration(testCase, result), [], testCase.family);
+    if (result.status === "enforced") enforced += 1;
+  }
+  assert.ok(enforced >= 10, "every non-skipped corpus family is enforced");
+  const flagged = { request: routeRequest({ policy: { ...routeRequest().policy, risk_flags: ["ambiguous"] } }), minimum: { capability: "routine", effort: "low" } };
+  assert.deepEqual(evaluateCalibration(flagged, { status: "enforced", baseline_preserved: false, advisory: { capability: "routine", effort: "low" }, route: { capability: "routine", effort: "low", up_only: false } }), ["FLAGGED_NOT_UP_ONLY"]);
+  assert.deepEqual(evaluateCalibration({ skip_reason: "HARD_RISK_FLOOR", request: routeRequest() }, { status: "enforced", baseline_preserved: false, route: {} }), ["UNSAFE_ENFORCEMENT", "DETERMINISTIC_GATE_MISSED"]);
+});
+
+
+test("off, missing, or invalid routing modes restore the baseline without a provider call", async () => {
+  const previous = process.env.FEATUREKIT_JEV_ROUTING;
+  let calls = 0;
+  const callJev = async () => { calls += 1; return routineLowResponse(); };
+  try {
+    delete process.env.FEATUREKIT_JEV_ROUTING;
+    const missing = await optimizeRoute(routeRequest(), { apiKey: "test-key", callJev });
+    const off = await optimizeRoute(routeRequest(), { routingMode: "off", apiKey: "test-key", callJev });
+    for (const result of [missing, off]) {
+      assert.equal(result.status, "off");
+      assert.equal(result.baseline_preserved, true);
+      assert.equal(result.route, undefined);
+    }
+    await assert.rejects(optimizeRoute(routeRequest(), { routingMode: "enforced", apiKey: "test-key", callJev }), /off, shadow, or enforce/);
+    const noKey = await optimizeRoute(routeRequest(), { routingMode: "enforce", apiKey: "", callJev });
+    assert.equal(noKey.status, "unavailable");
+    assert.equal(noKey.baseline_preserved, true);
+    assert.equal(calls, 0);
+  } finally {
+    if (previous === undefined) delete process.env.FEATUREKIT_JEV_ROUTING;
+    else process.env.FEATUREKIT_JEV_ROUTING = previous;
+  }
+});
+
+
+test("attempt ledger allows one escalation from the routed route to baseline and records unknown runtime settings", async () => {
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-attempt-"));
+  const attempt = (overrides) => ({
+    schema: 1,
+    mode: "attempt",
+    action: "record",
+    task_id: "T1",
+    attempt: {
+      route: "routed",
+      route_class: "routine-low",
+      requested: { model: "cheap-alias", effort: "low" },
+      runtime: { model: null, effort: null },
+      outcome: "failed",
+      evidence_ref: "checks/health.txt",
+      ...overrides,
+    },
+  });
+  try {
+    const failed = await recordAttempt(attempt(), { scratchRoot });
+    assert.equal(failed.next, "escalate-baseline");
+    await assert.rejects(recordAttempt(attempt({ outcome: "passed" }), { scratchRoot }), /routed attempt/);
+    const baseline = await recordAttempt(attempt({ route: "baseline", route_class: null, requested: { model: null, effort: null }, outcome: "passed" }), { scratchRoot });
+    assert.equal(baseline.next, "validate");
+    assert.deepEqual(baseline.escalations, { "routine-low": 1 });
+    const stored = JSON.parse(await readFile(baseline.path, "utf8"));
+    assert.equal(stored.attempts.length, 2);
+    assert.deepEqual(stored.attempts[0].runtime, { model: null, effort: null });
+    assert.equal((await stat(baseline.path)).mode & 0o777, 0o600);
+    await assert.rejects(recordAttempt({ ...attempt(), attempt: { ...attempt().attempt, transcript: "x" } }, { scratchRoot }), /unknown field: transcript/);
+    await assert.rejects(recordAttempt(attempt({ route: "baseline", route_class: "routine-low" }), { scratchRoot }), /route_class/);
+    await assert.rejects(recordAttempt({ ...attempt(), task_id: "T2", attempt: { ...attempt().attempt, route_class: "cheap-please" } }, { scratchRoot }), /route_class/);
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
+test("prompt hook states an enforced route with its baseline escalation", async () => {
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-hook-enforce-"));
+  const request = routeRequest();
+  const capsule = {
+    featurekit_version: "0.7.1",
+    policy_version: 6,
+    snapshot: { repo: "fixture", head: "abc123", dirty_digest: "clean", artifact_hashes: {} },
+    authority: { level: "approved-write", artifact: "docs/plan.md", scope: ["src/a"], exclusions: [] },
+    requirements: { objective: "Implement A", acceptance: ["A1"], constraints: [] },
+    risk: { flags: [], capability_floor: "routine", review_floor: "deterministic" },
+    route: { request },
+    work: { jobs: [], status: "ready", changed_paths: [] },
+    failures: [],
+    evidence: [],
+    review: {},
+    decisions: [],
+  };
+  const optimize = async () => ({ schema: 1, status: "enforced", baseline_preserved: false, advisory: { capability: "routine", effort: "low" }, route: { class: "routine-low", capability: "routine", effort: "low", up_only: false, escalation: "baseline-once" }, approved_dimensions: ["capability", "effort"], gates: {}, cache: "miss", reason_codes: ["ENFORCED"] });
+  try {
+    await writeCapsule({ schema: 1, mode: "capsule", action: "write", task_id: "T1", expected_revision: 0, capsule }, { scratchRoot });
+    const output = await runRouteHook({ hook_event_name: "UserPromptSubmit", cwd: "/ignored" }, { scratchRoot, optimize });
+    const text = output.hookSpecificOutput.additionalContext;
+    assert.match(text, /enforced/i);
+    assert.match(text, /\"class\":\"routine-low\"/);
+    assert.match(text, /escalate once to the baseline/);
+    assert.match(text, /models this host currently offers.*cheapest tier/);
+    assert.match(text, /optimizer\.mjs/);
+    assert.match(text, /environment.*is not a routed failure/);
+    assert.doesNotMatch(text, /haiku|sonnet|opus|gpt-/i);
+    assert.doesNotMatch(text, /advisory only/);
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
 test("capsule writes atomically and projections reject stale snapshots", async () => {
   const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-capsule-"));
   const capsule = {
@@ -435,6 +675,69 @@ test("Claude plugin prompt hook honors an explicit host off setting before shell
 });
 
 
+test("Claude plugin prompt hook keeps an explicit host routing mode over shell startup", async () => {
+  const home = await mkdtemp(path.join(tmpdir(), "featurekit-hook-mode-"));
+  const pluginRoot = path.join(home, "plugin");
+  const scripts = path.join(pluginRoot, "skills", "productivity", "orchestrate-work", "scripts");
+  const root = path.resolve(import.meta.dirname, "..");
+  const { hooks } = JSON.parse(await readFile(path.join(root, "hooks", "hooks.json"), "utf8"));
+  const command = hooks.UserPromptSubmit[0].hooks[0].command;
+  const run = (routing) => {
+    const env = { PATH: process.env.PATH, HOME: home, ZDOTDIR: home, CLAUDE_PLUGIN_ROOT: pluginRoot };
+    if (routing) env.FEATUREKIT_JEV_ROUTING = routing;
+    return spawnSync("/bin/sh", ["-c", command], { env, input: "{}", encoding: "utf8" }).stdout.trim();
+  };
+  try {
+    await import("node:fs/promises").then(({ mkdir }) => mkdir(scripts, { recursive: true }));
+    await writeFile(path.join(scripts, "route-hook.mjs"), "process.stdout.write(`${process.env.FEATUREKIT_JEV_HOST_ROUTING || \"-\"} ${process.env.FEATUREKIT_JEV_ROUTING}`);\n");
+    await writeFile(path.join(home, ".zshrc"), "export FEATUREKIT_JEV_ROUTING=shadow\n");
+    assert.equal(run("enforce"), "enforce shadow");
+    assert.equal(run(null), "- shadow");
+    assert.equal(run("off"), "");
+  } finally {
+    await rm(home, { recursive: true, force: true });
+  }
+});
+
+
+test("prompt hook routes with the preserved host mode", async () => {
+  const saved = Object.fromEntries(["FEATUREKIT_JEV_HOST_ROUTING", "FEATUREKIT_JEV_ROUTING", "TYPESAFE_API_KEY", "JEV_API_KEY"].map((name) => [name, process.env[name]]));
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-hook-host-mode-"));
+  const request = routeRequest();
+  const capsule = {
+    featurekit_version: "0.8.0",
+    policy_version: 6,
+    snapshot: { repo: "fixture", head: "abc123", dirty_digest: "clean", artifact_hashes: {} },
+    authority: { level: "approved-write", artifact: "docs/plan.md", scope: ["src/a"], exclusions: [] },
+    requirements: { objective: "Implement A", acceptance: ["A1"], constraints: [] },
+    risk: { flags: [], capability_floor: "routine", review_floor: "deterministic" },
+    route: { request },
+    work: { jobs: [], status: "ready", changed_paths: [] },
+    failures: [],
+    evidence: [],
+    review: {},
+    decisions: [],
+  };
+  try {
+    await writeCapsule({ schema: 1, mode: "capsule", action: "write", task_id: "T1", expected_revision: 0, capsule }, { scratchRoot });
+    // No key reaches a regression: a missing key would still leave a trace, which the assertion rejects.
+    delete process.env.TYPESAFE_API_KEY;
+    delete process.env.JEV_API_KEY;
+    process.env.FEATUREKIT_JEV_ROUTING = "shadow";
+    process.env.FEATUREKIT_JEV_HOST_ROUTING = "off";
+    const output = await runRouteHook({ hook_event_name: "UserPromptSubmit", cwd: "/ignored" }, { scratchRoot });
+    assert.equal(output, null);
+    assert.equal(await readdir(path.join(scratchRoot, "traces")).catch(() => null), null);
+  } finally {
+    for (const [name, value] of Object.entries(saved)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
 test("Codex compaction hook restores one active capsule pointer without transcript content", async () => {
   const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-compact-hook-"));
   const request = routeRequest();
@@ -489,6 +792,81 @@ test("fact receipts reuse only exact fresh repository state", async () => {
     const staleIndex = { ...identity, tool: "repowise", index_head: "older-head" };
     const stale = await writeReceipt({ schema: 1, mode: "receipt", action: "write", task_id: "T1", identity: staleIndex, fact }, { scratchRoot });
     assert.deepEqual(stale.reason_codes, ["INDEX_BEHIND"]);
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
+test("key-based receipts derive exact repository identity and miss on any relevant change", async () => {
+  const repo = await mkdtemp(path.join(tmpdir(), "featurekit-receipt-repo-"));
+  const scratchRoot = path.join(repo, ".scratch", "featurekit");
+  const git = (...args) => spawnSync("git", args, { cwd: repo, encoding: "utf8" });
+  const key = (overrides = {}) => ({ repo, query: "Where is POST /items validated?", tool: "source", contract_version: 1, index_head: null, paths: ["app/server.py"], ...overrides });
+  const read = (k = key()) => readReceipt({ schema: 1, mode: "receipt", action: "read", task_id: "T1", key: k }, { scratchRoot });
+  const fact = { id: "items-validation", value: "Validation runs in app/validation.py validate_item", ref: "app/validation.py#validate_item" };
+  try {
+    await writeFile(path.join(repo, "server.txt"), "x");
+    await import("node:fs/promises").then(({ mkdir }) => mkdir(path.join(repo, "app")));
+    await writeFile(path.join(repo, "app", "server.py"), "print('a')\n");
+    await writeFile(path.join(repo, ".gitignore"), ".scratch/\n");
+    git("init", "-q"); git("add", "-A"); git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "init");
+
+    const written = await writeReceipt({ schema: 1, mode: "receipt", action: "write", task_id: "T1", key: key(), fact }, { scratchRoot });
+    assert.equal(written.status, "written");
+    const hit = await read();
+    assert.equal(hit.status, "hit");
+    assert.equal(hit.fact.value, fact.value);
+    assert.equal((await read(key({ contract_version: 2 }))).status, "miss", "contract change");
+    assert.equal((await read(key({ query: "Where is GET handled?" }))).status, "miss", "different query");
+
+    await writeFile(path.join(repo, "app", "server.py"), "print('b')\n");
+    assert.equal((await read()).status, "miss", "relevant file change");
+    await writeFile(path.join(repo, "app", "server.py"), "print('a')\n");
+    assert.equal((await read()).status, "hit", "restored content hits again");
+    await writeFile(path.join(repo, "notes.txt"), "untracked");
+    assert.equal((await read()).status, "miss", "dirty-tree change");
+    await rm(path.join(repo, "notes.txt"));
+
+    const review = await writeReceipt({ schema: 1, mode: "receipt", action: "write", task_id: "T1", key: key({ tool: "review", query: "general review of the approved diff" }), fact: { id: "review-general", value: "general review: no blocking findings", ref: "review/notes.md" } }, { scratchRoot });
+    assert.equal(review.status, "written");
+    assert.equal((await read(key({ tool: "review", query: "general review of the approved diff" }))).status, "hit");
+    const stale = await writeReceipt({ schema: 1, mode: "receipt", action: "write", task_id: "T1", key: key({ tool: "repowise", index_head: "older" }), fact }, { scratchRoot });
+    assert.equal(stale.status, "stale");
+    await assert.rejects(readReceipt({ schema: 1, mode: "receipt", action: "read", task_id: "T1", key: key({ paths: ["../outside.txt"] }) }, { scratchRoot }), /path/);
+    await assert.rejects(readReceipt({ schema: 1, mode: "receipt", action: "read", task_id: "T1", key: key(), identity: {} }, { scratchRoot }), /unknown field|exactly one/);
+
+    const stats = await cacheStats({ schema: 1, mode: "cache", action: "stats" }, { scratchRoot });
+    assert.equal(stats.receipt.hit, 3);
+    assert.equal(stats.receipt.miss, 4);
+    assert.equal(stats.receipt.stale, 1);
+    assert.deepEqual(stats.eliminated_calls, { source: 2, review: 1 });
+    const trace = await readFile(path.join(scratchRoot, "traces", "cache.jsonl"), "utf8");
+    assert.doesNotMatch(trace, /validate_item|no blocking findings|POST \/items/, "traces carry no fact values or queries");
+  } finally {
+    await rm(repo, { recursive: true, force: true });
+  }
+});
+
+
+test("host model catalogue caches exact host versions for one day", async () => {
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-catalogue-"));
+  const host = { name: "codex", version: "0.150.1" };
+  const models = [{ id: "model-a", efforts: ["low", "medium"] }, { id: "model-b", efforts: ["low"] }];
+  const read = (h = host, now = 1_000_000) => readCatalogue({ schema: 1, mode: "catalogue", action: "read", host: h }, { scratchRoot, now });
+  try {
+    assert.equal((await read()).status, "miss");
+    await writeCatalogue({ schema: 1, mode: "catalogue", action: "write", host, models }, { scratchRoot, now: 1_000_000 });
+    const hit = await read(host, 1_000_000 + 3600_000);
+    assert.equal(hit.status, "hit");
+    assert.deepEqual(hit.models, models);
+    assert.equal((await read({ ...host, version: "0.151.0" })).status, "miss", "host upgrade");
+    assert.equal((await read(host, 1_000_000 + 25 * 3600_000)).status, "stale", "older than one day");
+    await assert.rejects(writeCatalogue({ schema: 1, mode: "catalogue", action: "write", host, models: [{ id: "m", efforts: ["low"], api_key: "x" }] }, { scratchRoot }), /unknown field: api_key/);
+    await assert.rejects(writeCatalogue({ schema: 1, mode: "catalogue", action: "write", host, models: Array.from({ length: 65 }, (_, i) => ({ id: `m${i}`, efforts: ["low"] })) }, { scratchRoot }), /models/);
+    const stats = await cacheStats({ schema: 1, mode: "cache", action: "stats" }, { scratchRoot });
+    assert.deepEqual(stats.catalogue, { hit: 1, miss: 2, stale: 1, written: 1 });
+    assert.equal(stats.eliminated_calls.catalogue, 1);
   } finally {
     await rm(scratchRoot, { recursive: true, force: true });
   }

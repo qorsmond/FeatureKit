@@ -2,7 +2,7 @@
 name: validate-feature
 description: Map feature acceptance criteria to actual test and runtime evidence, including platform and hardware gaps. Use when planning verification or deciding whether implementation, a bug fix, or a prototype is proven; use verify-tests separately for test quality.
 metadata:
-  featurekit-version: "0.7.1"
+  featurekit-version: "0.8.0"
 ---
 
 # Validate Feature

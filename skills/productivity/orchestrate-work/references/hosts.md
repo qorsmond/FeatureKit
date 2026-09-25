@@ -18,6 +18,8 @@ Load this only when the selected route needs host-specific execution or measurem
 
 ## Evidence
 
+Record each enforced-route attempt through the optimizer `attempt` ledger. Requested settings are what was passed; runtime settings are only what the host reported for that run.
+
 For a paired trial, record host/version, exposed settings, packet and schema characters, requested/reported model and effort, token/cache fields the host actually reports, compactions, retries, checks, and final verdict in the content-free task trace. Label unavailable readings `null` and simulated conditions as simulated. Stable instruction/tool prefixes help provider caches; avoid timestamps or regenerated prose in those prefixes.
 
 References: [Codex hooks](https://learn.chatgpt.com/docs/hooks), [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), [Claude Code features](https://code.claude.com/docs/en/features-overview), [Claude Code environment variables](https://code.claude.com/docs/en/env-vars), and [Claude Code monitoring](https://code.claude.com/docs/en/monitoring-usage).

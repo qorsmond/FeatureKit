@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+import { execFileSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { appendFile, chmod, mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 import https from "node:https";
 import path from "node:path";
@@ -8,14 +10,16 @@ import { fileURLToPath } from "node:url";
 
 
 const SCHEMA = 1;
-export const FEATUREKIT_VERSION = "0.7.1";
-const POLICY_VERSION = 6;
+export const FEATUREKIT_VERSION = "0.8.0";
+const POLICY_VERSION = 7;
 const QUESTIONS_VERSION = 4;
 const API_URL = new URL("https://api.typesafe.ai/v1/systemone");
 const JEV_MODEL = "jev-latest";
 const MAX_ROUTE_BYTES = 4096;
 const MAX_CAPSULE_BYTES = 32768;
 const RECEIPT_VERSION = 1;
+const RECEIPT_TOOLS = ["repowise", "serena", "source", "review"];
+const CATALOGUE_MAX_AGE_MS = 24 * 3600 * 1000;
 const CONFIDENCE_MIN = 0.55;
 const MARGIN_MIN = 0.15;
 const NOUL_DISTANCE_MIN = 0.2;
@@ -24,6 +28,13 @@ const CAPABILITIES = ["routine", "standard", "deep"];
 const EFFORTS = ["minimal", "low", "medium", "high", "extra-high"];
 const HARD_RISKS = new Set(["security", "authz", "privacy", "destructive", "irreversible"]);
 const RISK_FLAGS = new Set([...HARD_RISKS, "migration", "ambiguous", "prior-failure", "missing-evidence", "user-decision-pending"]);
+const ROUTING_MODES = ["off", "shadow", "enforce"];
+const REQUIRED_FACTS = ["files_estimate", "cross_boundary", "unknown_root_cause", "current_failure", "attempts"];
+// Optional facts are sent only when verified from the approved plan or repository; absence is never favorable.
+const OPTIONAL_BOOLEAN_FACTS = ["existing_check", "spec_exact", "follows_existing_pattern", "new_dependencies"];
+// Both hosts expose low as their lowest runnable effort, so enforcement never asks JEV about minimal.
+const ENFORCED_EFFORT_FLOOR = "low";
+const ROUTE_CLASS = new RegExp(`^(${CAPABILITIES.join("|")})-(${EFFORTS.join("|")})$`);
 const ROUTE_DIMENSIONS = new Set(["task_family", "capability", "effort", "execution", "context", "review_floor"]);
 const CONTEXT_KINDS = new Set(["authority", "requirement", "constraint", "failure", "evidence", "ownership", "source", "retrieved-doc", "diagnostic", "progress", "decision", "tool-action", "tool-result"]);
 const RECOVERABLE_KINDS = new Set(["source", "retrieved-doc"]);
@@ -138,7 +149,17 @@ export function validateRouteRequest(request) {
   stringArray(request.task.scope, "task.scope", { maxItems: 64, maxLength: 160 });
   stringArray(request.task.acceptance, "task.acceptance", { maxItems: 64, maxLength: 512 });
 
-  exactKeys(request.facts, ["files_estimate", "cross_boundary", "unknown_root_cause", "current_failure", "attempts"], "facts");
+  if (!isObject(request.facts)) throw new Error("facts must be an object");
+  for (const key of Object.keys(request.facts)) {
+    if (![...REQUIRED_FACTS, ...OPTIONAL_BOOLEAN_FACTS, "lines_estimate"].includes(key)) throw new Error(`unknown field: ${key}`);
+  }
+  for (const key of REQUIRED_FACTS) {
+    if (!(key in request.facts)) throw new Error(`missing field: facts.${key}`);
+  }
+  for (const key of OPTIONAL_BOOLEAN_FACTS) {
+    if (key in request.facts && typeof request.facts[key] !== "boolean") throw new Error(`facts.${key} must be boolean`);
+  }
+  if ("lines_estimate" in request.facts) integer(request.facts.lines_estimate, "facts.lines_estimate", 0, 1000000);
   integer(request.facts.files_estimate, "facts.files_estimate", 0, 100000);
   for (const key of ["cross_boundary", "unknown_root_cause", "current_failure"]) {
     if (typeof request.facts[key] !== "boolean") throw new Error(`facts.${key} must be boolean`);
@@ -167,6 +188,24 @@ function deterministicReason(request) {
   if (request.policy.risk_flags.some((flag) => HARD_RISKS.has(flag))) return "HARD_RISK_FLOOR";
   if (request.task.operation === "lookup" && request.task.approval === "read-only" && !request.facts.unknown_root_cause && !request.facts.current_failure) return "DETERMINISTIC_LOOKUP";
   return null;
+}
+
+function withEnforcedFloor(request) {
+  return { ...request, policy: { ...request.policy, effort_floor: higherOf(request.policy.effort_floor, ENFORCED_EFFORT_FLOOR, EFFORTS) } };
+}
+
+// Deterministic gates already skipped JEV; a shadow result is the only one whose capability and effort both passed.
+function enforce(request, result) {
+  if (result.status !== "shadow") return result;
+  const { capability, effort } = result.advisory;
+  return {
+    ...result,
+    status: "enforced",
+    baseline_preserved: false,
+    // Caution-flagged work may run stronger than the baseline, never cheaper; the harness compares against its baseline.
+    route: { class: `${capability}-${effort}`, capability, effort, up_only: request.policy.risk_flags.length > 0, escalation: "baseline-once" },
+    reason_codes: ["ENFORCED", ...result.reason_codes.filter((code) => code !== "SHADOW_ONLY")],
+  };
 }
 
 function cacheKey(request) {
@@ -206,6 +245,19 @@ async function appendTrace(root, trace) {
   }
 }
 
+// Content-free cache telemetry: status and tool only, never queries or fact values.
+async function appendCacheTrace(root, entry) {
+  try {
+    const directory = path.join(root, "traces");
+    await privateDirectory(directory);
+    const file = path.join(directory, "cache.jsonl");
+    await appendFile(file, `${JSON.stringify({ schema: 1, featurekit_version: FEATUREKIT_VERSION, ...entry })}\n`, { encoding: "utf8", mode: 0o600 });
+    await chmod(file, 0o600).catch(() => {});
+  } catch {
+    // Telemetry must never change cache behavior.
+  }
+}
+
 function routeTrace(request, result, latencyMs) {
   return {
     schema: 1,
@@ -222,6 +274,7 @@ function routeTrace(request, result, latencyMs) {
     model: result.model || null,
     usage: result.usage || { input_tokens: null, output_tokens: null },
     latency_ms: latencyMs,
+    route_class: result.route?.class || null,
     reason_codes: result.reason_codes,
   };
 }
@@ -422,12 +475,15 @@ function errorCode(error) {
   return "NETWORK_OR_PROVIDER_ERROR";
 }
 
-export async function optimizeRoute(request, options = {}) {
-  validateRouteRequest(request);
+export async function optimizeRoute(input, options = {}) {
+  validateRouteRequest(input);
   const root = scratchRoot(options);
   const routingMode = options.routingMode || process.env.FEATUREKIT_JEV_ROUTING || "off";
+  if (!ROUTING_MODES.includes(routingMode)) throw new Error("FEATUREKIT_JEV_ROUTING must be off, shadow, or enforce");
   if (routingMode === "off") return { ...unavailable("ROUTING_OFF", "none"), status: "off" };
-  if (routingMode !== "shadow") throw new Error("FEATUREKIT_JEV_ROUTING must be off or shadow");
+  const enforcing = routingMode === "enforce";
+  const request = enforcing ? withEnforcedFloor(input) : input;
+  const finish = (result) => enforcing ? enforce(request, result) : result;
 
   const deterministic = deterministicReason(request);
   if (deterministic) {
@@ -452,7 +508,7 @@ export async function optimizeRoute(request, options = {}) {
       throw new SyntaxError("invalid cache entry");
     }
     const cached = stored.result;
-    const result = { ...cached, cache: "hit", reason_codes: [...new Set([...(cached.reason_codes || []), "EXACT_CACHE_HIT"])] };
+    const result = finish({ ...cached, cache: "hit", reason_codes: [...new Set([...(cached.reason_codes || []), "EXACT_CACHE_HIT"])] });
     await appendTrace(root, routeTrace(request, result, 0));
     return result;
   } catch (error) {
@@ -468,8 +524,9 @@ export async function optimizeRoute(request, options = {}) {
       apiKey,
       timeoutMs: options.timeoutMs || 4000,
     });
-    const result = reconcile(request, validateJevResponse(raw));
-    await atomicWrite(cacheFile, `${JSON.stringify({ schema: SCHEMA, cache_key: key, result })}\n`);
+    const advice = reconcile(request, validateJevResponse(raw));
+    await atomicWrite(cacheFile, `${JSON.stringify({ schema: SCHEMA, cache_key: key, result: advice })}\n`);
+    const result = finish(advice);
     await appendTrace(root, routeTrace(request, result, Date.now() - started));
     return result;
   } catch (error) {
@@ -588,7 +645,7 @@ function validateReceiptIdentity(identity) {
   exactKeys(identity, ["snapshot", "query_hash", "tool", "contract_version", "index_head", "relevant_hashes"], "identity");
   validateSnapshot(identity.snapshot);
   if (typeof identity.query_hash !== "string" || !/^[a-f0-9]{64}$/.test(identity.query_hash)) throw new Error("identity.query_hash must be a sha256 digest");
-  enumValue(identity.tool, ["repowise", "serena", "source"], "identity.tool");
+  enumValue(identity.tool, RECEIPT_TOOLS, "identity.tool");
   integer(identity.contract_version, "identity.contract_version", 1, 1000000);
   if (identity.index_head !== null) boundedString(identity.index_head, "identity.index_head", 128);
   if (identity.tool === "repowise" ? identity.index_head === null : identity.index_head !== null) throw new Error("identity.index_head must be set only for repowise");
@@ -597,6 +654,56 @@ function validateReceiptIdentity(identity) {
     boundedString(sourcePath, "identity.relevant_hashes path", 512);
     if (typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash)) throw new Error("identity.relevant_hashes values must be sha256 digests");
   }
+}
+
+function relativeRepoPath(value, name) {
+  boundedString(value, name, 512);
+  const normalized = path.normalize(value);
+  if (path.isAbsolute(normalized) || normalized === ".." || normalized.startsWith(`..${path.sep}`)) throw new Error(`${name} must be a path inside the repository`);
+  return normalized;
+}
+
+// Derives the exact receipt identity locally from git state and file hashes; nothing leaves the machine.
+function identityFromKey(key, root) {
+  exactKeys(key, ["repo", "query", "tool", "contract_version", "index_head", "paths"], "key");
+  boundedString(key.repo, "key.repo", 1024);
+  boundedString(key.query, "key.query", 1024);
+  if (!Array.isArray(key.paths) || key.paths.length < 1 || key.paths.length > 128) throw new Error("key.paths must be a non-empty bounded array");
+  const paths = key.paths.map((item, index) => relativeRepoPath(item, `key.paths[${index}]`));
+  const git = (...args) => execFileSync("git", ["-C", key.repo, ...args], { encoding: "buffer", maxBuffer: 256 << 20, stdio: ["ignore", "pipe", "ignore"] });
+  const top = git("rev-parse", "--show-toplevel").toString().trim();
+  let head = "unborn";
+  try { head = git("rev-parse", "HEAD").toString().trim(); } catch { /* repository without commits */ }
+  const scratch = path.relative(top, root);
+  const exclude = scratch && !scratch.startsWith("..") && !path.isAbsolute(scratch) ? [`:(exclude)${scratch}`] : [];
+  const dirty = createHash("sha256");
+  if (head !== "unborn") dirty.update(git("diff", "HEAD", "--binary", "--", ".", ...exclude));
+  for (const file of git("ls-files", "-o", "--exclude-standard", "-z", "--", ".", ...exclude).toString().split("\0").filter(Boolean).sort()) {
+    dirty.update(file);
+    try { dirty.update(readFileSync(path.join(top, file))); } catch { dirty.update("unreadable"); }
+  }
+  const relevant = {};
+  for (const item of paths) {
+    try { relevant[item] = createHash("sha256").update(readFileSync(path.join(top, item))).digest("hex"); } catch { relevant[item] = digest(`missing:${item}`); }
+  }
+  const identity = {
+    snapshot: { repo: top, head, dirty_digest: dirty.digest("hex"), artifact_hashes: {} },
+    query_hash: digest(key.query),
+    tool: key.tool,
+    contract_version: key.contract_version,
+    index_head: key.index_head,
+    relevant_hashes: relevant,
+  };
+  validateReceiptIdentity(identity);
+  return identity;
+}
+
+function receiptIdentity(request, fields, root) {
+  if ("identity" in request && "key" in request) throw new Error("receipt request needs exactly one of identity or key");
+  exactKeys(request, "key" in request ? [...fields, "key"] : [...fields, "identity"], "request");
+  if ("key" in request) return identityFromKey(request.key, root);
+  validateReceiptIdentity(request.identity);
+  return request.identity;
 }
 
 function validateReceiptFact(fact) {
@@ -619,39 +726,122 @@ function receiptFile(root, taskId, key) {
 }
 
 export async function writeReceipt(request, options = {}) {
-  exactKeys(request, ["schema", "mode", "action", "task_id", "identity", "fact"], "request");
+  const root = scratchRoot(options);
+  const identity = receiptIdentity(request, ["schema", "mode", "action", "task_id", "fact"], root);
   if (request.schema !== SCHEMA || request.mode !== "receipt" || request.action !== "write") throw new Error("unsupported receipt write request");
   validateTaskId(request.task_id);
-  validateReceiptIdentity(request.identity);
   validateReceiptFact(request.fact);
-  const stale = staleReceiptReason(request.identity);
-  if (stale) return { schema: SCHEMA, status: "stale", cache: "none", task_id: request.task_id, reason_codes: [stale] };
-  const key = receiptKey(request.identity);
-  const payload = { schema: SCHEMA, receipt_version: RECEIPT_VERSION, task_id: request.task_id, cache_key: key, identity: request.identity, fact: request.fact, created_at: new Date().toISOString() };
+  const stale = staleReceiptReason(identity);
+  if (stale) {
+    await appendCacheTrace(root, { kind: "receipt", task_id: request.task_id, tool: identity.tool, status: "stale", reason_codes: [stale] });
+    return { schema: SCHEMA, status: "stale", cache: "none", task_id: request.task_id, reason_codes: [stale] };
+  }
+  const key = receiptKey(identity);
+  const payload = { schema: SCHEMA, receipt_version: RECEIPT_VERSION, task_id: request.task_id, cache_key: key, identity, fact: request.fact, created_at: new Date().toISOString() };
   const stored = { ...payload, hash: digest(payload) };
-  const file = receiptFile(scratchRoot(options), request.task_id, key);
+  const file = receiptFile(root, request.task_id, key);
   await atomicWrite(file, `${JSON.stringify(stored, null, 2)}\n`);
+  await appendCacheTrace(root, { kind: "receipt", task_id: request.task_id, tool: identity.tool, status: "written", reason_codes: [] });
   return { schema: SCHEMA, status: "written", cache: "miss", task_id: request.task_id, path: file, hash: stored.hash };
 }
 
 export async function readReceipt(request, options = {}) {
-  exactKeys(request, ["schema", "mode", "action", "task_id", "identity"], "request");
+  const root = scratchRoot(options);
+  const identity = receiptIdentity(request, ["schema", "mode", "action", "task_id"], root);
   if (request.schema !== SCHEMA || request.mode !== "receipt" || request.action !== "read") throw new Error("unsupported receipt read request");
   validateTaskId(request.task_id);
-  validateReceiptIdentity(request.identity);
-  const stale = staleReceiptReason(request.identity);
-  if (stale) return { schema: SCHEMA, status: "stale", cache: "none", task_id: request.task_id, reason_codes: [stale] };
-  const key = receiptKey(request.identity);
-  const file = receiptFile(scratchRoot(options), request.task_id, key);
+  const trace = (status, reasonCodes = []) => appendCacheTrace(root, { kind: "receipt", task_id: request.task_id, tool: identity.tool, status, reason_codes: reasonCodes });
+  const stale = staleReceiptReason(identity);
+  if (stale) {
+    await trace("stale", [stale]);
+    return { schema: SCHEMA, status: "stale", cache: "none", task_id: request.task_id, reason_codes: [stale] };
+  }
+  const key = receiptKey(identity);
+  const file = receiptFile(root, request.task_id, key);
   try {
     const stored = JSON.parse(await readFile(file, "utf8"));
     const payload = { schema: stored.schema, receipt_version: stored.receipt_version, task_id: stored.task_id, cache_key: stored.cache_key, identity: stored.identity, fact: stored.fact, created_at: stored.created_at };
-    if (stored.schema !== SCHEMA || stored.receipt_version !== RECEIPT_VERSION || stored.task_id !== request.task_id || stored.cache_key !== key || stableStringify(stored.identity) !== stableStringify(request.identity) || stored.hash !== digest(payload)) throw new Error("corrupt receipt");
+    if (stored.schema !== SCHEMA || stored.receipt_version !== RECEIPT_VERSION || stored.task_id !== request.task_id || stored.cache_key !== key || stableStringify(stored.identity) !== stableStringify(identity) || stored.hash !== digest(payload)) throw new Error("corrupt receipt");
     validateReceiptFact(stored.fact);
+    await trace("hit");
     return { schema: SCHEMA, status: "hit", cache: "hit", task_id: request.task_id, fact: stored.fact, created_at: stored.created_at, path: file };
   } catch (error) {
-    return { schema: SCHEMA, status: "miss", cache: "miss", task_id: request.task_id, reason_codes: [error?.code === "ENOENT" ? "RECEIPT_MISSING" : "RECEIPT_CORRUPT"] };
+    const reason = error?.code === "ENOENT" ? "RECEIPT_MISSING" : "RECEIPT_CORRUPT";
+    await trace("miss", [reason]);
+    return { schema: SCHEMA, status: "miss", cache: "miss", task_id: request.task_id, reason_codes: [reason] };
   }
+}
+
+function validateHost(host) {
+  exactKeys(host, ["name", "version"], "host");
+  boundedString(host.name, "host.name", 64);
+  boundedString(host.version, "host.version", 64);
+}
+
+function catalogueFile(root, host) {
+  return path.join(root, "cache", "catalogue", `${digest({ featurekit: FEATUREKIT_VERSION, host })}.json`);
+}
+
+// Caches the host's runtime model list so the harness need not rediscover it every session; model ids are not secrets.
+export async function writeCatalogue(request, options = {}) {
+  exactKeys(request, ["schema", "mode", "action", "host", "models"], "request");
+  if (request.schema !== SCHEMA || request.mode !== "catalogue" || request.action !== "write") throw new Error("unsupported catalogue write request");
+  validateHost(request.host);
+  if (!Array.isArray(request.models) || request.models.length < 1 || request.models.length > 64) throw new Error("models must be a non-empty bounded array");
+  request.models.forEach((model, index) => {
+    exactKeys(model, ["id", "efforts"], `models[${index}]`);
+    boundedString(model.id, `models[${index}].id`, 128);
+    stringArray(model.efforts, `models[${index}].efforts`, { maxItems: 8, maxLength: 32 });
+  });
+  const root = scratchRoot(options);
+  const file = catalogueFile(root, request.host);
+  await atomicWrite(file, `${JSON.stringify({ schema: SCHEMA, host: request.host, models: request.models, written_ms: options.now ?? Date.now() })}\n`);
+  await appendCacheTrace(root, { kind: "catalogue", tool: "catalogue", status: "written", reason_codes: [] });
+  return { schema: SCHEMA, status: "written", host: request.host, path: file };
+}
+
+export async function readCatalogue(request, options = {}) {
+  exactKeys(request, ["schema", "mode", "action", "host"], "request");
+  if (request.schema !== SCHEMA || request.mode !== "catalogue" || request.action !== "read") throw new Error("unsupported catalogue read request");
+  validateHost(request.host);
+  const root = scratchRoot(options);
+  const trace = (status, reasonCodes = []) => appendCacheTrace(root, { kind: "catalogue", tool: "catalogue", status, reason_codes: reasonCodes });
+  let stored;
+  try {
+    stored = JSON.parse(await readFile(catalogueFile(root, request.host), "utf8"));
+    if (stored.schema !== SCHEMA || stableStringify(stored.host) !== stableStringify(request.host) || !Array.isArray(stored.models) || !Number.isFinite(stored.written_ms)) throw new Error("corrupt catalogue");
+  } catch (error) {
+    const reason = error?.code === "ENOENT" ? "CATALOGUE_MISSING" : "CATALOGUE_CORRUPT";
+    await trace("miss", [reason]);
+    return { schema: SCHEMA, status: "miss", host: request.host, reason_codes: [reason] };
+  }
+  const age = (options.now ?? Date.now()) - stored.written_ms;
+  if (age < 0 || age > CATALOGUE_MAX_AGE_MS) {
+    await trace("stale", ["CATALOGUE_EXPIRED"]);
+    return { schema: SCHEMA, status: "stale", host: request.host, reason_codes: ["CATALOGUE_EXPIRED"] };
+  }
+  await trace("hit");
+  return { schema: SCHEMA, status: "hit", host: request.host, models: stored.models, age_s: Math.round(age / 1000) };
+}
+
+export async function cacheStats(request, options = {}) {
+  exactKeys(request, ["schema", "mode", "action"], "request");
+  if (request.schema !== SCHEMA || request.mode !== "cache" || request.action !== "stats") throw new Error("unsupported cache stats request");
+  const root = scratchRoot(options);
+  const lines = async (name) => (await readFile(path.join(root, "traces", name), "utf8").catch(() => "")).split("\n").filter(Boolean).map((line) => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
+  const blank = () => ({ hit: 0, miss: 0, stale: 0, written: 0 });
+  const stats = { schema: SCHEMA, receipt: blank(), catalogue: blank(), route: { hit: 0, miss: 0 }, eliminated_calls: {} };
+  const eliminate = (name) => { stats.eliminated_calls[name] = (stats.eliminated_calls[name] || 0) + 1; };
+  for (const entry of await lines("cache.jsonl")) {
+    if (!(entry.kind in stats) || !(entry.status in stats[entry.kind])) continue;
+    stats[entry.kind][entry.status] += 1;
+    if (entry.status === "hit") eliminate(entry.tool);
+  }
+  for (const entry of await lines("jev.jsonl")) {
+    if (entry.cache === "hit") { stats.route.hit += 1; eliminate("jev"); }
+    else if (entry.cache === "miss") stats.route.miss += 1;
+  }
+  return stats;
 }
 
 function validateCapsule(capsule) {
@@ -768,6 +958,45 @@ export async function projectCapsule(request, options = {}) {
   return { schema: SCHEMA, status: "projected", task_id: request.task_id, revision: stored.revision, consumer: request.consumer, path: file, hash: digest(projection) };
 }
 
+function validateSetting(value, name) {
+  exactKeys(value, ["model", "effort"], name);
+  if (value.model !== null) boundedString(value.model, `${name}.model`, 128);
+  if (value.effort !== null) boundedString(value.effort, `${name}.effort`, 32);
+}
+
+export async function recordAttempt(request, options = {}) {
+  exactKeys(request, ["schema", "mode", "action", "task_id", "attempt"], "request");
+  if (request.schema !== SCHEMA || request.mode !== "attempt" || request.action !== "record") throw new Error("unsupported attempt request");
+  validateTaskId(request.task_id);
+  const { attempt } = request;
+  exactKeys(attempt, ["route", "route_class", "requested", "runtime", "outcome", "evidence_ref"], "attempt");
+  enumValue(attempt.route, ["routed", "baseline"], "attempt.route");
+  if (attempt.route === "routed" ? !ROUTE_CLASS.test(attempt.route_class || "") : attempt.route_class !== null) throw new Error("attempt.route_class must name the enforced route only for a routed attempt");
+  validateSetting(attempt.requested, "attempt.requested");
+  validateSetting(attempt.runtime, "attempt.runtime");
+  enumValue(attempt.outcome, ["passed", "failed"], "attempt.outcome");
+  boundedString(attempt.evidence_ref, "attempt.evidence_ref", 512);
+
+  const file = path.join(scratchRoot(options), "tasks", request.task_id, "attempts.json");
+  let ledger = { schema: SCHEMA, task_id: request.task_id, attempts: [], escalations: {} };
+  try {
+    ledger = JSON.parse(await readFile(file, "utf8"));
+    if (ledger.schema !== SCHEMA || ledger.task_id !== request.task_id || !Array.isArray(ledger.attempts) || !isObject(ledger.escalations)) throw new Error("corrupt attempt ledger");
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+  // A routed attempt may only open the task; its failure escalates once to baseline and is counted against the routed class.
+  if (attempt.route === "routed" && ledger.attempts.length) throw new Error("a routed attempt must be the first attempt; escalate to baseline instead");
+  const previous = ledger.attempts.at(-1);
+  if (previous?.route === "routed" && previous.outcome === "failed") {
+    ledger.escalations[previous.route_class] = (ledger.escalations[previous.route_class] || 0) + 1;
+  }
+  ledger.attempts.push({ ...attempt, recorded_at: new Date().toISOString() });
+  await atomicWrite(file, `${JSON.stringify(ledger, null, 2)}\n`);
+  const next = attempt.outcome === "passed" ? "validate" : attempt.route === "routed" ? "escalate-baseline" : "baseline-recovery";
+  return { schema: SCHEMA, status: "recorded", task_id: request.task_id, attempts: ledger.attempts.length, escalations: ledger.escalations, next, path: file };
+}
+
 async function readStdin() {
   const chunks = [];
   let size = 0;
@@ -781,7 +1010,7 @@ async function readStdin() {
 
 async function main() {
   if (process.argv.includes("--help")) {
-    process.stdout.write("Read one schema-1 route, review, prune, capsule, or receipt request from stdin; write one JSON result to stdout.\n");
+    process.stdout.write("Read one schema-1 route, review, prune, capsule, receipt, catalogue, cache-stats, or attempt request from stdin; write one JSON result to stdout.\n");
     return;
   }
   try {
@@ -794,6 +1023,10 @@ async function main() {
     else if (request?.mode === "prune" && request?.action === "deterministic") result = pruneContext(request);
     else if (request?.mode === "receipt" && request?.action === "write") result = await writeReceipt(request);
     else if (request?.mode === "receipt" && request?.action === "read") result = await readReceipt(request);
+    else if (request?.mode === "attempt" && request?.action === "record") result = await recordAttempt(request);
+    else if (request?.mode === "catalogue" && request?.action === "write") result = await writeCatalogue(request);
+    else if (request?.mode === "catalogue" && request?.action === "read") result = await readCatalogue(request);
+    else if (request?.mode === "cache" && request?.action === "stats") result = await cacheStats(request);
     else throw new Error("unsupported request mode/action");
     process.stdout.write(`${JSON.stringify(result)}\n`);
   } catch (error) {

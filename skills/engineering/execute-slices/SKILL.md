@@ -3,7 +3,7 @@ name: execute-slices
 description: Execute multiple approved FeatureKit implementation slices from a written PRD or plan. Use explicitly when ordered slices already exist and the user wants autonomous batch execution with verification, review checkpoints, optional subagents, and no branch, commit, push, or PR actions.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.7.1"
+  featurekit-version: "0.8.0"
 ---
 
 # Execute Slices
@@ -60,6 +60,8 @@ A clarified feature summary or a newly generated slice list is not enough by its
 ## Workers
 
 Use `orchestrate-work` for capability selection, bounded packets, parallelism, escalation and the work ledger. Consider cheaper workers for suitable routine/standard work; use direct tools or the current agent when that costs less overall. Do not dispatch an implementer and reviewer for every slice.
+
+With `FEATUREKIT_JEV_ROUTING=enforce`, route each slice once with its concrete spec and verified facts. Run an enforced slice as one fresh worker session on the routed level and effort, preferring a CLI worker that accepts both; the primary keeps verification and the attempt ledger. See the optimizer reference's Enforced route.
 
 Keep the queue sequential. Only independent jobs within the current slice may run concurrently, with explicit ownership and nonconflicting input snapshots/runtime resources. No worker recursively delegates. Inspect each result and scoped diff, then validate integrated behavior before continuing. Follow `implement` for coding and existing `review-change`, `security-review` and `verify-tests` gates for review.
 
