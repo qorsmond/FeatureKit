@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.7.0 - 2026-09-24
+
+- Reduced recurring FeatureKit context by moving orchestration invariants, worker lifecycle, recovery, and optimizer mechanics into on-demand references; added deterministic context-budget regression checks.
+- Added a versioned local task capsule with atomic writes, snapshot freshness checks, and focused primary, worker, reviewer, and handoff projections.
+- Added a dependency-free TypeSafe JEV routing kernel with strict metadata-only input, one batched request, confidence and margin gates, exact local caching, content-free traces, and fail-open behavior.
+- Shipped JEV routing in disabled-by-default shadow mode for Codex and Claude Code; model, effort, worker, context, and review enforcement remain off until paired safety trials justify individual route classes.
+- Added task-trace schema, optimizer tests, JEV fixtures, benchmark families, and setup/documentation for local environment keys without storing secrets in repository files.
+- Added a repeatable fourteen-family shadow calibration runner, deterministic pending-decision gating, independent per-dimension advice, and risk masking for optional execution/context suggestions.
+- Made weak task-family labeling non-blocking when capability and effort independently clear their safety gates; weak routing dimensions still preserve the baseline.
+- Documented the exact compact optimizer request so harnesses do not spend frontier tokens reading implementation source to construct it.
+- Added one dependency-free, read-only JEV MCP route tool for Codex and Claude Code so provider calls can run outside workspace sandboxes; documented the exact `off` and `shadow` controls.
+- Added an optional shared `UserPromptSubmit` hook that routes one approved ready task capsule before the model, injects only compact advisory context, ignores the submitted prompt, and skips missing or ambiguous capsule state.
+- Added private exact fact receipts keyed by repository state, tool contract, query, and relevant file hashes; stale Repowise indexes and changed state force a miss.
+- Added shadow-only deterministic review tier selection that reuses the existing JEV route signal, preserves evidence and hard-risk floors, and requires separate source-sharing permission for JEV source review.
+- Documented an opt-in pinned upstream `jev-review` pilot for Codex and Claude Code with focused disclosure, one-review replacement, bounded rescore, and fail-open fallback; it is not installed by default.
+- Added local metadata-only deterministic context pruning and a compact escalation projection; pinned state and tool pairs are preserved, while duplicates and recoverable stale context can be omitted without a JEV call.
+- Added host-specific optimization guidance and a content-free Codex post-compaction capsule restore hook; documented a pinned, session-scoped Claude `fast-jev-compaction` pilot with explicit transcript permission, a clear off switch, and native fallback.
+- Screened aggressive JEV pruning and semantic equivalence on synthetic source-free inputs; neither passed the promotion economics/safety gate, so deterministic pruning and exact receipts remain production behavior with no new compressor or semantic cache.
+- Completed the v0.7.0 rollout documentation across setup, context, local models, troubleshooting, security, orchestration, and handoff; verified cross-harness packaging, installed optimizer flow, context budgets, and the live HTTP acceptance fixture.
+
 ## 0.6.2 - 2026-09-18
 
 - Made setup persist explicit orchestration and live-feedback instructions in the product repo's agent file; existing installs receive a focused refresh without repeating settled setup decisions.

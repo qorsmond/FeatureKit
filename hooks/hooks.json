@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/zsh -ic 'exec node \"$CLAUDE_PLUGIN_ROOT/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
+            "timeout": 6
+          }
+        ]
+      }
+    ]
+  }
+}

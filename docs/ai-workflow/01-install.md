@@ -106,7 +106,9 @@ You should see the FeatureKit skills from `skills/engineering/`, `skills/product
 
 ## Session Bootstrap
 
-Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit does not need a custom hook script.
+Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit does not need a separate bootstrap hook; plugin installs include the optional JEV preflight hook described below.
+
+JEV routing is optional and remains off after skill installation. To connect its one local MCP tool and choose `off` or advisory-only `shadow`, follow [Optional JEV shadow routing](./09-orchestration.md#optional-jev-shadow-routing).
 
 Only if your host does not load repo instruction files, put this instruction in its persistent custom instructions or supply the required context manually:
 

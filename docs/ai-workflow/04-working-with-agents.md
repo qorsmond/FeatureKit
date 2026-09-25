@@ -73,6 +73,8 @@ Use `/handoff` when moving between tasks. Keep a fresh task on the same saved pr
 
 After an implementation-ready artifact is approved, focused work should continue in the current task without another question. For substantial work, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript, and runs from the existing checkout and branch.
 
+For long orchestrated work, keep the local task capsule current and pass worker, reviewer, escalation, or handoff projections instead of replaying history. Reuse repository facts only through exact snapshot/hash receipts. Before a large escalation or handoff, deterministic metadata pruning may remove duplicates and recoverable referenced content while keeping authority, requirements, constraints, failures, evidence, ownership, and tool pairs. Failure uses the unpruned packet.
+
 ## Token-Efficient Execution
 
 Implementation should discover context progressively instead of loading the repository up front:
@@ -87,6 +89,8 @@ Implementation should discover context progressively instead of loading the repo
 - choose the least expensive route likely to succeed: a direct tool for deterministic work, or a bounded worker when it adds useful independent progress. Keep slices sequential and parallelize only clearly independent work.
 
 [Serena](https://github.com/oraios/serena) and [RTK](https://github.com/rtk-ai/rtk) are optional. FeatureKit uses them when the harness exposes them and continues with portable fallbacks when it does not. Their absence should not block a slice or trigger an installation without user approval.
+
+JEV is also optional. `off` is the baseline; `shadow` advice never changes execution in v0.7.0. Metadata routing does not authorize source review, context sharing, or transcript compaction. The Slice 9 experiments did not justify a semantic cache or lossy compressor, so exact receipts and deterministic pruning remain the production paths.
 
 ## Agent Operating Principles
 

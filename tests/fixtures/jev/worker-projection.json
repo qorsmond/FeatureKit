@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "task_id": "fixture-normal-implementation",
+  "revision": 1,
+  "consumer": "worker",
+  "snapshot": {
+    "repo": "fixture",
+    "head": "abc123",
+    "dirty_digest": "clean",
+    "artifact_hashes": {"docs/plan.md": "sha256:plan"}
+  },
+  "state": {
+    "authority": {
+      "level": "approved-write",
+      "artifact": "docs/plan.md",
+      "scope": ["src/session", "tests/session"],
+      "exclusions": ["deployment"]
+    },
+    "requirements": {
+      "objective": "Implement the approved bounded behavior",
+      "acceptance": ["A1: focused behavior passes"],
+      "constraints": ["No new dependencies"]
+    },
+    "risk": {"flags": [], "capability_floor": "routine", "review_floor": "deterministic"},
+    "route": {"capability": "standard", "effort": "low", "execution": "isolated-worker"},
+    "work": {"jobs": [{"id": "W1", "scope": ["src/session"]}], "status": "ready", "changed_paths": []},
+    "failures": []
+  }
+}

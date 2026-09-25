@@ -1,107 +1,31 @@
 ---
 name: implement
-description: Implement one approved FeatureKit slice in a product repo using the repo's conventions, ADRs, tests, and verification commands. Use explicitly when a PRD or slice is approved and ready to build. Requires a written plan or slice.
+description: Implement one approved FeatureKit plan or slice using repository conventions, tests, and runtime evidence. Use explicitly after final approval and implementation intent.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.2"
+  featurekit-version: "0.7.0"
 ---
 
 # Implement
 
-Implement exactly one approved slice.
+Apply the shared [workflow invariants](../../productivity/orchestrate-work/references/invariants.md) and implement exactly one approved plan or slice.
 
 ## Preconditions
 
-Before coding, confirm:
-
-- the original or current request explicitly asked to make the change,
-- there is a written PRD, plan, or slice,
-- the written PRD, plan, or slice has been shown to the user and approved,
-- the scope is one slice,
-- out-of-scope work is explicit,
-- relevant ADRs have been checked,
-- security context from `docs/agents/security.md` has been checked when present,
-- verification commands are known.
-
-If these are missing, stop and ask to run `/grill-with-docs`, `/to-prd`, or `/to-slices`.
-
-A clarified feature summary is not enough by itself. Accepting an interview recommendation is not approval. A final confirmation of an implementation-ready clarified plan satisfies plan approval; final approval of a PRD or slice satisfies approval for that artifact. If implementation intent is unclear, stop and ask.
-
-Apply the target repo's `Agent Operating Principles` before coding, refactoring, or verification work.
-
-## Work Distribution And Proof
-
-The primary uses `orchestrate-work` to choose direct work or bounded workers from the approved slice, with explicit file ownership and acceptance evidence. An assigned implementation worker follows its packet and this process without further delegation or a new interview. The primary retains architecture, integration, escalation, and completion decisions.
-
-Use `validate-feature` to plan and evaluate proof from `docs/agents/verification.md`: applicable commands, runtime/platforms, and device/manual checks. Preserve any known validation gaps before coding; do not substitute a build or browser preview for required native/runtime behavior.
-
-## Context Budget
-
-Use progressive disclosure so repository exploration and command output stay proportional to the slice:
-
-1. Start with the approved artifact and governing repo instructions. Locate likely files and symbols before reading implementation bodies.
-2. When Serena or an equivalent semantic code tool is available, activate the current project and prefer symbol overviews, symbol lookup, and reference lookup. Read only the bodies needed for the change. Use targeted text reads for docs, configuration, generated files, or languages the semantic tool cannot analyze.
-3. When RTK is available, use its appropriate wrappers for noisy searches, reads, diffs, tests, builds, and linters. Otherwise scope commands to relevant paths or targets, cap search output, and use quiet or failure-only modes. Do not install optional tools during a slice unless the user asks.
-4. Start verification with the narrowest relevant target. If compact output hides a needed diagnostic, expand only the failing target; do not rerun a successful full suite verbosely.
-5. Keep a short working ledger of the active slice, decisions, relevant files or symbols, changed files, and verification state. Do not repeatedly reread stable context or paste raw source, diffs, or logs into conversation.
+Confirm explicit implementation intent; final approval of the written artifact; one bounded scope with exclusions; relevant repo instructions, ADRs, security and verification guidance; and known checks. A draft, interview answer, or product-depth result is insufficient. Stop on a missing precondition or ADR conflict.
 
 ## Process
 
-1. Read the PRD or slice.
-2. Read `AGENTS.md`, only the relevant `docs/agents/` files and ADRs, and the minimum relevant code.
-3. Restate the slice in a few lines.
-4. Use `secure-code` before coding when the slice touches untrusted input, auth, authorization, sensitive data, secrets, crypto, storage, files, network calls, dependencies, errors, logging, or generated code.
-5. Use `secure-api` for API routes, webhooks, GraphQL, RPC, service boundaries, or third-party API consumption.
-6. Use `secure-deploy` for deployment, runtime, CI/CD, secrets, IAM, migrations, artifact, or environment changes.
-7. For logic, data transformations, services, bug fixes, and boundary behavior, use `tdd`.
-8. Make the smallest change that satisfies the slice.
-9. Do not include unrelated refactors.
-10. Use `verify-tests` when new or changed tests look weak, high-risk, generated, security-sensitive, or explicitly need proof.
-11. Run narrow slice verification first, then each required broader verification command once after the change is stable.
-12. Evaluate acceptance evidence with `validate-feature` after integration. Inspect worker changes and results before acceptance; reuse checks only if still valid for the resulting tree.
-13. Report the outcome and any divergence from the plan. If required evidence is missing, distinguish implementation finished from validation incomplete.
+1. Read the approved artifact and minimum governing/repository context. Locate likely paths or symbols before reading bodies; use Serena-style semantic navigation and RTK-style bounded output when available.
+2. Use `orchestrate-work` only when a bounded worker is cheaper or materially improves isolation. The primary keeps integration and completion.
+3. Apply `secure-code` for untrusted input, secrets, storage, files, network calls, dependencies, errors, logging, auth, or authorization; add `secure-api` or `secure-deploy` for their boundaries.
+4. Use `tdd` for logic, transformations, services, API behavior, bugs, and other testable behavior: failing focused check, smallest implementation, passing check.
+5. Make only the approved change. Preserve user work, existing style, interfaces, migrations, and security requirements. Ask before adding production dependencies.
+6. Run the narrow check first, then required broader checks once stable. Use `verify-tests` when changed tests are weak, generated, assertion-light, security-sensitive, or otherwise high risk.
+7. Inspect the scoped diff and use `validate-feature` against every acceptance criterion on the actual final tree/runtime. A build, worker claim, mock, simulator, or unavailable device proves only what it exercised.
 
-## Implementation Rules
+If required proof is unavailable, implementation may be finished while validation remains incomplete; record the exact gap and next procedure rather than claiming completion.
 
-- Follow the target repo's stack and architecture.
-- Treat accepted ADRs as constraints. If the slice conflicts with an accepted ADR, stop and ask for plan or ADR resolution.
-- Ask before adding production dependencies.
-- Keep migrations and data changes explicit.
-- Preserve security requirements from the PRD or slice; do not silently weaken them to simplify implementation.
-- Handle missing or unavailable integrations gracefully where the PRD requires it.
-- Keep public behavior testable through public interfaces.
-- Do not silently change scope.
+## Report
 
-## Output
-
-```markdown
-Implemented:
-<what changed>
-
-Verification:
-<validate-feature verdict; criterion/evidence rows with code/runtime/platform, actual results and gaps>
-
-Work distribution:
-<compact orchestrate-work ledger or direct work and reason; no invented model/usage data>
-
-Tests:
-<new or updated tests>
-
-Test verification:
-<verify-tests result | skipped and why>
-
-Context efficiency:
-<Serena/RTK or bounded fallbacks used>
-
-Security:
-<secure-code/secure-api/secure-deploy result | skipped and why>
-
-ADRs:
-<governing ADRs followed | conflict or update needed>
-
-Divergence:
-<none | what changed from the plan and why>
-
-Next:
-<review-change | next slice | handoff>
-```
+Return changed behavior/files, acceptance evidence and gaps, tests, security disciplines, direct/worker route with observed settings only, governing ADRs, plan divergence, and the next review or slice. Keep source, diffs, logs, and repeated successful output in files rather than the response.

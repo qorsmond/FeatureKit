@@ -27,13 +27,31 @@ Then restart the agent. Some agents load skills only at session start.
 
 ## Bootstrap Does Not Run Automatically
 
-FeatureKit v1 does not install hook scripts. Add this sentence to your agent's session-start prompt, saved custom instructions, or first message:
+FeatureKit does not use a bootstrap hook. Its optional plugin hook is only a JEV route preflight and does not replace `using-featurekit`. Add this sentence to your agent's session-start prompt, saved custom instructions, or first message:
 
 ```text
 At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
 ```
 
 If your harness cannot auto-run skills, invoke `using-featurekit` manually at the start of the session.
+
+## JEV Is Calling Unexpectedly Or Not Calling
+
+Return to the baseline first:
+
+```sh
+export FEATUREKIT_JEV_ROUTING=off
+```
+
+Restart the host so its MCP process and hooks inherit the change. `off` makes no TypeSafe route call; `shadow` is advisory only and never changes execution in v0.7.0. On macOS, Codex Desktop may not inherit `.zshrc` variables unless the documented shell-backed MCP/hook command is used. Check `codex mcp get featurekit-jev` or Claude Code `/mcp`, but never print the key or add it to the repository.
+
+A missing key, provider/network error, malformed answer, weak signal, untrusted hook, absent capsule, or multiple ready capsules preserves the baseline. Do not loosen the sandbox or retry the same call. Follow [Optional JEV shadow routing](./09-orchestration.md#optional-jev-shadow-routing) for the exact setup and switch.
+
+## Compaction Did Not Restore FeatureKit State
+
+Codex still uses native compaction. In `/hooks`, review the `SessionStart` entry ending in `compaction-hook.mjs`, trust only that entry, and restart Codex after configuration changes. The hook is silent unless exactly one non-complete capsule is valid; resume manually with `using-featurekit` and the approved artifact when state is missing or ambiguous.
+
+Claude Code uses native compaction unless a separately pinned `fast-jev-compaction` plugin is supplied for that session. Start Claude without `--plugin-dir` to switch the pilot off. Missing keys, provider errors, oversized state, or insufficient reduction must fall back to native compaction. See the installed [compaction reference](../../skills/productivity/orchestrate-work/references/compaction.md).
 
 ## Setup Picked The Wrong File
 
@@ -139,6 +157,8 @@ Use the FeatureKit context budget. Start from the approved artifact, use semanti
 ```
 
 When available, enable Serena or an equivalent semantic code tool for symbol-level discovery and RTK or an equivalent output filter for noisy shell commands. If neither is available, the implementation skills fall back to targeted `rg`, narrow file ranges, quiet test modes, and compact handoffs. Do not trade away acceptance criteria, security constraints, or necessary failure diagnostics merely to reduce tokens.
+
+Do not enable JEV pruning, a semantic cache, or lossy compression to fix an ordinary context problem. The v0.7.0 experiment spent more JEV tokens than its small candidate packet and an aggressive threshold lost required context. Use deterministic pruning and host-native compaction first.
 
 ## The Work Conflicts With An ADR
 

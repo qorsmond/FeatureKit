@@ -2,7 +2,7 @@
 name: domain-modeling
 description: Maintain and sharpen product domain language for a repo. Use when work introduces new business terms, ambiguous concepts, product rules, or architecture decisions that should be captured in CONTEXT.md or ADRs.
 metadata:
-  featurekit-version: "0.6.2"
+  featurekit-version: "0.7.0"
 ---
 
 # Domain Modeling

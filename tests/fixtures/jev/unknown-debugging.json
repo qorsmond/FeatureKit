@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "mode": "route",
+  "task": {
+    "id": "fixture-unknown-debugging",
+    "operation": "debug",
+    "objective": "Find the unknown root cause of intermittent session expiry after one failed attempt",
+    "approval": "approved-write",
+    "scope": ["src/session", "src/auth", "tests/integration"],
+    "acceptance": ["Root cause is evidenced and the regression check fails before and passes after the fix"]
+  },
+  "facts": {
+    "files_estimate": 8,
+    "cross_boundary": true,
+    "unknown_root_cause": true,
+    "current_failure": true,
+    "attempts": 1
+  },
+  "policy": {
+    "capability_floor": "standard",
+    "effort_floor": "high",
+    "risk_flags": ["prior-failure", "ambiguous"],
+    "available_capabilities": ["routine", "standard", "deep"]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "surfaces": [
+    {
+      "name": "all skills",
+      "kind": "glob",
+      "pattern": "skills/**/SKILL.md",
+      "max_chars": 100000
+    },
+    {
+      "name": "all skill descriptions",
+      "kind": "descriptions",
+      "max_chars": 7404
+    },
+    {
+      "name": "model-invocable descriptions",
+      "kind": "descriptions",
+      "model_invocable": true,
+      "max_chars": 4591
+    },
+    {
+      "name": "setup-written invariant",
+      "kind": "between",
+      "path": "skills/engineering/setup-featurekit/SKILL.md",
+      "start": "Use this block:\n\n```markdown\n",
+      "end": "\n```\n",
+      "max_chars": 1200
+    },
+    {
+      "name": "authoring AGENTS",
+      "kind": "paths",
+      "paths": ["AGENTS.md"],
+      "max_chars": 9209
+    },
+    {
+      "name": "bootstrap",
+      "kind": "paths",
+      "paths": ["skills/productivity/using-featurekit/SKILL.md"],
+      "max_chars": 2500
+    },
+    {
+      "name": "orchestrator core",
+      "kind": "paths",
+      "paths": ["skills/productivity/orchestrate-work/SKILL.md"],
+      "max_chars": 3500
+    },
+    {
+      "name": "orchestrator backend reference",
+      "kind": "paths",
+      "paths": ["skills/productivity/orchestrate-work/references/backends.md"],
+      "max_chars": 7651
+    },
+    {
+      "name": "host optimization reference",
+      "kind": "paths",
+      "paths": ["skills/productivity/orchestrate-work/references/hosts.md"],
+      "max_chars": 3500
+    },
+    {
+      "name": "compaction reference",
+      "kind": "paths",
+      "paths": ["skills/productivity/orchestrate-work/references/compaction.md"],
+      "max_chars": 5000
+    },
+    {
+      "name": "interview bundle",
+      "kind": "paths",
+      "paths": [
+        "skills/productivity/using-featurekit/SKILL.md",
+        "skills/engineering/grilling/SKILL.md",
+        "skills/engineering/grill-with-docs/SKILL.md",
+        "skills/productivity/orchestrate-work/SKILL.md",
+        "skills/engineering/secure-design/SKILL.md",
+        "skills/engineering/validate-feature/SKILL.md"
+      ],
+      "max_chars": 24740
+    },
+    {
+      "name": "implementation bundle",
+      "kind": "paths",
+      "paths": [
+        "skills/productivity/using-featurekit/SKILL.md",
+        "skills/engineering/implement/SKILL.md",
+        "skills/productivity/orchestrate-work/SKILL.md",
+        "skills/engineering/validate-feature/SKILL.md",
+        "skills/engineering/secure-code/SKILL.md",
+        "skills/engineering/tdd/SKILL.md"
+      ],
+      "max_chars": 18413
+    },
+    {
+      "name": "review bundle",
+      "kind": "paths",
+      "paths": [
+        "skills/engineering/review-change/SKILL.md",
+        "skills/productivity/orchestrate-work/SKILL.md",
+        "skills/engineering/validate-feature/SKILL.md",
+        "skills/engineering/verify-tests/SKILL.md",
+        "skills/engineering/secure-code/SKILL.md",
+        "skills/engineering/security-review/SKILL.md"
+      ],
+      "max_chars": 21276
+    },
+    {
+      "name": "handoff bundle",
+      "kind": "paths",
+      "paths": [
+        "skills/productivity/handoff/SKILL.md",
+        "skills/productivity/orchestrate-work/SKILL.md"
+      ],
+      "max_chars": 5800
+    },
+    {
+      "name": "JEV route request",
+      "kind": "paths",
+      "paths": ["tests/fixtures/jev/route-request.json"],
+      "max_chars": 4000
+    },
+    {
+      "name": "worker projection",
+      "kind": "paths",
+      "paths": ["tests/fixtures/jev/worker-projection.json"],
+      "max_chars": 4000
+    },
+    {
+      "name": "reviewer projection",
+      "kind": "paths",
+      "paths": ["tests/fixtures/jev/reviewer-projection.json"],
+      "max_chars": 5000
+    },
+    {
+      "name": "escalation projection",
+      "kind": "paths",
+      "paths": ["tests/fixtures/jev/escalation-projection.json"],
+      "max_chars": 4000
+    }
+  ]
+}

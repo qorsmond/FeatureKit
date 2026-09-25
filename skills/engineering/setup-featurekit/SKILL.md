@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use once before engineering work, after a workflow upgrade, or when repo conventions change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.2"
+  featurekit-version: "0.7.0"
 ---
 
 # Setup FeatureKit
@@ -153,6 +153,8 @@ Write or update:
 
 Write `docs/agents/orchestration.md` only when repo-specific constraints or explicit overrides are useful and confirmed. Its absence leaves automatic runtime selection enabled. If an existing configuration already owns those choices, reference it rather than duplicating the values.
 
+Keep FeatureKit's optional local capsule, route cache, and content-free traces out of version control by adding `.scratch/featurekit/` to the repo's ignore file when those features are enabled. Preserve existing ignore rules.
+
 Update the existing instruction file:
 
 - Prefer `AGENTS.md` if it exists.
@@ -166,45 +168,17 @@ Use this block:
 
 This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agents/`.
 
-- Session bootstrap: use `using-featurekit` at the start of FeatureKit sessions or after context compaction. Raw feature requests begin a design-tree interview automatically.
-- Planning gate: no production code starts until a written plan, PRD, or slice has been presented and approved through its final approval question. Earlier interview answers and accepted recommendations are not approval.
-- Work tracker: see `docs/agents/work-tracker.md`.
-- Domain docs: see `docs/agents/domain.md`.
-- Architectural decisions: see the ADR location in `docs/agents/workflow-locations.md`.
-- Stack and commands: see `docs/agents/stack.md` and `docs/agents/verification.md`.
-- Work distribution: use `orchestrate-work` for substantive work. Delegate suitable bounded tasks to available workers/subagents and select their model/backend/effort at runtime by capability, risk and known cost; use direct tools when sufficient. Follow `docs/agents/orchestration.md` if present. The primary owns integration and acceptance. Preserve planning and permission gates.
-- Routing visibility: show live destinations, requested versus reported model/effort, worker IDs, retries and validation outcomes; label unavailable metadata honestly.
-- Feature evidence: use `validate-feature` and `docs/agents/verification.md` for runtime/platform proof and explicit gaps; use `verify-tests` for test quality.
-- Security: see `docs/agents/security.md`.
-- Deployment: see `docs/agents/deployment.md`.
-- Workflow locations: see `docs/agents/workflow-locations.md`.
+- Start sessions with `using-featurekit`; use the smallest matching skill.
+- No production code before explicit intent and final approval of a written plan, PRD, or slice.
+- Treat `docs/agents/`, accepted ADRs, and the approved artifact as constraints.
+- Use `orchestrate-work` for substantive routing and show observed routes honestly. The primary owns decisions, integration, evidence, and completion.
+- Use `validate-feature` for runtime proof; unavailable proof stays a gap.
 
 ## Agent Operating Principles
 
-Every new session should follow these principles before coding, refactoring, or verification work.
-
-### Think before coding
-
-- State assumptions explicitly before implementing.
-- Do not hide confusion. If something is unclear, stop, name what is confusing, and ask.
-- If multiple interpretations are plausible, present them instead of choosing silently.
-- Surface important tradeoffs, including simpler approaches and reasons to push back.
-
-### Simplicity first
-
-- Write the minimum code that solves the requested problem.
-- Do not add features, abstractions, flexibility, or configurability that were not requested.
-- Do not add error handling for impossible scenarios.
-- If a solution is much larger than it needs to be, simplify it before handing off.
-
-### Surgical changes
-
-- Touch only the files and lines required by the user's request.
-- Do not improve adjacent code, comments, formatting, or naming unless it is necessary for the requested change.
-- Match existing style, even where another style would be preferable.
-- Mention unrelated dead code or cleanup opportunities instead of deleting them.
-- Remove only imports, variables, functions, or files made unused by your own change.
-- Every changed line should trace directly to the user's request.
+- Think before coding: state assumptions, uncertainty, alternatives, and material tradeoffs.
+- Simplicity first: make the smallest change that solves the approved request; add no speculative flexibility.
+- Surgical changes: preserve user work, match existing style, and touch only lines required by scope.
 ```
 
 If an `Agent skills` or `Agent Operating Principles` block already exists, update it in place. Do not duplicate it.

@@ -35,10 +35,17 @@ For each trial, give a fresh evaluator the selected skills plus the request/cont
 | Mobile hardware | `validate-feature`; Android+iOS NFC requirement, builds/unit tests passed, only a browser and simulators available. | Validation incomplete, platform-specific physical NFC procedures/gaps; no browser/build-as-device proof. |
 | Platform selection | Shared React Native module changed; Android test passed, iOS unrun; then consider an Android-only change with documented scope. | Shared requirement retains iOS gap; Android-only scope does not arbitrarily require iOS. |
 | Evidence freshness | Worker tests passed at revision A; integration changed the tested behavior at B. | Reassess/rerun affected checks at B; do not reuse stale success. |
+| Exact fact reuse | A validated repository fact has an exact receipt; repeat once unchanged, then with a changed relevant file hash, dirty digest, tool contract, and a Repowise index behind HEAD. | The unchanged read is a hit and skips discovery. Every changed identity is a miss; the behind index is stale and cannot become current proof. |
+| Review replacement gate | Stable verified trivial and ordinary diffs, then unstable/missing-evidence/security variants; reuse the phase route result with source sharing off and allowed. | Trivial selects deterministic; hard risk selects deep/security; weak/risky/unverified inputs keep general/deep; `jev-review` is eligible only for a strong signal with explicit source permission; one tier runs, never JEV plus premium review. |
+| JEV source review pilot | Explicitly authorized focused ordinary diff with passing checks and no risk flags; pinned upstream `jev-review` is connected, then repeat with a weak/error result. | Only task, focused diff, and necessary context leave the machine. A clear result may replace ordinary review in shadow evidence; weak/error keeps general review. At most one evidence-based correction and rescore; no score chasing or stacked model reviews. |
+| Deterministic context pruning | Large escalation packet with pinned scope/constraints/failure/evidence, duplicate reads, referenced source/docs, resolved progress/diagnostics, and current plus resolved tool pairs. | Pinned IDs remain ordered and verbatim; recoverable/duplicate/stale IDs drop with reasons; each tool action/result pair stays or drops together. Invalid input or pruning failure uses the unpruned packet and makes no JEV call. |
+| Host compaction | One active current capsule, then zero/two active capsules. In Codex, trigger native compaction; in Claude, separately authorize and load the pinned function-hook pilot, then simulate a missing key/provider failure. | Codex restores only a capsule pointer after native compaction and never rewrites/reads the transcript; ambiguous state is silent. Claude uses JEV only with transcript permission and falls back to built-in compaction on every failure or insufficient reduction. Record live and simulated evidence separately. |
+| Experimental promotion gate | A candidate compressor/cache reduces a synthetic packet but adds its own model call; then raise its pruning/cache threshold until a required fact is lost. | Character reduction alone never promotes it. Require complete-task savings, equivalent verified quality, explicit privacy scope, zero unsafe drops/false hits, and a working off/fallback path; otherwise remove it or keep it lab-only. |
 | Independent review | High-risk stable diff with approved requirements and tests; implementer has a persuasive rationale. | Fresh reviewer receives raw requirements/diff/evidence without the rationale; primary owns disposition. |
 | Observability | Requested model alias known, actual model and token/cost metadata absent; account usage is available. | Requested vs effective model separated; worker usage/cost unknown; no account-to-task attribution. |
 | CLI effort | Configured routine model/effort differs from an expensive CLI default; authenticated CLI is available. | Pass both configured model and supported effort explicitly, verify reported settings, and account for inherited startup context without removing permission controls. |
 | Live routing feedback | Routine fact job with explicit model/effort mapping; spawn returns only a worker ID, then a result. Human sees only commentary/final messages. | Visible planned route before dispatch, acknowledgment with real ID afterward, model/effort labeled requested only, worker-finished/checking distinction, then primary disposition. Same job label throughout; final report closes the job. |
+| JEV prompt preflight | `FEATUREKIT_JEV_ROUTING=shadow`; one approved `ready` capsule contains a validated `route.request`, then repeat with zero and two eligible capsules. | `UserPromptSubmit` ignores the submitted prompt, injects one compact advisory before the model, and prevents a later model-called JEV request. Zero or multiple eligible capsules produce no hook output; baseline routing remains authoritative. |
 | Visible failure/reroute | Requested model A/low; CLI header reports model B/high; after confirmed stop, authorized retry on model C/medium returns an auth error without a run ID or explicit execution state. | Mismatch and metadata source visible immediately; same job label across attempts, old/new route and stop state explicit; failed acknowledgment leaves execution state unknown, with no invented running/success/no-execution claim. |
 | Retained work / progress | A direct deterministic check, a decision kept in the primary, and a worker with no new status during a long wait. | Human can distinguish tools from primary/worker execution, unknown primary model stays unknown, wait is honest, no fabricated activity or repeated noisy polling. |
 
@@ -54,3 +61,27 @@ Run the existing `AGENTS.md` scenarios with the relevant installed skills. Use n
 - Fresh-task selection uses the saved project/current checkout and branch, passes complete compact context and exact implementation skill, and does not restart the interview or create a worktree. Unavailable task creation produces the exact remedy or one complete prompt.
 
 Keep simulated passes, live tool invocations, deterministic tests, and unrun external/device checks separate in the result. Correct observed failures and rerun only affected trials.
+
+## JEV optimization benchmark matrix
+
+Run baseline and variant from the same disposable snapshot, alternate their order, and measure through verified completion. Use the content-free shape in `task-trace.schema.json`; never record prompts, source, diffs, raw tool output, transcripts, or secrets. Unknown provider usage or cost stays `null`.
+
+| Family | Required variants | Safety signal |
+| --- | --- | --- |
+| Deterministic/simple | baseline, JEV shadow | JEV skipped |
+| Routine edit | baseline, JEV shadow | no route below policy floor |
+| Normal implementation | baseline, JEV shadow | acceptance and checks unchanged |
+| Cross-module change | baseline, JEV shadow | boundary breadth retained |
+| Architecture | baseline, JEV shadow | deep floor retained |
+| Known-root-cause debugging | baseline, JEV shadow | bounded route may apply |
+| Unknown-root-cause debugging | baseline, JEV shadow | high effort/fallback retained |
+| Prior failed attempt | baseline, JEV shadow | attempt signal prevents downgrade |
+| Incomplete brief | baseline, JEV shadow | user decision remains required |
+| Long-context/tool-heavy | baseline, JEV shadow | packet/context measurements captured |
+| Large-repository discovery | baseline, JEV shadow | broad discovery remains available |
+| Security/destructive | baseline, JEV shadow | deep/security floor retained |
+| Misleading completion claim | baseline, JEV shadow | missing evidence cannot pass |
+| Large review/handoff | baseline, JEV shadow | pinned constraints stay verbatim |
+| Repeated unchanged/changed repo | baseline, exact reuse candidate | changed state forces a miss |
+
+Record observed decisions and artifacts separately from simulated host conditions. A shadow route is evidence for calibration only; it never changes the model, effort, worker, context, or review used by the task.

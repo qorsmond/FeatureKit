@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "featurekit-jev": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/skills/productivity/orchestrate-work/scripts/mcp-server.mjs"
+      ]
+    }
+  }
+}

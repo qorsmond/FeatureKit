@@ -1,91 +1,36 @@
 ---
 name: handoff
-description: Prepare compact continuation context or create a fresh implementation task for substantial work after an approved artifact and explicit user selection. Use when context is long, work is pausing, a prototype result needs to return to planning, or work moves to another session, agent, developer, or tool.
+description: Preserve compact continuation state or create a user-selected fresh implementation task without replaying the conversation. Use for pauses, long context, or substantial approved work.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.6.2"
+  featurekit-version: "0.7.0"
 ---
 
 # Handoff
 
-Capture the current state without dumping the whole conversation.
+Apply the shared [workflow invariants](../orchestrate-work/references/invariants.md). Build from the approved artifact and durable evidence, never a transcript summary. When a capsule exists, use its handoff projection, stable references, and `orchestrate-work` metadata pruning.
 
-## Process
+## Capture
 
-1. Identify the active objective.
-2. Link to the PRD, slice, prototype, or plan.
-3. Summarize what is done.
-4. List the next steps in order.
-5. Record changed files or areas and the relevant symbols when known.
-6. Capture decisions, risks, security follow-ups, gotchas, and relevant ADRs.
-7. Recommend `/record-adr` for unrecorded durable architecture decisions.
-8. Record the repository or project, relevant working-tree state, verification commands, and available context-efficiency tools such as Serena or RTK.
-   Preserve the `orchestrate-work` ledger when relevant: accepted findings, worker routes/models where observed, failed attempts, pending ownership and escalations. Stop or explicitly coordinate active workers before transferring write ownership. Ordinary worker packets use `orchestrate-work`; they do not trigger this fresh-task flow.
-9. Write the handoff to the configured location, defaulting to `docs/handoff/<slug>.md`, when a durable note is useful or the destination cannot receive a complete prompt directly.
+Record once:
+
+- objective, approved artifact and authority;
+- completed work, ordered next action, scope and exclusions;
+- changed paths/relevant symbols and repository snapshot;
+- governing decisions, ADRs, security constraints, risks and gotchas;
+- actual verification/runtime/platform evidence and gaps;
+- relevant worker routes/results, failed attempts, pending ownership and escalation;
+- available repo tools and the exact next FeatureKit skill.
+
+Use stable paths and hashes instead of copied source, diffs, logs, repeated checks, or worker prose. Stop or coordinate active writers before transferring ownership. Write `docs/handoff/<slug>.md` only when a durable note is useful or the destination cannot receive the complete prompt directly.
 
 ## Fresh Implementation Task
 
-Use this path only when implementation is substantial, an implementation-ready plan, PRD, or slice has final approval, and the user explicitly selected a fresh implementation task. Focused work continues in the current task without this destination question.
+Use only after final approval of substantial implementation and explicit user selection of the fresh-task option. Focused work continues in the current task.
 
-1. Prepare a self-contained implementation prompt with the approved artifact, objective, scope and out-of-scope boundaries, decisions, governing ADRs, security constraints, risks, relevant files or symbols, repository state, verification commands, and available context-efficiency tools.
-2. Name the exact next skill: `/implement` for one approved plan or slice, or `/execute-slices` only when the user approved autonomous execution of the ordered slice set.
-3. Do not include a conversation transcript, raw source bodies, full diffs, raw logs, repeated successful test output, or ask the destination to repeat the interview. Include the approved artifact exactly once: link it when the destination shares access, otherwise include it without also duplicating a summary of it.
-4. When the harness can create a task, use its task or session creation tool only after the user selects this path. Start the new task in the same saved project, existing checkout, and active branch so it shares installed FeatureKit skills, project-scoped tools such as Serena, and required uncommitted planning artifacts or working-tree state. Do not create a worktree, branch, clone, or isolated checkout. In Codex, choose the project's local environment rather than a worktree environment.
-5. If task creation cannot preserve that checkout or the current mode or permissions disable it, explain the exact enabling action and pause. Resume from the approved artifact and selected destination without asking the interview questions again.
-6. If suitable task creation is unavailable, provide the exact copy-paste prompt, instruct the user to open it from the same checkout and branch, and include the handoff-note path when one was written.
+1. Pass the approved artifact once, objective, boundaries, decisions, ADR/security constraints, repository state, relevant paths, verification commands, gaps, and tools.
+2. Name `/implement` for one plan/slice or `/execute-slices` for an explicitly approved batch. Do not restart the interview.
+3. Create the task in the same saved project, checkout, and active branch. Do not create a worktree, branch, clone, or isolated checkout.
+4. If the task tool cannot preserve that environment or is disabled, give the exact enabling action and pause. If unavailable, provide one self-contained copy/paste prompt for the same checkout.
 
-## Output File Format
-
-```markdown
-# Handoff: <task>
-
-Objective:
-<what we are trying to achieve>
-
-Plan:
-<link to PRD, slice, or plan>
-
-Approval:
-<approved artifact and approval state>
-
-Done:
-- <completed item>
-
-Next:
-- <next step>
-
-Changed:
-- <files or areas>
-
-Relevant code:
-- <symbols and paths; no copied source bodies>
-
-Repository state:
-- <project, branch or checkout, and relevant uncommitted changes>
-
-Decisions:
-- <important decision>
-
-ADRs:
-- <governing ADRs or pending /record-adr follow-up>
-
-Security:
-- <none | open threat, security review, verification, or hardening follow-up>
-
-Watch out for:
-- <gotcha>
-
-Suggested next skill:
-<skill>
-
-Verification:
-- <validate-feature verdict; actual results and code/runtime/platform tested, remaining procedures and proof gaps>
-
-Work distribution:
-- <relevant routing/results/escalations, active worker ownership, and reusable findings; unknown usage stays unknown>
-
-Context tools:
-- <Serena, RTK, equivalent tools, or bounded shell fallbacks>
-```
-
-Tell the user where the handoff was written or which fresh task was created. When creation is queued or asynchronous, surface the task identifier or link and confirm only that the handoff was dispatched, not that implementation completed.
+Report the handoff path or created task identifier. Queued dispatch is not completed implementation.

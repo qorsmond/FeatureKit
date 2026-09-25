@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "task_id": "fixture-normal-implementation",
+  "revision": 2,
+  "consumer": "reviewer",
+  "snapshot": {
+    "repo": "fixture",
+    "head": "abc123",
+    "dirty_digest": "sha256:dirty",
+    "artifact_hashes": {"docs/plan.md": "sha256:plan"}
+  },
+  "state": {
+    "requirements": {
+      "objective": "Implement the approved bounded behavior",
+      "acceptance": ["A1: focused behavior passes"],
+      "constraints": ["No new dependencies"]
+    },
+    "risk": {"flags": [], "capability_floor": "routine", "review_floor": "jev-review"},
+    "evidence": [{"id": "E1", "kind": "test", "status": "passed", "ref": "artifacts/test.txt"}],
+    "review": {"tier": "jev-review", "diff_hash": "sha256:diff", "status": "pending"},
+    "changed_paths": ["src/session", "tests/session"]
+  }
+}

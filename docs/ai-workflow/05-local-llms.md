@@ -24,6 +24,8 @@ For a local model, keep context tight:
 
 Do not paste the whole repo unless the local model has enough context and you really need it.
 
+Local models do not need JEV. Use the deterministic FeatureKit route, exact fact receipts, capsule projections, and metadata pruning when the host cannot run the optional MCP server or hooks. Never paste an API key, route cache, transcript, or unrelated source into the model prompt. If an external reviewer or compactor is enabled separately, follow its source/transcript permission instead of assuming metadata-routing consent covers it.
+
 ## Example: Planning
 
 ```text
@@ -112,6 +114,7 @@ With local LLMs:
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
 - use the [orchestration guide](./09-orchestration.md) for capability routing and runtime evidence, and consult the provider reference linked there for CLI mechanics,
+- keep optional JEV routing `off` unless the local harness can enforce the documented bounded schema and fail-open behavior,
 - use fresh sessions only for substantial work or when the current session is context-constrained, and reopen the same checkout and branch.
 
 The workflow still works because the skills are plain Markdown.

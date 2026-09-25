@@ -14,6 +14,18 @@ def check(root):
     assert len(paths) == len(set(paths)), "duplicate plugin skill"
     skills = set((root / "skills").glob("**/SKILL.md"))
     assert set(paths) == skills, "plugin inventory differs from skill files"
+    mcp = json.loads((root / ".mcp.json").read_text())
+    assert set(mcp) == {"mcpServers"}, "invalid MCP manifest"
+    assert set(mcp["mcpServers"]) == {"featurekit-jev"}, "unexpected MCP server inventory"
+    server = mcp["mcpServers"]["featurekit-jev"]
+    assert server["type"] == "stdio" and server["command"] == "node", "invalid FeatureKit JEV transport"
+    script = server["args"][0].removeprefix("${CLAUDE_PLUGIN_ROOT}/")
+    assert (root / script).is_file(), "FeatureKit JEV MCP script is missing"
+    hooks = json.loads((root / "hooks/hooks.json").read_text())
+    handlers = hooks["hooks"]["UserPromptSubmit"][0]["hooks"]
+    assert len(handlers) == 1 and handlers[0]["type"] == "command", "invalid FeatureKit hook"
+    assert "route-hook.mjs" in handlers[0]["command"], "FeatureKit route hook is missing"
+    assert (root / "skills/productivity/orchestrate-work/scripts/route-hook.mjs").is_file(), "FeatureKit route hook script is missing"
     implicit = {
         "tdd", "secure-design", "secure-code", "secure-api", "secure-deploy",
         "orchestrate-work", "validate-feature",

@@ -58,6 +58,8 @@ Task:
 - Create a fresh session only after the user selects it. Start it from the same project checkout and active branch without creating a worktree, branch, clone, or isolated checkout. Pass the approved artifact, scope, decisions, constraints, repository state, verification, and exact implementation skill without a transcript or repeated interview; otherwise provide one exact copy-paste prompt.
 - For approved ordered slices, use `execute-slices` only when the user explicitly asks to execute them and the model has enough context for the PRD, slice queue, relevant files, and verification output.
 - Use `orchestrate-work` for capability routing and bounded worker packets, and `validate-feature` for acceptance-criterion evidence across the actual runtime. Ordinary workers are distinct from fresh user-facing task handoffs.
+- JEV is optional. When hooks or the bounded route tool are unavailable, use the normal deterministic route. Never send source, diffs, logs, transcripts, secrets, or API keys because metadata routing is enabled.
+- Preserve long-task state with approved artifacts, capsule projections, exact references, and compact evidence rather than a conversation replay. Revalidate repository state before reusing cached facts or evidence.
 - Treat accepted ADRs as governing context.
 - Recommend `record-adr` when a durable architectural decision is made or changed.
 - For security-sensitive work, paste and apply `docs/agents/security.md` plus `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` as the selected workflow requires.

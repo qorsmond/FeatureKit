@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "identity": {
+    "run_id": "example",
+    "scenario": "routine-edit",
+    "repo_snapshot": "unknown",
+    "featurekit_version": "0.7.0",
+    "policy_version": 1,
+    "host": "simulated",
+    "host_version": "unknown"
+  },
+  "input": {
+    "featurekit_chars": null,
+    "task_brief_chars": null,
+    "retrieved_context_chars": null,
+    "worker_packet_chars": null,
+    "reviewer_packet_chars": null,
+    "tool_schema_chars": null
+  },
+  "calls": {
+    "primary": [],
+    "workers": [],
+    "reviewers": [],
+    "jev": []
+  },
+  "usage": {
+    "input_tokens": null,
+    "cached_input_tokens": null,
+    "cache_write_tokens": null,
+    "output_tokens": null,
+    "reasoning_tokens": null
+  },
+  "workflow": {
+    "tools": [],
+    "retries": 0,
+    "escalations": 0,
+    "compactions": 0,
+    "cache_hits": 0,
+    "cache_misses": 0,
+    "latency_ms": null
+  },
+  "quality": {
+    "checks": [],
+    "runtime_evidence": [],
+    "findings": [],
+    "final_success": null,
+    "verdict": "unrun"
+  },
+  "cost": {
+    "amount": null,
+    "currency": null,
+    "source": "unknown"
+  }
+}
