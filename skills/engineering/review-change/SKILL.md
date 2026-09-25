@@ -2,7 +2,7 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, slice, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.8.0"
+  featurekit-version: "0.9.0"
 ---
 
 # Review Change
@@ -11,7 +11,7 @@ Review for bugs, security risk, scope drift, and missing verification.
 
 Apply the target repo's `Agent Operating Principles` when checking scope, simplicity, and unrelated changes.
 
-Use `orchestrate-work` for one tier: verified trivial -> deterministic; hard risk -> deep/security; otherwise JEV advice or general. Source review needs permission. Weak/off advice, risk, or missing/failed proof cannot clear review. Never stack reviews; the primary decides findings.
+Use `orchestrate-work` review selection for one tier: small verified docs-only diff -> checks only; small code -> cheapest review; hard risk -> deep/security; else one review at the routed or baseline level. Never stack reviews; the primary decides findings.
 
 ## Process
 

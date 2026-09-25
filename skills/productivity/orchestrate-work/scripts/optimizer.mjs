@@ -2,7 +2,7 @@
 
 import { execFileSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { appendFile, chmod, mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 import https from "node:https";
 import path from "node:path";
@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 
 const SCHEMA = 1;
-export const FEATUREKIT_VERSION = "0.8.0";
+export const FEATUREKIT_VERSION = "0.9.0";
 const POLICY_VERSION = 7;
 const QUESTIONS_VERSION = 4;
 const API_URL = new URL("https://api.typesafe.ai/v1/systemone");
@@ -35,7 +35,6 @@ const OPTIONAL_BOOLEAN_FACTS = ["existing_check", "spec_exact", "follows_existin
 // Both hosts expose low as their lowest runnable effort, so enforcement never asks JEV about minimal.
 const ENFORCED_EFFORT_FLOOR = "low";
 const ROUTE_CLASS = new RegExp(`^(${CAPABILITIES.join("|")})-(${EFFORTS.join("|")})$`);
-const ROUTE_DIMENSIONS = new Set(["task_family", "capability", "effort", "execution", "context", "review_floor"]);
 const CONTEXT_KINDS = new Set(["authority", "requirement", "constraint", "failure", "evidence", "ownership", "source", "retrieved-doc", "diagnostic", "progress", "decision", "tool-action", "tool-result"]);
 const RECOVERABLE_KINDS = new Set(["source", "retrieved-doc"]);
 const FORBIDDEN_CAPSULE_KEYS = new Set(["source", "source_code", "diff", "transcript", "raw_output", "api_key", "access_key", "secret", "credential", "password", "private_key", "authorization", "token"]);
@@ -536,31 +535,87 @@ export async function optimizeRoute(input, options = {}) {
   }
 }
 
-export function selectReviewTier(request) {
+// Small-diff rules are measured from the diff; a caller's own "trivial" label is not trusted.
+// Only small docs-only changes skip model review; a small code change still gets the cheapest review,
+// because a passing check says nothing about new untested behavior (seeded-defect benchmark, 2026-09-25).
+const TRIVIAL_MAX_LINES = 20;
+const TRIVIAL_MAX_FILES = 2;
+const DOC_EXTENSIONS = new Set([".md", ".mdx", ".markdown", ".txt", ".rst", ".adoc"]);
+
+function scratchExclude(top, root) {
+  // Compare real paths: git reports resolved paths while temp or home paths may be symlinks.
+  let existing = root;
+  const missing = [];
+  while (existing !== path.dirname(existing)) {
+    try { existing = realpathSync(existing); break; } catch { missing.unshift(path.basename(existing)); existing = path.dirname(existing); }
+  }
+  const scratch = path.relative(top, path.join(existing, ...missing));
+  return scratch && !scratch.startsWith("..") && !path.isAbsolute(scratch) ? [`:(exclude)${scratch}`] : [];
+}
+
+// Counts changed files, lines, non-docs files, and new/deleted files locally; no content leaves the machine.
+function measureDiff(repo, base, root) {
+  if (!/^[A-Za-z0-9._\/@{}~^][A-Za-z0-9._\/@{}~^-]*$/.test(base)) throw new Error("change.base must be a plain git revision");
+  const git = (...args) => execFileSync("git", ["-C", repo, ...args], { encoding: "utf8", maxBuffer: 256 << 20, stdio: ["ignore", "pipe", "ignore"] });
+  const top = git("rev-parse", "--show-toplevel").trim();
+  const commit = git("rev-parse", "--verify", "--end-of-options", `${base}^{commit}`).trim();
+  const exclude = scratchExclude(top, root);
+  const stats = { files: 0, lines: 0, code_files: 0, new_or_deleted: 0 };
+  const count = (file) => {
+    stats.files += 1;
+    if (!DOC_EXTENSIONS.has(path.extname(file).toLowerCase())) stats.code_files += 1;
+  };
+  for (const line of git("diff", "--numstat", commit, "--", ".", ...exclude).split("\n").filter(Boolean)) {
+    const [added, deleted, file] = line.split("\t");
+    count(file);
+    if (added !== "-" && deleted !== "-") stats.lines += Number(added) + Number(deleted);
+  }
+  for (const line of git("diff", "--name-status", "--no-renames", commit, "--", ".", ...exclude).split("\n").filter(Boolean)) {
+    if (/^[AD]/.test(line)) stats.new_or_deleted += 1;
+  }
+  for (const file of git("ls-files", "-o", "--exclude-standard", "-z", "--", ".", ...exclude).split("\0").filter(Boolean)) {
+    count(file);
+    stats.new_or_deleted += 1;
+  }
+  return stats;
+}
+
+export function selectReviewTier(request, options = {}) {
   exactKeys(request, ["schema", "mode", "action", "change", "route"], "request");
   if (request.schema !== SCHEMA || request.mode !== "review" || request.action !== "select") throw new Error("unsupported review request");
-  exactKeys(request.change, ["kind", "stable_diff", "verification", "source_sharing", "risk_flags"], "change");
-  enumValue(request.change.kind, ["trivial", "ordinary"], "change.kind");
+  exactKeys(request.change, ["repo", "base", "stable_diff", "verification", "risk_flags"], "change");
+  boundedString(request.change.repo, "change.repo", 1024);
+  boundedString(request.change.base, "change.base", 128);
   if (typeof request.change.stable_diff !== "boolean") throw new Error("change.stable_diff must be boolean");
   enumValue(request.change.verification, ["passed", "missing", "failed"], "change.verification");
-  enumValue(request.change.source_sharing, ["off", "allowed"], "change.source_sharing");
   stringArray(request.change.risk_flags, "change.risk_flags", { maxItems: RISK_FLAGS.size, maxLength: 32 });
   if (new Set(request.change.risk_flags).size !== request.change.risk_flags.length || request.change.risk_flags.some((flag) => !RISK_FLAGS.has(flag))) throw new Error("change.risk_flags contains an unknown or duplicate flag");
-  exactKeys(request.route, ["status", "review_floor", "approved_dimensions"], "route");
-  enumValue(request.route.status, ["shadow", "hold", "unavailable", "off", "skipped"], "route.status");
-  if (request.route.review_floor !== null) enumValue(request.route.review_floor, ["deterministic", "jev-review", "general", "deep-security"], "route.review_floor");
-  stringArray(request.route.approved_dimensions, "route.approved_dimensions", { maxItems: 6, maxLength: 32 });
-  if (new Set(request.route.approved_dimensions).size !== request.route.approved_dimensions.length || request.route.approved_dimensions.some((dimension) => !ROUTE_DIMENSIONS.has(dimension))) throw new Error("route.approved_dimensions contains an unknown or duplicate dimension");
+  exactKeys(request.route, ["status", "capability", "effort"], "route");
+  enumValue(request.route.status, ["enforced", "shadow", "hold", "unavailable", "off", "skipped"], "route.status");
+  if (request.route.capability !== null) enumValue(request.route.capability, CAPABILITIES, "route.capability");
+  if (request.route.effort !== null) enumValue(request.route.effort, EFFORTS, "route.effort");
 
-  const result = (tier, reason) => ({ schema: SCHEMA, status: "shadow", baseline_preserved: true, tier, reason_codes: [reason] });
-  if (request.change.risk_flags.some((flag) => HARD_RISKS.has(flag))) return result("deep-security", "HARD_RISK_FLOOR");
-  if (!request.change.stable_diff) return result("general", "UNSTABLE_DIFF");
-  if (request.change.verification !== "passed") return result("general", "VERIFICATION_REQUIRED");
-  if (request.change.risk_flags.length) return result("general", "RISK_FLAG_FLOOR");
-  if (request.change.kind === "trivial") return result("deterministic", "TRIVIAL_VERIFIED");
-  if (request.route.status !== "shadow" || !request.route.approved_dimensions.includes("review_floor") || request.route.review_floor === null) return result("general", "WEAK_OR_UNAVAILABLE_SIGNAL");
-  if (request.route.review_floor === "jev-review" && request.change.source_sharing !== "allowed") return result("general", "SOURCE_SHARING_OFF");
-  return result(request.route.review_floor, "STRONG_REVIEW_SIGNAL");
+  const routingMode = options.routingMode || process.env.FEATUREKIT_JEV_ROUTING || "off";
+  if (!ROUTING_MODES.includes(routingMode)) throw new Error("FEATUREKIT_JEV_ROUTING must be off, shadow, or enforce");
+  if (routingMode === "off") return { schema: SCHEMA, status: "off", baseline_preserved: true, tier: null, reviewer: null, diff: null, reason_codes: ["ROUTING_OFF"] };
+
+  const { change, route } = request;
+  const diff = measureDiff(change.repo, change.base, scratchRoot(options));
+  const status = routingMode === "enforce" ? "enforced" : "shadow";
+  const baseline = { source: "baseline", capability: null, effort: null };
+  const result = (tier, reviewer, reason) => ({ schema: SCHEMA, status, baseline_preserved: status !== "enforced", tier, reviewer, diff, reason_codes: [reason] });
+  if (change.risk_flags.some((flag) => HARD_RISKS.has(flag))) return result("deep-security", null, "HARD_RISK_FLOOR");
+  if (!change.stable_diff) return result("general", baseline, "UNSTABLE_DIFF");
+  if (change.verification !== "passed") return result("general", baseline, "VERIFICATION_REQUIRED");
+  if (change.risk_flags.length) return result("general", baseline, "RISK_FLAG_FLOOR");
+  const small = diff.lines <= TRIVIAL_MAX_LINES && diff.files <= TRIVIAL_MAX_FILES && diff.new_or_deleted === 0;
+  if (small && diff.code_files === 0) return result("deterministic", null, "SMALL_DOCS_RULE");
+  if (small) return result("general", { source: "small-diff", capability: "routine", effort: "low" }, "SMALL_CODE_CHEAPEST_REVIEW");
+  // Metadata-only JEV never clears a nontrivial diff; a confident route only sets the reviewer's level.
+  if (["enforced", "shadow"].includes(route.status) && route.capability && route.effort) {
+    return result("general", { source: "routed", capability: route.capability, effort: route.effort }, "ROUTED_REVIEWER");
+  }
+  return result("general", baseline, "WEAK_OR_UNAVAILABLE_SIGNAL");
 }
 
 export function pruneContext(request) {
@@ -674,8 +729,7 @@ function identityFromKey(key, root) {
   const top = git("rev-parse", "--show-toplevel").toString().trim();
   let head = "unborn";
   try { head = git("rev-parse", "HEAD").toString().trim(); } catch { /* repository without commits */ }
-  const scratch = path.relative(top, root);
-  const exclude = scratch && !scratch.startsWith("..") && !path.isAbsolute(scratch) ? [`:(exclude)${scratch}`] : [];
+  const exclude = scratchExclude(top, root);
   const dirty = createHash("sha256");
   if (head !== "unborn") dirty.update(git("diff", "HEAD", "--binary", "--", ".", ...exclude));
   for (const file of git("ls-files", "-o", "--exclude-standard", "-z", "--", ".", ...exclude).toString().split("\0").filter(Boolean).sort()) {

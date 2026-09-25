@@ -1,6 +1,6 @@
 # JEV max-savings architecture for FeatureKit
 
-Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement shipped in 0.8.0 with amendments 1–2 (every level, harness-chosen models, richer metadata), and Slice 5 exact reuse is complete; review replacement remains gated by clean paired economics, repeated quality trials, and Claude Code evidence. JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
+Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement shipped in 0.8.0 with amendments 1–2 (every level, harness-chosen models, richer metadata), Slice 5 exact reuse is complete, and Slice 6 tiered review shipped in 0.9.0 without source sharing (docs-only small diffs skip model review; small code gets the cheapest review; validated 3/3 on a seeded-defect benchmark). JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
 
 Baseline inspected: FeatureKit `0.6.2` at commit `36d2cfe`. The only working-tree addition during this analysis is this plan.
 
@@ -776,6 +776,24 @@ Acceptance:
 - security/high-risk changes always keep their mandatory review;
 - failed/missing verification cannot be cleared by JEV;
 - defect-catch and final-success rates match or beat baseline.
+
+#### Slice 6 decisions (2026-09-25, user)
+
+- **No source sharing in this slice.** Tier 2 (`jev-review`, which sends code to TypeSafe) is not built. It remains an opt-in pilot, off by default, in a later change. JEV sees only metadata.
+- **Tier 0 is a fixed rule, not a model judgment.** The review selector measures the working-tree diff locally with git: the tracked diff against a base, plus untracked files, excluding the scratch area. A change is trivial only when all of these hold:
+  - at most 20 changed lines;
+  - at most 2 files;
+  - no new, deleted, or binary files;
+  - verification `passed` and a stable diff;
+  - no risk flags.
+
+  A caller's own `trivial` label is no longer trusted.
+- **Metadata JEV never clears a nontrivial diff.** In `enforce`, a confident review route (operation `review`) sets only the reviewer's capability and effort for tier 3. A weak, `hold`, or unavailable route uses the baseline reviewer. Hard risks select tier 4 deep/security. Unstable diffs, missing or failed verification, and any caution flag select a general review that JEV cannot clear.
+- **Modes.** `off` or unset keeps today's `review-change` behavior (`status: off`); `shadow` returns the selection as advice; `enforce` makes it binding. Reviews are never stacked, and a matching diff-bound `review` receipt may be reused.
+
+**Revision after the benchmark (user decision).** The first rule let a 7-line code change with a seeded, untested defect skip review. Only a small **docs-only** diff now skips model review. A small code diff always gets one review at `routine`/`low`, whatever JEV answers.
+
+**Validation.** A defect-seeded benchmark on the medium fixture uses clean and defective diffs whose defects the acceptance check does not catch. The baseline reviews each diff with the host default. The tiered arm runs the enforced selector: no model review for a rule-trivial diff, and a routed-level reviewer otherwise. Record the defects caught, false alarms, and frontier tokens. Acceptance: equal or better defect catch, and security and verification floors intact.
 
 ### Slice 7 — Portable pruning and escalation packets
 

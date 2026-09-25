@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.0 - 2026-09-25
+
+- Review selection (Slice 6) measures the diff locally. A small verified docs-only diff (at most 20 lines, at most 2 existing files, no new or deleted files, no risk) gets checks only. A small code diff always gets one review on the cheapest level at low effort; a seeded-defect benchmark showed a 7-line code change with passing checks hiding a bug. A hard risk keeps the mandatory deep/security review. Everything else gets one general review at the JEV-routed level, or the baseline level when JEV is weak. Metadata-only JEV can no longer clear a nontrivial diff, and the selector no longer trusts a caller's `trivial` label or accepts `source_sharing`; source-aware `jev-review` stays an opt-in pilot. Receipts and the review selector now exclude the scratch area even when its path is a symlink.
+- Validated on a seeded-defect benchmark: the tiered path caught 3 of 3 seeded defects (equal to the Opus-only baseline), with no false alarms, 41% lower review cost, and 56% fewer Opus input tokens.
+
 ## 0.8.0 - 2026-09-25
 
 - Added a reversible `FEATUREKIT_JEV_ROUTING=enforce` mode. JEV's confident capability (`routine`, `standard` or `deep`) and effort choice decides the level that runs every approved task; the harness picks the actual model from those it offers at runtime. FeatureKit and product repos name no models; `docs/agents/orchestration.md` holds only optional user overrides.

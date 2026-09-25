@@ -642,3 +642,55 @@ Mutations removing the path guard, catalogue expiry, or elimination counting eac
 | 3 | `app/validation.py` message edited | miss → written | 2 | 5 | 88,110 | $0.120 | correct **new** message |
 
 Session 2 removed both source reads, 52% of input tokens, and 82% of reported cost against session 1. Final stats: receipt 1 hit, 2 misses, 2 written; eliminated calls `{"source": 1}`. Nothing was simulated. Receipt use was prompted explicitly, not discovered by the model from skill text, and the disposable repo was deleted after recording.
+
+## Slice 6 tiered review — defect-seeded benchmark — 2026-09-25
+
+Verdict: **failed** the Slice 6 acceptance "equal or better defect catch". The rule-trivial tier missed a seeded defect that the baseline review caught. The selector code and floors work as designed; the tier-0 rule is unsafe.
+
+**Setup.** All runs were live, each in a fresh disposable repo.
+
+- **Base:** the medium items service with its implementation committed.
+- **Changes:** five uncommitted changes, each with an approved one-paragraph spec in an ignored `CHANGE.md`. Every change still passed `check_items.py`, and none of the seeded defects are exercised by that check. An in-memory probe confirmed each defect beforehand, and confirmed that C2 works.
+- **Baseline arm:** `/featurekit:review-change` with the plugin on the host default `claude-opus-5-5`.
+- **Tiered arm:**
+  - one live metadata-only JEV review route (`operation: review`, `approval: read-only`, `enforce`);
+  - then the enforced selector;
+  - then the same review command on the routed tier, when one was selected. The coordinator acted as the harness, mapping routine, standard, and deep to `haiku`, `sonnet`, and `opus` with the routed effort.
+- **Grading:** I read every review. A defect counts as caught only when it is reported as a P1 or P2 with the correct cause.
+
+| Change | Diff | Seeded defect | Baseline (Opus) | Tiered: route → tier → reviewer | Tiered result |
+| --- | --- | --- | --- | --- | --- |
+| C1 docstring | 1 file, 1 line | none | no findings; 96,234 in; $0.147 | `hold` → deterministic → none | correct, no review, $0 |
+| D2 `?limit=N` | 1 file, 7 lines | non-integer limit raises; negative limit returns 200 | **caught both (P1)**; 155,073 in; $0.228 | `routine-low` → **deterministic** → none | **missed** |
+| C2 DELETE | 3 files, 26 lines | none | P2 pre-existing Unicode-digit edge case; 192,433 in; $0.271 | `hold` → general → baseline Opus | same P2; 186,910 in; $0.245 |
+| D3 DELETE | 3 files, 26 lines | delete never removes | caught (P1); 157,041 in; $0.211 | `hold` → general → baseline Opus | caught (P1); 127,648 in; $0.187 |
+| D4 PATCH | 3 files, 34 lines | quantity range unchecked | caught (P1); 130,061 in; $0.207 | `routine-low` → general → **Haiku `low`** | **caught (P1)**; 49,307 Haiku in; **$0.035** |
+
+**Findings.**
+
+- **Defect catch:** baseline 3 of 3, tiered 2 of 3. Neither arm raised a false alarm on the clean changes.
+- **The D2 miss:** a 7-line diff added new behavior, and "verification passed" referred to an existing check that never exercises it. Diff size does not show that a change is safe, and a passing check says nothing about new, untested paths. Both reviewers that saw untested new behavior flagged the missing coverage.
+- **Routed review works when it runs:** Haiku at `low` found D4's P1 for about 17% of the Opus cost, though its review was thinner (it did not run the check itself).
+- **JEV was weak on review routes:** it held on 3 of 5 review requests, so those reviews used the baseline reviewer.
+- **Floors held:** no hard-risk or verification floor was exercised in this set; the deterministic tests cover them.
+- **Not run:** Codex. Nothing was simulated except the coordinator acting as the harness for tier mapping.
+
+### Rerun after the revised rule — 2026-09-25
+
+With the user-approved revision in place, only small **docs-only** diffs skip model review, and small code diffs get one `routine`/`low` review. I re-ran the tiered arm on all five changes with the same procedure; the baseline results above are unchanged. Two coordinator runs first used Opus because my runner mapped only `routed` reviewers. After fixing the runner to also map `small-diff`, those two were rerun, and only the corrected runs are counted.
+
+| Change | Route | Tier / reviewer | Reviewer input | Cost | Result |
+| --- | --- | --- | ---: | ---: | --- |
+| C1 docstring (`.py`) | `hold` | small code → Haiku `low` | 97,310 Haiku | $0.036 | no findings: correct |
+| D2 `?limit=N` | `routine-low` | small code → Haiku `low` | 189,753 Haiku | $0.070 | **both defects caught (P1)** |
+| C2 DELETE | `hold` | general → baseline Opus | 190,719 Opus | $0.278 | same pre-existing P2 as baseline |
+| D3 DELETE | `hold` | general → baseline Opus | 127,539 Opus | $0.190 | caught (P1) |
+| D4 PATCH | `routine-low` | general → routed Haiku `low` | 102,736 Haiku | $0.050 | caught (P1) |
+
+Verdict: **validated**.
+
+- **Defect catch:** 3 of 3, equal to baseline, with no false alarms on the clean changes.
+- **Cost:** reported review cost fell from $1.064 to $0.624 (−41%), and Opus input fell from 730,842 to 318,258 tokens (−56%). Each review route also used about 1,440 input / 460 output JEV tokens.
+- **Where the savings came from:** C1, D2, and D4, all routed to Haiku. JEV held on C2 and D3, so those kept the Opus reviewer.
+
+One observation per change on one host (Claude); Codex was not run. Nothing was simulated beyond the coordinator mapping tiers to Claude aliases.

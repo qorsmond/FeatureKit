@@ -873,25 +873,95 @@ test("host model catalogue caches exact host versions for one day", async () => 
 });
 
 
-test("review tiering preserves evidence, risk, and source-sharing floors", () => {
+test("review selection skips model review only for small docs changes, gives small code the cheapest review, and keeps floors", async () => {
+  const repo = await mkdtemp(path.join(tmpdir(), "featurekit-review-"));
+  const git = (...args) => spawnSync("git", args, { cwd: repo, encoding: "utf8" });
+  const lines = (count, tag = "x") => Array.from({ length: count }, (_, i) => `${tag}${i}`).join("\n") + "\n";
+  const scratchRoot = path.join(repo, ".scratch", "featurekit");
   const request = (change = {}, route = {}) => ({
-    schema: 1,
-    mode: "review",
-    action: "select",
-    change: { kind: "ordinary", stable_diff: true, verification: "passed", source_sharing: "off", risk_flags: [], ...change },
-    route: { status: "shadow", review_floor: "jev-review", approved_dimensions: ["review_floor"], ...route },
+    schema: 1, mode: "review", action: "select",
+    change: { repo, base: "HEAD", stable_diff: true, verification: "passed", risk_flags: [], ...change },
+    route: { status: "enforced", capability: "standard", effort: "low", ...route },
   });
-  assert.equal(selectReviewTier(request({ kind: "trivial" })).tier, "deterministic");
-  assert.equal(selectReviewTier(request({ risk_flags: ["security"] })).tier, "deep-security");
-  assert.equal(selectReviewTier(request({ verification: "missing" })).tier, "general");
-  assert.equal(selectReviewTier(request({ risk_flags: ["prior-failure"] })).tier, "general");
-  assert.equal(selectReviewTier(request({}, { status: "hold", review_floor: null, approved_dimensions: [] })).tier, "general");
-  assert.equal(selectReviewTier(request()).tier, "general");
-  assert.equal(selectReviewTier(request({ source_sharing: "allowed" })).tier, "jev-review");
-  assert.equal(selectReviewTier(request({}, { review_floor: "deterministic" })).tier, "deterministic");
-  assert.throws(() => selectReviewTier({ ...request(), source: "diff" }), /unknown field: source/);
-});
+  const select = (req, routingMode = "enforce") => selectReviewTier(req, { routingMode, scratchRoot });
+  const reset = () => { git("checkout", "-q", "--", "."); git("clean", "-qfd", "-e", ".scratch"); };
+  try {
+    await writeFile(path.join(repo, "a.py"), lines(40));
+    await writeFile(path.join(repo, "b.py"), lines(5));
+    await writeFile(path.join(repo, "c.py"), lines(5));
+    await writeFile(path.join(repo, "logo.bin"), Buffer.from([0, 1, 2, 3]));
+    await writeFile(path.join(repo, "README.md"), lines(10, "d"));
+    await writeFile(path.join(repo, "GUIDE.md"), "guide\n");
+    await writeFile(path.join(repo, "NOTES.txt"), "notes\n");
+    git("init", "-q"); git("add", "-A"); git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "init");
 
+    await writeFile(path.join(repo, "README.md"), lines(10, "d").replace("d0\nd1\nd2\n", "e0\ne1\ne2\n"));
+    const docs = select(request());
+    assert.deepEqual([docs.status, docs.tier, docs.reviewer, docs.baseline_preserved], ["enforced", "deterministic", null, false]);
+    assert.deepEqual(docs.diff, { files: 1, lines: 6, code_files: 0, new_or_deleted: 0 });
+    await import("node:fs/promises").then(({ mkdir }) => mkdir(scratchRoot, { recursive: true }));
+    await writeFile(path.join(scratchRoot, "state.json"), "{}");
+    assert.equal(select(request()).tier, "deterministic", "the scratch area is excluded from the diff");
+    reset();
+
+    // A small code change is never waved through: it gets the cheapest reviewer even when JEV is weak.
+    await writeFile(path.join(repo, "a.py"), lines(40).replace("x0\nx1\nx2\n", "y0\ny1\ny2\n"));
+    for (const route of [{}, { status: "hold", capability: null, effort: null }, { capability: "deep", effort: "high" }]) {
+      const small = select(request({}, route));
+      assert.deepEqual([small.tier, small.reviewer], ["general", { source: "small-diff", capability: "routine", effort: "low" }], JSON.stringify(route));
+    }
+    await writeFile(path.join(repo, "README.md"), "changed docs\n");
+    assert.equal(select(request()).reviewer.source, "small-diff", "docs plus code is a code change");
+
+    for (const [name, change, expected] of [
+      ["hard risk", { risk_flags: ["security"] }, ["deep-security", null]],
+      ["missing verification", { verification: "missing" }, ["general", "baseline"]],
+      ["failed verification", { verification: "failed" }, ["general", "baseline"]],
+      ["unstable diff", { stable_diff: false }, ["general", "baseline"]],
+      ["caution flag", { risk_flags: ["ambiguous"] }, ["general", "baseline"]],
+    ]) {
+      const result = select(request(change));
+      assert.deepEqual([result.tier, result.reviewer?.source ?? null], expected, name);
+    }
+    reset();
+
+    await writeFile(path.join(repo, "a.py"), lines(40, "z"));
+    const large = select(request());
+    assert.deepEqual([large.tier, large.reviewer], ["general", { source: "routed", capability: "standard", effort: "low" }], "over 20 lines uses the routed reviewer");
+    assert.equal(select(request({}, { status: "hold", capability: null, effort: null })).reviewer.source, "baseline", "weak route keeps the baseline reviewer");
+    reset();
+
+    for (const [name, mutate] of [
+      ["three one-line edits", async () => { for (const f of ["a.py", "b.py", "c.py"]) await writeFile(path.join(repo, f), (await readFile(path.join(repo, f), "utf8")) + "added\n"); }],
+      ["three docs files", async () => { for (const f of ["README.md", "GUIDE.md", "NOTES.txt"]) await writeFile(path.join(repo, f), "docs\n"); }],
+      ["new docs file", async () => writeFile(path.join(repo, "NEW.md"), "new\n")],
+      ["deleted docs file", async () => rm(path.join(repo, "GUIDE.md"))],
+      ["21 changed docs lines", async () => writeFile(path.join(repo, "README.md"), (await readFile(path.join(repo, "README.md"), "utf8")) + lines(21, "n"))],
+      ["new file", async () => writeFile(path.join(repo, "d.py"), "x\n")],
+      ["deleted file", async () => rm(path.join(repo, "b.py"))],
+      ["binary file", async () => writeFile(path.join(repo, "logo.bin"), Buffer.from([9, 9]))],
+    ]) {
+      await mutate();
+      assert.equal(select(request()).tier, "general", name);
+      reset();
+    }
+
+    await writeFile(path.join(repo, "README.md"), (await readFile(path.join(repo, "README.md"), "utf8")) + lines(20, "n"));
+    assert.equal(select(request()).tier, "deterministic", "exactly 20 changed docs lines skips model review");
+    reset();
+
+    await writeFile(path.join(repo, "README.md"), "tiny\n");
+    const shadow = select(request(), "shadow");
+    assert.deepEqual([shadow.status, shadow.tier, shadow.baseline_preserved], ["shadow", "deterministic", true]);
+    const off = select(request(), "off");
+    assert.deepEqual([off.status, off.tier, off.baseline_preserved], ["off", null, true]);
+    assert.throws(() => select(request({ base: "--output=/tmp/x" })), /base/);
+    assert.throws(() => select({ ...request(), change: { ...request().change, kind: "trivial" } }), /unknown field: kind/);
+    assert.throws(() => select({ ...request(), source: "diff" }), /unknown field: source/);
+  } finally {
+    await rm(repo, { recursive: true, force: true });
+  }
+});
 
 test("deterministic pruning preserves pins and tool pairs while dropping recoverable metadata", () => {
   const entry = (id, kind, content, overrides = {}) => ({

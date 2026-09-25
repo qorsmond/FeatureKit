@@ -74,15 +74,23 @@ Cache the host's runtime model list once a day, keyed by exact host version, so 
 
 ## Review tier selection
 
-Reuse the phase's route result; never call JEV again just to choose a reviewer. The local selector accepts no source or diff:
+Reuse the phase's review route: one JEV request with `operation: "review"` and `approval: "read-only"`. Never call JEV again just to choose a reviewer. The local selector measures the diff itself and sends nothing:
 
 ```json
-{"schema":1,"mode":"review","action":"select","change":{"kind":"ordinary","stable_diff":true,"verification":"passed","source_sharing":"off","risk_flags":[]},"route":{"status":"shadow","review_floor":"general","approved_dimensions":["review_floor"]}}
+{"schema":1,"mode":"review","action":"select","change":{"repo":"/abs/repo","base":"HEAD","stable_diff":true,"verification":"passed","risk_flags":[]},"route":{"status":"enforced","capability":"standard","effort":"low"}}
 ```
 
-Run it through `optimizer.mjs` stdin. A verified stable trivial change selects deterministic review. Hard security/privacy/destructive risk selects deep/security review. Any other risk flag, unstable diff, missing/failed verification, weak/unavailable route signal, or denied source permission for `jev-review` keeps general review. The result remains shadow-only; it cannot clear production review until paired trials promote that class.
+- **Diff measurement.** `base` is a plain git revision. The selector counts the tracked diff against it plus untracked files, excluding the scratch area, and reports `files`, `lines`, `code_files`, and `new_or_deleted`.
+- **Tiers, in order:**
+  1. A hard risk selects `deep-security`, the existing mandatory workflow.
+  2. An unstable diff, missing or failed verification, or any caution flag selects `general` with the baseline reviewer.
+  3. A **small** diff has at most 20 changed lines, at most 2 files, and no new or deleted files. If every changed file is docs (`.md`, `.mdx`, `.markdown`, `.txt`, `.rst`, `.adoc`), it selects `deterministic`: checks and scope inspection only. Any small code change selects `general` with the cheapest reviewer (`{"source":"small-diff","capability":"routine","effort":"low"}`), because a passing check proves nothing about new, untested behavior.
+  4. Otherwise one `general` review runs. A confident route (`enforced` or `shadow` with capability and effort) sets the reviewer to `{"source":"routed",...}`, and the harness picks the model as for any route. A weak or unavailable route keeps the baseline reviewer.
+- **Metadata-only JEV never clears a nontrivial diff.**
+- **Modes.** `off` returns `status: off` and today's review behavior. `shadow` is advisory. `enforce` is binding.
+- **Reuse.** Reuse a matching diff-bound `review` receipt instead of repeating a review. Never stack reviews.
 
-When source review is explicitly authorized and the selector yields `jev-review`, use the separately installed pinned upstream tool with a focused task/diff and only necessary context. One baseline call is enough unless a concrete weakness justifies one correction and one rescore. Weak/error signals fall back to general review; paired replacement trials run one selected tier rather than stacking reviewers.
+Source-aware `jev-review` sends code to TypeSafe. It is not part of this selector and remains a separately authorized, opt-in pilot.
 
 ## Deterministic context pruning
 
