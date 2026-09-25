@@ -2,7 +2,7 @@
 name: secure-design
 description: Apply lightweight secure design and threat modeling during planning, PRD creation, architecture work, API design, deployment planning, or security-sensitive feature work. Use when work touches trust boundaries, authentication, authorization, sensitive data, external inputs, third-party integrations, generated code, deployment/runtime behavior, or durable security posture.
 metadata:
-  featurekit-version: "0.10.0"
+  featurekit-version: "0.10.1"
 ---
 
 # Secure Design

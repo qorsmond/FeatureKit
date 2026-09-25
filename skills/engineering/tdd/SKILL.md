@@ -2,7 +2,7 @@
 name: tdd
 description: Use a red-green-refactor loop for business logic, data transformations, services, API behavior, bug fixes, and other testable product behavior. Use during implementation whenever meaningful behavior can be specified with tests.
 metadata:
-  featurekit-version: "0.10.0"
+  featurekit-version: "0.10.1"
 ---
 
 # TDD

@@ -736,3 +736,41 @@ Mutations lowering either pruning threshold, treating partly measured packets as
 - The failed attempt was injected deterministically rather than produced by a live cheap model, which isolates the escalation step.
 - There was one failure type on one host (Claude); Codex was not run.
 - Capsule-projection delivery was covered deterministically; the live packet came from the ledger only.
+
+## Slice 8 — lean launched-worker profiles — 2026-09-25
+
+Verdict: **validated for Codex; no saving for Claude**. The Codex lean profile is documented as optional. The Claude flags are documented as cost-neutral isolation options. The Claude `fast-jev-compaction` pilot was left untouched by user decision, because it has shown no saving. Its native-fallback behavior therefore remains verified by code review only (0.7.1).
+
+**Setup.**
+
+- **Task:** the Slice 7 escalation fix. The failed DELETE tree and the ledger's real failure packet were given to the worker in a fresh disposable repo each run.
+- **Models:** the same worker model and effort in both arms (`haiku`/`low` on Claude Code `2.1.282`; `gpt-5.6-luna`/`low` on Codex CLI `0.150.1`).
+- **Order and verification:** three pairs per host, alternating order. The coordinator re-ran both checks outside each worker.
+- **Default arm:** today's documented worker launch. For Claude: `--tools` restricted to six built-ins, `--disallowedTools mcp__*`, `dontAsk` permissions, and an allowlist. For Codex: `-a never exec` with explicit model, effort, and sandbox, and `agents.enabled=false`.
+- **Lean arm:**
+  - Claude adds `--strict-mcp-config --setting-sources project,local --disable-slash-commands --exclude-dynamic-system-prompt-sections`.
+  - Codex adds `--ignore-user-config`.
+  - Neither arm used `--ignore-rules`. Earlier Codex benchmarks in this document did use it; that setting was a benchmark isolation choice, not a recommendation.
+
+| Host | Pair | Default input | Lean input | Default uncached / cache-write | Lean uncached / cache-write | Default / lean turns | Acceptance |
+| --- | --- | ---: | ---: | --- | --- | --- | --- |
+| Claude | 1 | 119,078 | 151,176 | 58 / 11,351 | 74 / 19,584 | 11 / 13 | pass / pass |
+| Claude | 2 | 117,511 | 78,888 | 58 / 10,190 | 42 / 5,517 | 9 / 9 | pass / pass |
+| Claude | 3 | 99,863 | 118,557 | 50 / 10,153 | 58 / 7,623 | 9 / 13 | pass / pass |
+| Codex | 1 | 170,024 | 73,836 | 44,584 uncached | 19,820 uncached | — | pass / pass |
+| Codex | 2 | 99,302 | 73,417 | 19,686 | 19,401 | — | pass / pass |
+| Codex | 3 | 216,487 | 88,638 | 38,311 | 16,446 | — | pass / pass |
+
+**Findings.**
+
+- **Codex:** lean was lower in every pair. Median total input fell from 170,024 to 73,836 tokens (−57%), and median uncached input from 38,311 to 19,401 (−49%).
+  - The default workers loaded the user's MCP servers. Two of three called one of them.
+  - All three default workers left untracked `.serena/` files in the repository, a real side effect that the lean profile avoided.
+  - Codex does not report turns or cost in `exec` JSON.
+- **Claude:**
+  - The lean first-turn context was 13,307 tokens against 13,463–14,032 (about −5%). The init events confirm that lean dropped 4 MCP servers and a 32-entry skill catalogue.
+  - The default's restricted `--tools` and deferred MCP schemas already kept startup small.
+  - Turn-count variance dominated the totals: median input was 117,511 default against 118,557 lean, and median cost $0.042 against $0.041. Cache writes were lower in lean pairs 2 and 3, consistent with cross-session prefix reuse, but not enough to change totals.
+- **Global instructions:** `--ignore-user-config` still loads the user's global Codex instructions. In lean pair 3, one command the worker ran through `rtk`, as those instructions request, failed in the worker's environment. The worker recovered, and the acceptance still passed. Launched workers inherit global instruction files, so profile-dependent tooling in them should degrade gracefully.
+- **Transcripts:** Codex does not rewrite transcripts. Its compaction support remains the pointer-only `SessionStart` hook.
+- **Measurement:** every reading is host-reported usage from live runs. Nothing was simulated.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1 - 2026-09-25
+
+- Documented an optional lean launch for Codex CLI workers: `--ignore-user-config` with explicit model, effort, sandbox, and approval policy, never `--ignore-rules`. In paired trials it cut median worker input by 57% with equal results, and it stopped user MCP servers from writing files into the repo. Extra Claude isolation flags were measured cost-neutral and are documented for isolation only. The Claude compaction pilot remains off and untouched.
+
 ## 0.10.0 - 2026-09-25
 
 - Failed attempts now record a bounded failure packet: a one-line summary and the changed paths, never source or diffs. The attempt ledger requires `failure` on failed attempts and `null` on passed ones. An escalation returns this packet with the evidence reference and appends the failure to the task capsule, so the stronger worker continues from the failed attempt's tree instead of restarting discovery. The prompt hook's ledger template includes the new field.
