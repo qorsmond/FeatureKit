@@ -6,6 +6,48 @@ FeatureKit is a private, framework-agnostic skill harness. It follows the Matt P
 
 Current release: see [VERSION](./VERSION) and [CHANGELOG.md](./CHANGELOG.md).
 
+## FeatureKit In One Minute
+
+**The problem.** Coding agents write code fast, but on their own they often:
+
+- start before the feature is clear;
+- drift out of scope;
+- say "done" without proof;
+- forget security;
+- spend expensive-model tokens on easy work.
+
+**The idea.** FeatureKit is a set of plain-Markdown skills you install into your product repo. They give any coding agent (Codex, Claude Code, OpenCode, or a local model) the disciplined workflow a careful senior engineer follows. There is no new CLI, server, or framework to adopt, and FeatureKit never picks your stack.
+
+**How it works.** You describe a feature in plain words. The agent takes it through the same steps every time:
+
+```text
+idea → interview → written plan → small slices → your approval
+     → build (tests first) → prove it works → right-sized review → ship or hand off
+```
+
+1. **Clarify.** The agent interviews you one decision at a time, grounded in your repo's docs, and explains what each choice means.
+2. **Plan.** Your answers become a written plan or PRD, split into small vertical slices. No production code is written until you approve the plan.
+3. **Build.** One slice at a time, with tests first where they fit and security guidance applied automatically. The agent follows your repo's conventions and architecture decisions.
+4. **Prove.** Every acceptance criterion is checked against real evidence. A passing build is not proof, and missing device or platform checks are reported as gaps, not glossed over.
+5. **Review.** The review is sized to the risk. A small docs change needs checks only, every code change gets at least one review, and security changes always get a deep review.
+6. **Hand off.** Work can pause or continue in a fresh session without replaying the whole conversation.
+
+**Guardrails that stay on:**
+
+- It asks you before building.
+- Security floors are never lowered.
+- Scope stays exactly what you approved.
+- Anything unknown is reported as unknown.
+- It makes no branches, commits, or pushes unless you ask.
+
+**Smart about cost.** The main agent uses a plain tool when one is enough, a cheaper model for routine work, and the strongest model only for hard work. Optional JEV routing makes that call from task metadata alone, never your code. The coding tool then picks the actual model from what you have available. In recorded trials ([evidence](./docs/plans/2026-09-24-jev-shadow-validation.md)):
+
+- Routine tasks run entirely on the cheaper model used no frontier-model tokens.
+- Size-matched reviews caught every planted bug at 41% lower review cost.
+- Handing a failed attempt's evidence to the stronger model cut escalation cost by 29%.
+
+**Getting started takes two steps:** install the skills, then run `/setup-featurekit` once. After that, just ask for features.
+
 ## Install And Initialize A Product Repo
 
 Run this in the **product repo where you want to use FeatureKit**, such as your app's root directory. FeatureKit is private, so your GitHub authentication must have access.
