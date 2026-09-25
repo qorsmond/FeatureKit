@@ -3,7 +3,7 @@ name: ask-featurekit
 description: Start clarification for a raw feature or route another product or engineering request to the right FeatureKit flow. Use explicitly when the user is unsure what to run or has a new idea, bug, PRD, slice, implementation, review, prototype, or handoff need. User-invoked router; do not write production code inside this skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.9.0"
+  featurekit-version: "0.10.0"
 ---
 
 # Ask FeatureKit

@@ -2,7 +2,7 @@
 name: orchestrate-work
 description: Route substantive work to direct tools, the current agent, or one bounded worker using capability, effort, risk, and evidence. Use inside an active FeatureKit workflow.
 metadata:
-  featurekit-version: "0.9.0"
+  featurekit-version: "0.10.0"
 ---
 
 # Orchestrate Work

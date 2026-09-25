@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import test from "node:test";
 
@@ -23,6 +24,9 @@ import { handleMcpRequest, ROUTE_TOOL } from "../skills/productivity/orchestrate
 import { runRouteHook } from "../skills/productivity/orchestrate-work/scripts/route-hook.mjs";
 import { runCompactionHook } from "../skills/productivity/orchestrate-work/scripts/compaction-hook.mjs";
 import { calibrationCases, evaluateCalibration } from "./run_jev_shadow.mjs";
+
+
+const createHashHex = (value) => createHash("sha256").update(value).digest("hex");
 
 
 const routeRequest = (overrides = {}) => ({
@@ -503,14 +507,15 @@ test("attempt ledger allows one escalation from the routed route to baseline and
       runtime: { model: null, effort: null },
       outcome: "failed",
       evidence_ref: "checks/health.txt",
+      failure: { summary: "GET /health still returns text/plain", changed_paths: ["server.py"] },
       ...overrides,
     },
   });
   try {
     const failed = await recordAttempt(attempt(), { scratchRoot });
     assert.equal(failed.next, "escalate-baseline");
-    await assert.rejects(recordAttempt(attempt({ outcome: "passed" }), { scratchRoot }), /routed attempt/);
-    const baseline = await recordAttempt(attempt({ route: "baseline", route_class: null, requested: { model: null, effort: null }, outcome: "passed" }), { scratchRoot });
+    await assert.rejects(recordAttempt(attempt({ outcome: "passed", failure: null }), { scratchRoot }), /routed attempt/);
+    const baseline = await recordAttempt(attempt({ route: "baseline", route_class: null, requested: { model: null, effort: null }, outcome: "passed", failure: null }), { scratchRoot });
     assert.equal(baseline.next, "validate");
     assert.deepEqual(baseline.escalations, { "routine-low": 1 });
     const stored = JSON.parse(await readFile(baseline.path, "utf8"));
@@ -520,6 +525,48 @@ test("attempt ledger allows one escalation from the routed route to baseline and
     await assert.rejects(recordAttempt({ ...attempt(), attempt: { ...attempt().attempt, transcript: "x" } }, { scratchRoot }), /unknown field: transcript/);
     await assert.rejects(recordAttempt(attempt({ route: "baseline", route_class: "routine-low" }), { scratchRoot }), /route_class/);
     await assert.rejects(recordAttempt({ ...attempt(), task_id: "T2", attempt: { ...attempt().attempt, route_class: "cheap-please" } }, { scratchRoot }), /route_class/);
+  } finally {
+    await rm(scratchRoot, { recursive: true, force: true });
+  }
+});
+
+
+test("a failed attempt carries a bounded failure packet into escalation and the task capsule", async () => {
+  const scratchRoot = await mkdtemp(path.join(tmpdir(), "featurekit-escalation-"));
+  const snapshot = { repo: "fixture", head: "abc123", dirty_digest: "clean", artifact_hashes: {} };
+  const capsule = {
+    featurekit_version: "0.9.0", policy_version: 7, snapshot,
+    authority: { level: "approved-write", artifact: "CHANGE.md", scope: ["app/store.py"], exclusions: [] },
+    requirements: { objective: "Add DELETE /items/<id>", acceptance: ["python3 check_delete.py passes"], constraints: [] },
+    risk: { flags: [], capability_floor: "routine", review_floor: "deterministic" },
+    route: {}, work: { jobs: [], status: "ready", changed_paths: [] }, failures: [], evidence: [], review: {}, decisions: [],
+  };
+  const failure = { summary: "DELETE returns 200 but GET /items/1 still returns the item", changed_paths: ["app/store.py", "app/server.py"] };
+  const attempt = (overrides) => ({ schema: 1, mode: "attempt", action: "record", task_id: "T1", attempt: {
+    route: "routed", route_class: "routine-low", requested: { model: "cheap", effort: "low" }, runtime: { model: null, effort: null },
+    outcome: "failed", evidence_ref: "checks/delete.txt", failure, ...overrides } });
+  try {
+    await writeCapsule({ schema: 1, mode: "capsule", action: "write", task_id: "T1", expected_revision: 0, capsule }, { scratchRoot });
+    const result = await recordAttempt(attempt(), { scratchRoot });
+    assert.equal(result.next, "escalate-baseline");
+    assert.deepEqual(result.escalation, {
+      route_class: "routine-low", requested: { model: "cheap", effort: "low" }, failure, evidence_ref: "checks/delete.txt",
+      continue_from: "failed-attempt-tree",
+    });
+    assert.equal(result.capsule_revision, 2);
+    const projected = await projectCapsule({ schema: 1, mode: "capsule", action: "project", task_id: "T1", consumer: "escalation", expected_snapshot: snapshot }, { scratchRoot });
+    const view = JSON.parse(await readFile(projected.path, "utf8"));
+    assert.deepEqual(view.state.failures, [{ kind: "attempt-failure", attempt: 1, route: "routed", route_class: "routine-low", summary: failure.summary, evidence_ref: "checks/delete.txt", changed_paths: failure.changed_paths }]);
+
+    await assert.rejects(recordAttempt({ ...attempt({ failure: null }), task_id: "T2" }, { scratchRoot }), /failure is required/);
+    await assert.rejects(recordAttempt({ ...attempt({ outcome: "passed" }), task_id: "T3" }, { scratchRoot }), /failure must be null/);
+    await assert.rejects(recordAttempt({ ...attempt({ failure: { ...failure, summary: "x".repeat(513) } }), task_id: "T4" }, { scratchRoot }), /summary/);
+    await assert.rejects(recordAttempt({ ...attempt({ failure: { ...failure, diff: "+x" } }), task_id: "T5" }, { scratchRoot }), /unknown field: diff/);
+    await assert.rejects(recordAttempt({ ...attempt({ failure: { ...failure, changed_paths: ["../etc/passwd"] } }), task_id: "T6" }, { scratchRoot }), /path/);
+
+    const noCapsule = await recordAttempt({ ...attempt(), task_id: "T7" }, { scratchRoot });
+    assert.equal(noCapsule.capsule_revision, null, "a missing capsule is not an error");
+    assert.equal(noCapsule.escalation.failure.summary, failure.summary);
   } finally {
     await rm(scratchRoot, { recursive: true, force: true });
   }
@@ -554,11 +601,31 @@ test("prompt hook states an enforced route with its baseline escalation", async 
     assert.match(text, /models this host currently offers.*cheapest tier/);
     assert.match(text, /optimizer\.mjs/);
     assert.match(text, /environment.*is not a routed failure/);
+    assert.match(text, /"failure":/, "the ledger template carries the failure packet field");
+    assert.match(text, /escalation packet/);
     assert.doesNotMatch(text, /haiku|sonnet|opus|gpt-/i);
     assert.doesNotMatch(text, /advisory only/);
   } finally {
     await rm(scratchRoot, { recursive: true, force: true });
   }
+});
+
+
+test("pruning falls back to the unpruned packet when the measured reduction is too small", () => {
+  const entry = (id, chars, overrides = {}) => ({ id, kind: "requirement", state: "current", pinned: true, content_hash: createHashHex(id), ref: null, pair_id: null, chars, ...overrides });
+  const droppable = (id, chars) => entry(id, chars, { kind: "progress", state: "resolved", pinned: false });
+  const prune = (entries) => pruneContext({ schema: 1, mode: "prune", action: "deterministic", entries });
+  const none = prune([entry("scope", 4000), entry("acceptance", 1000)]);
+  assert.deepEqual([none.use_pruned, none.input_chars, none.kept_chars], [false, 5000, 5000], "nothing to drop");
+  const large = prune([entry("scope", 1000), droppable("old-progress", 4000)]);
+  assert.deepEqual([large.use_pruned, large.input_chars, large.kept_chars], [true, 5000, 1000]);
+  assert.equal(prune([entry("scope", 9000), droppable("old-progress", 1000)]).use_pruned, false, "10% is below the 20% floor");
+  assert.equal(prune([entry("scope", 8000), droppable("old-progress", 2000)]).use_pruned, true, "exactly 20% qualifies");
+  assert.equal(prune([entry("scope", 200), droppable("old-progress", 150)]).use_pruned, false, "under 200 characters is not worth it");
+  const partial = prune([entry("scope", 1000), droppable("old-progress", 4000), { ...droppable("old-2", 0), chars: undefined }].map((item) => { const copy = { ...item }; if (copy.chars === undefined) delete copy.chars; return copy; }));
+  assert.deepEqual([partial.input_chars, partial.kept_chars], [null, null], "partly measured packets use entry counts");
+  assert.throws(() => prune([entry("scope", -1)]), /chars/);
+  assert.throws(() => prune([entry("scope", 1.5)]), /chars/);
 });
 
 
@@ -999,6 +1066,7 @@ test("deterministic pruning preserves pins and tool pairs while dropping recover
     ["tool-action", "RECOVERABLE_PAIR"],
     ["tool-result", "RECOVERABLE_PAIR"],
   ]);
+  assert.deepEqual([result.use_pruned, result.input_chars, result.kept_chars], [true, null, null], "without sizes, 6 of 9 entries dropped is enough");
   assert.throws(() => pruneContext({ schema: 1, mode: "prune", action: "deterministic", entries: [entry("orphan", "tool-result", "3", { pair_id: "P3" })] }), /pair P3/);
   assert.throws(() => pruneContext({ schema: 1, mode: "prune", action: "deterministic", entries: [{ ...entry("raw", "source", "4"), text: "source" }] }), /unknown field: text/);
 });

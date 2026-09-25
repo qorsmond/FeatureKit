@@ -694,3 +694,45 @@ Verdict: **validated**.
 - **Where the savings came from:** C1, D2, and D4, all routed to Haiku. JEV held on C2 and D3, so those kept the Opus reviewer.
 
 One observation per change on one host (Claude); Codex was not run. Nothing was simulated beyond the coordinator mapping tiers to Claude aliases.
+
+## Slice 7 — failure packets and reduction fallback — 2026-09-25
+
+Verdict: **validated**. With the failure packet, the stronger worker fixed a recorded routed failure with equal success, one read instead of five, and less than half the turns of a cold restart. JEV pruning was not built, by user decision based on the Slice 9 screen.
+
+**Deterministic.** `node --test tests/optimizer.test.mjs` passed 32 tests; the new ones were red first. Coverage:
+
+- the ledger requires a bounded `failure` on failed attempts and `null` on passed ones;
+- it rejects oversize summaries, unknown fields such as `diff`, and path escapes;
+- it returns an escalation packet on `escalate-baseline`;
+- it appends the failure to an existing capsule, so the `escalation` projection carries it, and skips a missing capsule without error;
+- pruning `use_pruned` holds at the 20% and 200-character boundaries, with the entry-count fallback for unmeasured or partly measured packets;
+- the hook's ledger template includes `failure` and names the escalation packet.
+
+Mutations lowering either pruning threshold, treating partly measured packets as measured, dropping path validation, or skipping the capsule append each fail tests. Context budget, packaging (30 skills, 0.10.0), and `git diff --check` passed.
+
+**Live paired trial.**
+
+- **Setup:** the reviewed items service plus a new committed `check_delete.py` of 8 in-memory DELETE assertions. The task was the approved `DELETE /items/<id>` spec. The routed attempt was the known-buggy implementation, where `remove()` never removes, applied deterministically. It failed `check_delete.py`, its output was saved as evidence, and the real ledger recorded the failure and returned the escalation packet.
+- **Arm A (cold):** the pre-Slice-7 behavior. The tree was reset, and the worker got the plan only.
+- **Arm B (packet):** the failed tree was kept, and the worker got the plan plus the packet.
+- **Common to both:** host default `claude-opus-5-5` on Claude Code `2.1.282`, no MCP, the same tools, 30 maximum turns, and pair order cold/packet, packet/cold, cold/packet. The coordinator re-ran both checks outside each child.
+
+| Pair | Arm | Reads | Edits | Turns | Opus input | Cost | Acceptance | Files |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| 1 | cold | 5 | 5 | 12 | 153,639 | $0.243 | pass | `app/` ×3 |
+| 1 | packet | 1 | 2 | 5 | 95,234 | $0.159 | pass | `app/` ×3 |
+| 2 | packet | 1 | 2 | 5 | 99,942 | $0.170 | pass | `app/` ×3 |
+| 2 | cold | 4 | 4 | 12 | 142,879 | $0.207 | pass | `app/` ×3 |
+| 3 | cold | 5 | 4 | 11 | 151,451 | $0.225 | pass | `app/` ×3 |
+| 3 | packet | 1 | 2 | 5 | 98,702 | $0.161 | pass | `app/` ×3 |
+
+**Result.**
+
+- **Medians, cold against packet:** 5 against 1 reads, 12 against 5 turns, 151,451 against 98,702 Opus input tokens (−35%), and $0.225 against $0.161 per escalation (−29%). Both arms passed 3 of 3, with no retries and no untracked files.
+- **Packet contents:** the route class, the requested settings, the one-line failure summary, the changed paths, the evidence reference, and `continue_from`. It held no source or diff.
+
+**Limits.**
+
+- The failed attempt was injected deterministically rather than produced by a live cheap model, which isolates the escalation step.
+- There was one failure type on one host (Claude); Codex was not run.
+- Capsule-projection delivery was covered deterministically; the live packet came from the ledger only.

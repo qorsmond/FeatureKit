@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - 2026-09-25
+
+- Failed attempts now record a bounded failure packet: a one-line summary and the changed paths, never source or diffs. The attempt ledger requires `failure` on failed attempts and `null` on passed ones. An escalation returns this packet with the evidence reference and appends the failure to the task capsule, so the stronger worker continues from the failed attempt's tree instead of restarting discovery. The prompt hook's ledger template includes the new field.
+- Deterministic pruning accepts optional local `chars` counts and returns `use_pruned`. A pruned packet is used only when it saves at least 20% and at least 200 characters, or 20% of entries when sizes are absent; otherwise the unpruned packet is sent.
+- JEV-assisted pruning is not built. The measured trial cost more than the packet it pruned, and pruning stays local and metadata-only.
+
 ## 0.9.0 - 2026-09-25
 
 - Review selection (Slice 6) measures the diff locally. A small verified docs-only diff (at most 20 lines, at most 2 existing files, no new or deleted files, no risk) gets checks only. A small code diff always gets one review on the cheapest level at low effort; a seeded-defect benchmark showed a 7-line code change with passing checks hiding a bug. A hard risk keeps the mandatory deep/security review. Everything else gets one general review at the JEV-routed level, or the baseline level when JEV is weak. Metadata-only JEV can no longer clear a nontrivial diff, and the selector no longer trusts a caller's `trivial` label or accepts `source_sharing`; source-aware `jev-review` stays an opt-in pilot. Receipts and the review selector now exclude the scratch area even when its path is a symlink.

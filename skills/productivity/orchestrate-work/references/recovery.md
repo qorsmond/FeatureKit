@@ -9,6 +9,6 @@ Load this after a worker or direct attempt fails, is uncertain, or needs indepen
 
 Stop the previous writer before reassignment. Never repeat an unchanged failed attempt or cycle between backends.
 
-For escalation, generate the capsule's `escalation` projection and prune packet entries by metadata before copying context. Keep authority, requirements, constraints, the unresolved failure/question, current evidence, changed paths, and requested stronger route. Carry source and full logs by stable reference.
+For escalation, pass the attempt ledger's escalation packet and the capsule's `escalation` projection; the stronger worker continues from the failed attempt's tree. Prune packet entries by metadata before copying context, and send the unpruned packet when `use_pruned` is false. Keep authority, requirements, constraints, the unresolved failure/question, current evidence, changed paths, and requested stronger route. Carry source and full logs by stable reference.
 
 Use fresh-context `review-change` or `security-review` for high-risk, surprising, hard-to-reverse changes or conflicting evidence. Supply requirements, constraints, stable diff, and current checks without the implementer's rationale. The reviewer reports findings; the primary owns disposition.

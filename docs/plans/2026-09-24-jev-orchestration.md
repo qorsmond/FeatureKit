@@ -1,6 +1,6 @@
 # JEV max-savings architecture for FeatureKit
 
-Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement shipped in 0.8.0 with amendments 1–2 (every level, harness-chosen models, richer metadata), Slice 5 exact reuse is complete, and Slice 6 tiered review shipped in 0.9.0 without source sharing (docs-only small diffs skip model review; small code gets the cheapest review; validated 3/3 on a seeded-defect benchmark). JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
+Status: approved. Slices 0–3, the Slice 5 exact-receipt kernel, the Slice 6 shadow review-tier selector, the Slice 7 deterministic pruner/escalation projection, the local Slice 8 host adapters, and the Slice 10 release/docs rollout are implemented and deterministically verified for v0.7.0. Slice 9's live synthetic screen found no promotable experiment, so it added no production cache or compressor. One explicitly authorized pinned upstream source-review call is recorded. Trusted Codex post-compaction capsule restoration is live-verified. Slice 4 enforcement shipped in 0.8.0 with amendments 1–2 (every level, harness-chosen models, richer metadata), Slice 5 exact reuse is complete, and Slice 6 tiered review shipped in 0.9.0 without source sharing (docs-only small diffs skip model review; small code gets the cheapest review; validated 3/3 on a seeded-defect benchmark). Slice 7 shipped in 0.10.0: failure packets for escalation (paired trial: −35% Opus input, 1 read against 5) and a measured reduction fallback for deterministic pruning; JEV pruning stays unbuilt. JEV pruning and Claude transcript compaction still require live trials. Metadata routing approval does not authorize source/transcript sharing or dependency installation.
 
 Baseline inspected: FeatureKit `0.6.2` at commit `36d2cfe`. The only working-tree addition during this analysis is this plan.
 
@@ -806,6 +806,14 @@ Acceptance:
 - failure or insufficient reduction uses the unpruned packet;
 - stronger workers solve the same failures without extra rereads/retries;
 - source/context disclosure follows its separate permission.
+
+#### Slice 7 decisions (2026-09-25, user)
+
+- **No JEV pruning.** The Slice 9 screen found that the JEV call cost more than the whole packet, and at a stricter threshold it dropped a required fact. Pruning stays deterministic, local, and metadata-only, so no packet text is shared. A future trial needs a much larger bounded packet, explicit context-sharing permission, and a complete-task baseline.
+- **Insufficient reduction uses the unpruned packet.** Prune entries accept an optional `chars` count, computed locally from the entry text and never sent anywhere. The result reports kept and dropped characters and a `use_pruned` decision; when it is false, the caller sends the unpruned packet.
+- **Failure packets for escalation.** A failed attempt records a short `failure` (a summary of at most 512 characters plus an `evidence_ref`). When the ledger returns `escalate-baseline`, it also returns a compact escalation packet: the routed class, what was requested, the failure summary, the evidence reference, and the changed paths. When a task capsule exists, the ledger appends the failure to it so the `escalation` projection carries it. The baseline worker continues from the failed attempt's working tree with this packet instead of restarting discovery; it may discard the attempt's changes when the evidence shows they are wrong. The one-escalation limit is unchanged.
+
+**Validation.** A paired live trial of a genuine routed failure: a buggy DELETE implementation that fails a DELETE acceptance check. Arm A runs a cold baseline restart, the pre-Slice-7 behavior. Arm B runs the baseline with the failure packet on the failed tree. Three pairs on Claude, recording reads, turns, tokens, cost, and final acceptance. Acceptance: B passes at least as often as A, with fewer rereads and no more retries.
 
 ### Slice 8 — Host-native optimization adapters
 

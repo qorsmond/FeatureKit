@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 
 const SCHEMA = 1;
-export const FEATUREKIT_VERSION = "0.9.0";
+export const FEATUREKIT_VERSION = "0.10.0";
 const POLICY_VERSION = 7;
 const QUESTIONS_VERSION = 4;
 const API_URL = new URL("https://api.typesafe.ai/v1/systemone");
@@ -618,13 +618,18 @@ export function selectReviewTier(request, options = {}) {
   return result("general", baseline, "WEAK_OR_UNAVAILABLE_SIGNAL");
 }
 
+// A pruned packet must save enough to be worth a narrower view; otherwise the caller sends the unpruned packet.
+const PRUNE_MIN_RATIO = 0.2;
+const PRUNE_MIN_CHARS = 200;
+
 export function pruneContext(request) {
   exactKeys(request, ["schema", "mode", "action", "entries"], "request");
   if (request.schema !== SCHEMA || request.mode !== "prune" || request.action !== "deterministic") throw new Error("unsupported prune request");
   if (!Array.isArray(request.entries) || request.entries.length > 256) throw new Error("entries must be a bounded array");
   const pairs = new Map();
   for (const [index, entry] of request.entries.entries()) {
-    exactKeys(entry, ["id", "kind", "state", "pinned", "content_hash", "ref", "pair_id"], `entries[${index}]`);
+    exactKeys(entry, "chars" in entry ? ["id", "kind", "state", "pinned", "content_hash", "ref", "pair_id", "chars"] : ["id", "kind", "state", "pinned", "content_hash", "ref", "pair_id"], `entries[${index}]`);
+    if ("chars" in entry) integer(entry.chars, `entries[${index}].chars`, 0, 10000000);
     validateTaskId(entry.id);
     if (!CONTEXT_KINDS.has(entry.kind)) throw new Error(`invalid context kind: ${entry.kind}`);
     enumValue(entry.state, ["current", "resolved", "superseded"], `entries[${index}].state`);
@@ -663,7 +668,15 @@ export function pruneContext(request) {
       seenHashes.add(entry.content_hash);
     }
   }
-  return { schema: SCHEMA, status: "pruned", keep_ids: keepIds, dropped, input_count: request.entries.length, kept_count: keepIds.length };
+  // Sizes are optional local counts; a partly measured packet falls back to entry counts.
+  const measured = request.entries.length > 0 && request.entries.every((entry) => "chars" in entry);
+  const kept = new Set(keepIds);
+  const inputChars = measured ? request.entries.reduce((sum, entry) => sum + entry.chars, 0) : null;
+  const keptChars = measured ? request.entries.filter((entry) => kept.has(entry.id)).reduce((sum, entry) => sum + entry.chars, 0) : null;
+  const usePruned = measured
+    ? inputChars - keptChars >= Math.max(PRUNE_MIN_CHARS, PRUNE_MIN_RATIO * inputChars)
+    : request.entries.length - keepIds.length >= Math.max(1, PRUNE_MIN_RATIO * request.entries.length);
+  return { schema: SCHEMA, status: "pruned", keep_ids: keepIds, dropped, input_count: request.entries.length, kept_count: keepIds.length, input_chars: inputChars, kept_chars: keptChars, use_pruned: usePruned };
 }
 
 function validateTaskId(value) {
@@ -1018,18 +1031,43 @@ function validateSetting(value, name) {
   if (value.effort !== null) boundedString(value.effort, `${name}.effort`, 32);
 }
 
+// Adds a failure to an existing capsule so escalation projections carry it; a missing or unreadable capsule is skipped.
+async function appendCapsuleFailure(root, taskId, failure) {
+  let stored;
+  try {
+    stored = await readCapsule(root, taskId);
+  } catch {
+    return null;
+  }
+  const written = await writeCapsule({
+    schema: SCHEMA, mode: "capsule", action: "write", task_id: taskId, expected_revision: stored.revision,
+    capsule: { ...stored.capsule, failures: [...stored.capsule.failures, failure] },
+  }, { scratchRoot: root });
+  return written.revision;
+}
+
 export async function recordAttempt(request, options = {}) {
   exactKeys(request, ["schema", "mode", "action", "task_id", "attempt"], "request");
   if (request.schema !== SCHEMA || request.mode !== "attempt" || request.action !== "record") throw new Error("unsupported attempt request");
   validateTaskId(request.task_id);
   const { attempt } = request;
-  exactKeys(attempt, ["route", "route_class", "requested", "runtime", "outcome", "evidence_ref"], "attempt");
+  exactKeys(attempt, ["route", "route_class", "requested", "runtime", "outcome", "evidence_ref", "failure"], "attempt");
   enumValue(attempt.route, ["routed", "baseline"], "attempt.route");
   if (attempt.route === "routed" ? !ROUTE_CLASS.test(attempt.route_class || "") : attempt.route_class !== null) throw new Error("attempt.route_class must name the enforced route only for a routed attempt");
   validateSetting(attempt.requested, "attempt.requested");
   validateSetting(attempt.runtime, "attempt.runtime");
   enumValue(attempt.outcome, ["passed", "failed"], "attempt.outcome");
   boundedString(attempt.evidence_ref, "attempt.evidence_ref", 512);
+  // A failure packet lets the next attempt fix the failure instead of repeating discovery; it holds a summary and paths, never source or diffs.
+  if (attempt.outcome === "passed") {
+    if (attempt.failure !== null) throw new Error("attempt.failure must be null for a passed attempt");
+  } else {
+    if (!isObject(attempt.failure)) throw new Error("attempt.failure is required for a failed attempt");
+    exactKeys(attempt.failure, ["summary", "changed_paths"], "attempt.failure");
+    boundedString(attempt.failure.summary, "attempt.failure.summary", 512);
+    if (!Array.isArray(attempt.failure.changed_paths) || attempt.failure.changed_paths.length > 64) throw new Error("attempt.failure.changed_paths must be a bounded array");
+    attempt.failure.changed_paths.forEach((item, index) => relativeRepoPath(item, `attempt.failure.changed_paths[${index}]`));
+  }
 
   const file = path.join(scratchRoot(options), "tasks", request.task_id, "attempts.json");
   let ledger = { schema: SCHEMA, task_id: request.task_id, attempts: [], escalations: {} };
@@ -1048,7 +1086,14 @@ export async function recordAttempt(request, options = {}) {
   ledger.attempts.push({ ...attempt, recorded_at: new Date().toISOString() });
   await atomicWrite(file, `${JSON.stringify(ledger, null, 2)}\n`);
   const next = attempt.outcome === "passed" ? "validate" : attempt.route === "routed" ? "escalate-baseline" : "baseline-recovery";
-  return { schema: SCHEMA, status: "recorded", task_id: request.task_id, attempts: ledger.attempts.length, escalations: ledger.escalations, next, path: file };
+  const capsuleRevision = attempt.failure ? await appendCapsuleFailure(scratchRoot(options), request.task_id, {
+    kind: "attempt-failure", attempt: ledger.attempts.length, route: attempt.route, route_class: attempt.route_class,
+    summary: attempt.failure.summary, evidence_ref: attempt.evidence_ref, changed_paths: attempt.failure.changed_paths,
+  }) : null;
+  const escalation = next === "escalate-baseline"
+    ? { route_class: attempt.route_class, requested: attempt.requested, failure: attempt.failure, evidence_ref: attempt.evidence_ref, continue_from: "failed-attempt-tree" }
+    : null;
+  return { schema: SCHEMA, status: "recorded", task_id: request.task_id, attempts: ledger.attempts.length, escalations: ledger.escalations, next, escalation, capsule_revision: capsuleRevision, path: file };
 }
 
 async function readStdin() {

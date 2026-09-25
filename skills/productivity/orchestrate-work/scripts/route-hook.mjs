@@ -16,12 +16,12 @@ async function approvedRequest(root) {
 const OPTIMIZER = path.join(path.dirname(fileURLToPath(import.meta.url)), "optimizer.mjs");
 
 function enforcedInstructions(route, taskId) {
-  const ledger = JSON.stringify({ schema: 1, mode: "attempt", action: "record", task_id: taskId, attempt: { route: "routed", route_class: route.class, requested: { model: "<model you passed or null>", effort: "<effort you passed or null>" }, runtime: { model: null, effort: null }, outcome: "passed|failed", evidence_ref: "<check or path>" } });
+  const ledger = JSON.stringify({ schema: 1, mode: "attempt", action: "record", task_id: taskId, attempt: { route: "routed", route_class: route.class, requested: { model: "<model you passed or null>", effort: "<effort you passed or null>" }, runtime: { model: null, effort: null }, outcome: "passed|failed", evidence_ref: "<check or path>", failure: "null when passed, else {\"summary\":\"<what failed, one line>\",\"changed_paths\":[\"<path>\"]}" } });
   return [
     `FeatureKit JEV enforced route for this approved task: ${route.capability} capability at ${route.effort} effort.`,
     "Choose the model yourself from the models this host currently offers: routine = cheapest tier, standard = middle tier, deep = strongest tier; use the routed effort when the host can pass it. A user override in docs/agents/orchestration.md wins.",
     route.up_only ? "This task is caution-flagged: use the route only if it is at least as strong as your baseline model and effort; otherwise work on the baseline." : "",
-    "If you already run on the chosen model, do the work yourself. Otherwise dispatch one worker immediately, passing the plan and scope paths instead of reading source yourself, then verify with the acceptance checks and diff. On failed verification escalate once to the baseline. A check blocked by the environment (sandbox, network, authentication) is not a routed failure: run it outside the restriction or report the gap, without escalating.",
+    "If you already run on the chosen model, do the work yourself. Otherwise dispatch one worker immediately, passing the plan and scope paths instead of reading source yourself, then verify with the acceptance checks and diff. On failed verification escalate once to the baseline, giving that worker the ledger's escalation packet and the failed attempt's working tree instead of restarting discovery. A check blocked by the environment (sandbox, network, authentication) is not a routed failure: run it outside the restriction or report the gap, without escalating.",
     `Record each attempt once with: echo '${ledger}' | node "${OPTIMIZER}" (a baseline attempt uses route "baseline" and route_class null; any setting you could not pass or the host did not report is null).`,
     "Approval, policy floors, and verification remain authoritative.",
   ].filter(Boolean).join(" ");
