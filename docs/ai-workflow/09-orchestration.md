@@ -16,117 +16,15 @@ This uses persistent repo instructions and installed skills, not a background sc
 
 ## Optional JEV routing
 
-FeatureKit can ask TypeSafe JEV one batched metadata-only question about capability, effort, execution shape, context breadth, optional references, and provisional review. It is disabled by default. In **shadow** the normal FeatureKit route still executes, so weak or incorrect advice cannot downgrade work. In **enforce**, JEV's confident capability and effort choice decides which model level runs the task.
+JEV routing is optional and off by default. When on, it asks TypeSafe JEV how much model each approved task needs, using a short task description and never your code. Your coding tool then runs the task on its cheapest, middle, or strongest model. `off` makes no call; `shadow` records advice only; `enforce` uses JEV's confident answer and keeps your normal model for sensitive, uncertain, or failed work.
 
-| Setting | Effect |
-| --- | --- |
-| unset or `FEATUREKIT_JEV_ROUTING=off` | No TypeSafe call. FeatureKit uses its normal route. |
-| `FEATUREKIT_JEV_ROUTING=shadow` | One bounded JEV advisory may run and cache. The normal route still wins. |
-| `FEATUREKIT_JEV_ROUTING=enforce` | Same call. When JEV is confident, the task runs at JEV's level (routine, standard or deep) and effort on a model the harness picks. Otherwise, and for gated work, the normal route runs. |
-
-Switching back to `off` is always safe and does not require removing the key or deleting the cache.
-
-### Rolling out
-
-Move one step at a time, and step back whenever the ledger or traces show a problem:
-
-1. **`off`.** Install and confirm the normal workflow. No provider calls are made.
-2. **`shadow`.** Set the key and `FEATUREKIT_JEV_ROUTING=shadow`, and restart the host. Watch `.scratch/featurekit/traces/jev.jsonl` for `hold` rates and routes that look wrong for your task families. Nothing changes execution.
-3. **`enforce`.** Switch when shadow routes look right. Watch `attempts.json` for escalations and the review results for missed issues. Only routine, low-effort implementation has paired cost evidence; other levels run by choice.
-4. **Back off per family.** If a task family misroutes, return to `shadow` (or `off`) and describe that family's tasks more concretely before trying again.
-
-Each capability has its own switch and privacy scope:
-
-| Capability | Switch | What leaves the machine |
-| --- | --- | --- |
-| Routing and review selection | `FEATUREKIT_JEV_ROUTING` (`off` / `shadow` / `enforce`) | Bounded task metadata to TypeSafe; never source, diffs or transcripts |
-| Fact receipts, catalogue cache, pruning, attempt ledger | Always local; delete `.scratch/featurekit/` to reset | Nothing |
-| Source-aware `jev-review` pilot | Separately installed and authorized per repo | The focused diff and files you approve |
-| Claude `fast-jev-compaction` pilot | Loaded for one session with its plugin; off by default | Transcript text, with separate transcript permission |
-
-### Enforced routing
-
-JEV decides the level: `routine`, `standard` or `deep`, plus an effort. The harness decides the model. Claude Code or Codex picks from the models it offers right now: the cheapest tier for routine work, a middle tier for standard, and the strongest for deep. FeatureKit and product repos name no models. `docs/agents/orchestration.md` can hold an optional override if you want to force one.
-
-Some things never change:
-
-- Unapproved work, pending user decisions, security, authorization, privacy, destructive and irreversible work never go to JEV. They run on the normal route.
-- A `hold`, provider failure or weak answer runs the normal route.
-- A route never goes below the task's own minimum capability and effort.
-- Tasks flagged as a migration, ambiguous, previously failed or missing evidence can only move up. The harness uses JEV's route only if it is at least as strong as the normal model.
-- A `minimal` effort floor is raised to `low`, the lowest effort both hosts run.
-- Richer, verified task details make JEV more decisive. Describe the approved spec concretely. When the plan or repo confirms them, add the optional facts: an existing automated check, an exact spec, following an existing pattern, new dependencies, and a size estimate. Leave out anything unconfirmed.
-
-A launched task (headless or batch worker) starts on the routed model. In a live session, the primary hands the work to one worker on that model, or works directly if it already runs on it. Record each attempt in the local `attempts.json` ledger with requested and runtime-reported model/effort; unknown values stay `null`. A routed attempt may only be the first attempt. If it fails verification, record a one-line failure summary and the changed paths. The ledger returns an escalation packet, and FeatureKit reruns once on the normal route, continuing from the failed attempt's working tree with that packet instead of starting over. The escalation counts against the route. A check blocked by the sandbox, network or authentication is a gap to report, not a routed failure. Semantic caching and transcript compaction are not affected by this switch.
-
-Review follows the same switch. In `enforce`, FeatureKit measures the diff itself. A verified docs-only change of at most 20 lines in at most 2 existing files, with no risk, gets checks only. A small code change always gets one review on the cheapest level: in testing, a 7-line change hid a bug that its passing checks never exercised. Security and other hard risks keep the mandatory deep/security review. Everything else gets one ordinary review on the level JEV picks, or the normal level when JEV is unsure. JEV never waves a real change through without review, because it never sees the code.
-
-Only routine, low-effort implementation has paired cost evidence so far. Other levels are enforced by choice and should be watched in the ledger and traces. In the 0.8.0 trials, launched tasks saved frontier tokens. A live primary handing a small task to a worker saved little, because the primary's own turns dominate. Claude Code's in-session worker tool accepts a model but not an effort.
-
-Both harnesses use the same dependency-free optimizer and optional local MCP server. The server exposes one read-only `route` tool whose schema prevents the model from reading implementation source just to construct the request. It receives only bounded metadata and reads the key from its process environment.
-
-Claude plugin installations load [`hooks/hooks.json`](../../hooks/hooks.json). Its `UserPromptSubmit` command runs before the model, ignores the submitted prompt, and routes only when exactly one valid task capsule is both approved and `ready` and contains `route.request`. In `shadow` the injected result is advisory. In `enforce` it carries the binding route and the exact attempt-ledger command. Either way the model must not call JEV again. An explicit host `FEATUREKIT_JEV_ROUTING` value wins over one exported by shell startup. Missing, corrupt, stale, unapproved, or multiple matching capsules produce no hook output; the connected `route` tool remains the fallback. Skills-only installations do not install this hook.
-
-From a FeatureKit checkout, connect it once with the absolute checkout path:
-
-```sh
-FEATUREKIT_ROOT=/absolute/path/to/FeatureKit
-codex mcp add featurekit-jev -- /bin/zsh -ic "exec node '$FEATUREKIT_ROOT/skills/productivity/orchestrate-work/scripts/mcp-server.mjs'"
-claude mcp add --transport stdio --scope user featurekit-jev -- node "$FEATUREKIT_ROOT/skills/productivity/orchestrate-work/scripts/mcp-server.mjs"
-```
-
-Use the first command for Codex Desktop on macOS when the variables are in `.zshrc`, and the second for Claude Code launched from that shell. Shell startup must not print to standard output because MCP and hooks use it for JSON. A Claude Code plugin installation loads the bundled `.mcp.json` and hook automatically, so do not add duplicate user entries.
-
-For a Codex skills-only installation, merge this group into the `hooks.UserPromptSubmit` array in `~/.codex/hooks.json`, replacing `/absolute/path/to/FeatureKit` with the checkout path. Preserve other hook events and existing `UserPromptSubmit` groups:
-
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "[ \"$FEATUREKIT_JEV_ROUTING\" = off ] || FEATUREKIT_JEV_HOST_ROUTING=\"$FEATUREKIT_JEV_ROUTING\" exec /bin/zsh -ic 'exec node \"/absolute/path/to/FeatureKit/skills/productivity/orchestrate-work/scripts/route-hook.mjs\"'",
-            "timeout": 6,
-            "statusMessage": "Checking FeatureKit route"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-The prefix keeps an explicit host `off` or `enforce` from being replaced by a value your shell startup file exports; an unset value still comes from shell startup. In Codex, open `/hooks`, choose **Review hooks**, open **UserPromptSubmit**, select the FeatureKit command ending in `route-hook.mjs`, and press `t` until it shows **Trusted** and enabled. Trust this entry rather than all pending hooks. Repeat after its definition changes, then start a new task. Claude Code applies its normal plugin trust flow; restart it or run `/reload-plugins` after plugin changes. Check the MCP connection with `codex mcp get featurekit-jev` or `/mcp` respectively.
-
-The MCP process and hook make the TypeSafe call outside the coding workspace sandbox. If either is absent or fails, the normal route continues. Do not loosen the sandbox, retry, or read optimizer source/tests to work around it; the exact compact request and capsule shapes are in the installed optimizer reference.
-
-Add `.scratch/featurekit/` to the product repo's ignore file. Capsules, exact route-cache entries, projections, and content-free traces live there by default; set `FEATUREKIT_SCRATCH_ROOT` only when the repo has a different approved scratch location.
-
-The same local scratch area can hold exact fact receipts. Pass a simple key (repo, query, tool, contract version, index head, relevant paths) and the optimizer derives the exact identity locally from HEAD, the dirty tree and file hashes. Any change is a miss, restored content hits again, and a Repowise index behind HEAD is stale rather than current proof. `review` receipts bind a review result to the exact diff. A host model catalogue can be cached for 24 hours per exact host version, and `cache stats` reports hits, misses and eliminated calls. Receipts are local and store a concise fact plus a path/symbol reference, not copied source or tool output. The installed [optimizer reference](../../skills/productivity/orchestrate-work/references/optimizer.md) has the exact request shapes.
-
-Before a large handoff or escalation, the local deterministic pruner can select packet entries from metadata without receiving their text. Pin authority, scope, acceptance, governing constraints, unresolved failures, current evidence, and ownership. Exact duplicates, superseded entries, resolved progress, referenced old diagnostics, and copied source/docs with stable references can be omitted. Tool commands and results remain paired. Entries may carry a local character count. When the pruned packet saves less than 20% or under 200 characters (or under 20% of entries without counts), `use_pruned` is false and the unpruned packet is sent. Failure also falls back to the unpruned packet. JEV pruning is not provided.
+**Setup, the API key, modes, connecting Claude Code or Codex, checking it works, and rollout are in [JEV Routing](./10-jev-routing.md).**
 
 ### Host-native compaction
 
 Codex keeps native compaction. An optional `SessionStart` hook can restore the path and revision of exactly one active FeatureKit capsule after compaction; it neither reads nor rewrites the transcript. Claude Code also keeps native compaction by default. Its optional pinned `fast-jev-compaction` pilot shares transcript text and tool-call metadata with TypeSafe, keeps retained text verbatim, and delegates to native compaction on failure or insufficient reduction. It is on only for sessions launched with the pinned plugin and off when that plugin is omitted.
 
 Use the installed [`compaction.md`](../../skills/productivity/orchestrate-work/references/compaction.md) reference for the exact Codex hook and session-scoped Claude pilot. Keep the capsule current, revalidate its snapshot after compaction, and treat `transcript_compaction` as a separate permission from metadata routing and source review. The one live Claude pilot session (0.7.1) replaced history as designed but showed no token saving, so the pilot stays off by default.
-
-The route contract accepts bounded objective, scope, acceptance IDs/summaries, deterministic facts including the optional verified facts above, floors, risk flags, and available semantic capability levels. It rejects unknown fields, oversized input, source, diffs, transcripts, and raw output. A pending user decision, hard risk floor, missing key, network/provider error, malformed answer, unavailable choice, low confidence, or small probability margin preserves the affected baseline dimensions. Hard-risk requests keep the baseline; caution-flagged requests may only move up. Local traces contain only identifiers, decisions, usage counts, latency, cache status, and reason codes.
-
-`source_review` and `transcript_compaction` are separate privacy scopes and are not enabled by metadata routing. Deterministic pruning runs locally and sends no text anywhere.
-
-### Optional JEV source-review pilot
-
-Source review is off unless the user or repo explicitly permits focused code/diff sharing and the upstream [`jev-review`](https://github.com/NiazMorshed2007/jev-review) tool is separately connected. It works with Codex and Claude Code. Pin the reviewed upstream revision rather than following `main`; the v0.7.0 pilot used `57690af54ef7d862c2483342c1e61c14dffcf727` (`jev-review` 0.1.1).
-
-Use it only as an explicitly authorized pilot for a stable ordinary diff after required checks pass and no risk flag applies; the review selector never chooses it. Send the task, focused current diff, and only necessary surrounding files/context. Never send secrets, environment files, unrelated proprietary content, repository-wide source, logs, or transcripts. A weak/error result preserves general review; hard risk preserves deep/security review. During paired replacement trials, run one selected tier rather than stacking JEV and ordinary model review. Allow at most one rescore after a specific evidence-based correction; do not chase scores.
-
-Do not install this MCP server by default yet. Its current tool schema is large, so first confirm that the target host defers it when unused and that complete-task savings exceed its schema and call cost. Follow the upstream Codex or Claude Code setup for an explicitly authorized shadow pilot; removing or disconnecting that separate MCP server returns source review to off without affecting metadata routing.
-
-The v0.7.0 experimental screen did not promote JEV packet pruning, semantic caching, lossy compression, verification caching, or a focused review fork. Deterministic pruning, exact receipts, stable prefixes, and native compaction remain the production choices; see the [experiment record](../plans/2026-09-24-jev-experiments.md).
 
 ### Read-only smoke test
 
@@ -265,4 +163,4 @@ Native workers and ordinary authenticated CLI workers are ways to perform bounde
 
 - Previous: [End-to-End Example](./06-end-to-end-example.md)
 - Index: [FeatureKit Guide](./README.md)
-- Next: [Security Workflow](./08-security.md)
+- Next: [JEV Routing](./10-jev-routing.md)

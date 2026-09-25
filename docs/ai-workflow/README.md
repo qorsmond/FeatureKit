@@ -15,7 +15,8 @@ If this is your first time using FeatureKit in a repo, read the install and setu
 7. [Local LLMs](./05-local-llms.md)
 8. [End-to-End Example](./06-end-to-end-example.md)
 9. [Orchestration](./09-orchestration.md)
-10. [Security Workflow](./08-security.md)
-11. [Troubleshooting](./07-troubleshooting.md)
+10. [JEV Routing](./10-jev-routing.md) (optional: API key, modes, setup)
+11. [Security Workflow](./08-security.md)
+12. [Troubleshooting](./07-troubleshooting.md)
 
 After that, keep `using-featurekit` in session-start instructions when available so raw features begin interviewing automatically. Use `/grill-with-docs` to start the same interview explicitly, and `/ask-featurekit` when you are not sure which skill to run.

@@ -88,7 +88,7 @@ Treat every JEV use as a separate data scope:
 - deterministic context pruning runs locally and sends no text anywhere; JEV pruning is not provided;
 - Claude transcript compaction requires explicit transcript permission and keeps native compaction as fallback.
 
-Keep `TYPESAFE_API_KEY` and compatibility aliases in the launching environment, never in repo files, prompts, capsules, traces, caches, or command arguments. Do not use another provider to bypass a repo/user data restriction. Deterministic approval, security, authorization, evidence, and verification gates remain authoritative regardless of a JEV score or route suggestion.
+Keep `TYPESAFE_API_KEY` and compatibility aliases in the launching environment (see [JEV Routing](./10-jev-routing.md#step-1-add-your-api-key)), never in repo files, prompts, capsules, traces, caches, or command arguments. Do not use another provider to bypass a repo/user data restriction. Deterministic approval, security, authorization, evidence, and verification gates remain authoritative regardless of a JEV score or route suggestion.
 
 ## Review
 
@@ -126,6 +126,6 @@ Do not copy standards wholesale into FeatureKit or product repos. Summarize the 
 
 ## Series Navigation
 
-- Previous: [End-to-End Example](./06-end-to-end-example.md)
+- Previous: [JEV Routing](./10-jev-routing.md)
 - Index: [FeatureKit Guide](./README.md)
 - Next: [Troubleshooting](./07-troubleshooting.md)

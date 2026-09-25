@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.3 - 2026-09-25
+
+- Added a dedicated [JEV Routing](./docs/ai-workflow/10-jev-routing.md) guide. It explains what JEV does and what leaves the machine, then walks through setup step by step: adding the `TYPESAFE_API_KEY`, choosing a mode, connecting Claude Code or Codex, a copy-paste check with expected results, rollout, how enforced routing decides, where state is stored, how to turn it off, and troubleshooting.
+- Restored the API-key setup instructions. They were accidentally removed from the orchestration guide in 0.8.0.
+- The orchestration guide now keeps a short JEV summary that links to the new guide, and the README, guide index, overview, install, setup, working-with-agents, security, and troubleshooting pages link to it.
+
 ## 0.10.2 - 2026-09-25
 
 - Release documentation for 0.8.0 through 0.10.1 (Slice 10):

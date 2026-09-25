@@ -79,7 +79,7 @@ The security suite is model-invoked except for `security-review`. Planning, impl
 
 `verify-tests` is also model-invoked. Agents should use it when generated or changed tests look weak, high-risk, or explicitly need mutation testing. It does not run expensive mutation tests by default.
 
-`orchestrate-work` routes bounded work to a direct tool, native worker, or authenticated CLI when that is useful. `validate-feature` maps acceptance criteria to runtime evidence; a build or test result alone does not prove every feature criterion. See the [Orchestration guide](./09-orchestration.md).
+`orchestrate-work` routes bounded work to a direct tool, native worker, or authenticated CLI when that is useful. `validate-feature` maps acceptance criteria to runtime evidence; a build or test result alone does not prove every feature criterion. See the [Orchestration guide](./09-orchestration.md). Optional JEV routing, which can pick a cheaper model for simple tasks, has its own [setup guide](./10-jev-routing.md).
 
 Optional misc tooling skills:
 

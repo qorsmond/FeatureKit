@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 
 const SCHEMA = 1;
-export const FEATUREKIT_VERSION = "0.10.2";
+export const FEATUREKIT_VERSION = "0.10.3";
 const POLICY_VERSION = 7;
 const QUESTIONS_VERSION = 4;
 const API_URL = new URL("https://api.typesafe.ai/v1/systemone");

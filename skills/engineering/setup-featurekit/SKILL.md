@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use once before engineering work, after a workflow upgrade, or when repo conventions change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.2"
+  featurekit-version: "0.10.3"
 ---
 
 # Setup FeatureKit

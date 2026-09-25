@@ -90,7 +90,7 @@ Implementation should discover context progressively instead of loading the repo
 
 [Serena](https://github.com/oraios/serena) and [RTK](https://github.com/rtk-ai/rtk) are optional. FeatureKit uses them when the harness exposes them and continues with portable fallbacks when it does not. Their absence should not block a slice or trigger an installation without user approval.
 
-JEV is also optional. `off` is the baseline; `shadow` advice never changes execution; `enforce` runs JEV's confident level on a harness-chosen model, as described in [Orchestration](./09-orchestration.md#enforced-routing). Metadata routing does not authorize source review, context sharing, or transcript compaction. The Slice 9 experiments did not justify a semantic cache or lossy compressor, so exact receipts and deterministic pruning remain the production paths.
+JEV is also optional. `off` is the baseline; `shadow` advice never changes execution; `enforce` runs JEV's confident level on a harness-chosen model, as described in [Orchestration](./10-jev-routing.md#how-enforced-routing-decides). Metadata routing does not authorize source review, context sharing, or transcript compaction. The Slice 9 experiments did not justify a semantic cache or lossy compressor, so exact receipts and deterministic pruning remain the production paths.
 
 ## Agent Operating Principles
 

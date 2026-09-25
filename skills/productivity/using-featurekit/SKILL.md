@@ -2,7 +2,7 @@
 name: using-featurekit
 description: Route a FeatureKit request to the smallest workflow while preserving planning, interview, security, and implementation gates. Use at session start or after compaction.
 metadata:
-  featurekit-version: "0.10.2"
+  featurekit-version: "0.10.3"
 ---
 
 # Using FeatureKit

@@ -45,11 +45,11 @@ export FEATUREKIT_JEV_ROUTING=off
 
 Restart the host so its MCP process and hooks inherit the change. `off` makes no TypeSafe route call; `shadow` is advisory only and never changes execution; `enforce` runs JEV's confident level on a harness-chosen model, while gated, weak or failed routes keep the normal route. On macOS, Codex Desktop may not inherit `.zshrc` variables unless the documented shell-backed MCP/hook command is used. Check `codex mcp get featurekit-jev` or Claude Code `/mcp`, but never print the key or add it to the repository.
 
-A missing key, provider/network error, malformed answer, weak signal, untrusted hook, absent capsule, or multiple ready capsules preserves the baseline. Do not loosen the sandbox or retry the same call. Follow [Optional JEV routing](./09-orchestration.md#optional-jev-routing) for the exact setup and switch.
+A missing key, provider/network error, malformed answer, weak signal, untrusted hook, absent capsule, or multiple ready capsules preserves the baseline. Do not loosen the sandbox or retry the same call. Follow [JEV Routing](./10-jev-routing.md) for the exact setup and switch.
 
 ## JEV Ignores An Explicit Off Or Enforce
 
-If you set `FEATUREKIT_JEV_ROUTING=off` or `enforce` for the host but the hook still behaves as your shell startup file's value, the hook command predates 0.8.0. The plugin hook is updated automatically when the plugin updates. For Codex, replace the FeatureKit `route-hook.mjs` command in `~/.codex/hooks.json` with the current command from [Optional JEV routing](./09-orchestration.md#optional-jev-routing), then re-trust it in `/hooks` and start a new task.
+If you set `FEATUREKIT_JEV_ROUTING=off` or `enforce` for the host but the hook still behaves as your shell startup file's value, the hook command predates 0.8.0. The plugin hook is updated automatically when the plugin updates. For Codex, replace the FeatureKit `route-hook.mjs` command in `~/.codex/hooks.json` with the current command from [JEV Routing](./10-jev-routing.md), then re-trust it in `/hooks` and start a new task.
 
 ## Compaction Did Not Restore FeatureKit State
 
