@@ -2,7 +2,7 @@
 name: grilling
 description: Reusable design-tree interview for turning a fuzzy idea, plan, or design into clear decisions. Use when the model needs dependency-aware questions before planning, PRD creation, or implementation.
 metadata:
-  featurekit-version: "0.13.0"
+  featurekit-version: "0.14.0"
 ---
 
 # Grilling

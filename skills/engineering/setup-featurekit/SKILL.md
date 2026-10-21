@@ -2,7 +2,7 @@
 name: setup-featurekit
 description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use when the user asks to set up or refresh FeatureKit, after an upgrade, or when repo conventions change; writes only after approval.
 metadata:
-  featurekit-version: "0.13.0"
+  featurekit-version: "0.14.0"
 ---
 
 # Setup FeatureKit

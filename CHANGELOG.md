@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.14.0 - 2026-10-21
 
 Fixes the remaining friction from running `/setup-featurekit` on a real product repo.
 
