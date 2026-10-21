@@ -144,7 +144,7 @@ Skills and the knowledge index read these labelled lines in `docs/agents/workflo
 
 ### Small Fixes
 
-By default every production edit waits for an approved written plan. Ask whether a small fix the user asks for directly may skip it; the default is no. If the user opts in, add an exemption line under the block's plan rule, with the user's limits, such as: `Exemption: a small fix the user asks for directly (a few lines in one place that change no requirement, contract, saved format, security behaviour or ADR) may proceed without a written plan; its checks still run.`
+By default every production edit waits for an approved written plan. Ask whether a small fix the user asks for directly may skip it; the default is no. If the user opts in, add an `Exemption:` line under the block's plan rule, with the user's limits, such as: `Exemption: a small fix the user asks for directly (a few lines in one place that change no requirement, contract, saved format, security behaviour or ADR) may proceed without a written plan; its checks still run.`
 
 ### Knowledge Index (Optional)
 

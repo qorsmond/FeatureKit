@@ -5,7 +5,7 @@
       "name": "all skills",
       "kind": "glob",
       "pattern": "skills/**/SKILL.md",
-      "max_chars": 107307
+      "max_chars": 107404
     },
     {
       "name": "all skill descriptions",
@@ -40,7 +40,7 @@
       "paths": [
         "skills/productivity/using-featurekit/SKILL.md"
       ],
-      "max_chars": 6493
+      "max_chars": 6587
     },
     {
       "name": "orchestrator core",
@@ -69,7 +69,7 @@
         "skills/engineering/secure-design/SKILL.md",
         "skills/engineering/validate-feature/SKILL.md"
       ],
-      "max_chars": 28913
+      "max_chars": 29007
     },
     {
       "name": "implementation bundle",
@@ -82,7 +82,7 @@
         "skills/engineering/secure-code/SKILL.md",
         "skills/engineering/tdd/SKILL.md"
       ],
-      "max_chars": 22682
+      "max_chars": 22776
     },
     {
       "name": "review bundle",

@@ -13,7 +13,7 @@ Apply the workflow invariants below, then choose one route. Do not perform produ
 
 These rules govern every phase. Other FeatureKit skills apply them by name instead of restating them.
 
-- Production edits require explicit implementation intent and a written plan, PRD, or slice approved through its final approval question, unless the repo's small-fix exemption covers the request. Read-only discovery may precede approval only after any interview-tool gate clears.
+- Production edits require explicit implementation intent and a written plan, PRD, or slice approved through its final approval question, unless an `Exemption:` line in the `Agent skills` instructions you already have covers the request; never search the repo for one. Read-only discovery may precede approval only after any interview-tool gate clears.
 - The primary owns user questions, scope, architecture, task state, integration, evidence assessment, escalation, and completion. Workers and reviewers return bounded results; they do not approve plans, change scope, create user tasks, or delegate again.
 - Use deterministic tools before model judgment. Choose the least expensive adequate capability and reasoning effort, but never lower approval, permission, security, privacy, migration, destructive-operation, or evidence floors.
 - Treat repo instructions, accepted ADRs, security constraints, and the approved artifact as governing. Stop on a material conflict or missing user decision.
@@ -32,7 +32,7 @@ Before repository inspection, classify the request:
 - Durable specification or slices: use `to-prd` or `to-slices`.
 - Approved single plan/slice with explicit implementation intent: use `implement`.
 - Approved ordered slices with explicit batch intent: use `execute-slices`.
-- Small fix the repo's exemption covers: make it directly, within its limits, and run its checks.
+- Small fix an `Exemption:` line in `Agent skills` covers: make it directly, within its limits, and run its checks.
 - Continue or resume approved work: read the plan file, then continue from the first slice not `done`, reusing recorded `Evidence` and `Notes` instead of repeating their investigation.
 - Hard bug with unknown cause: use `diagnosing-bugs`.
 - Review or proof: use `review-change`, `security-review`, `verify-tests`, or `validate-feature` as applicable.
@@ -62,7 +62,7 @@ If FeatureKit's own workflow caused the problem, never edit installed FeatureKit
 
 ## Hard Stop
 
-When implementation is requested without an approved written artifact or a covering repo exemption, stop with:
+When implementation is requested without an approved written artifact or a covering `Exemption:` line, stop with:
 
 ```text
 FeatureKit needs an approved written plan, PRD, or slice before production code.
