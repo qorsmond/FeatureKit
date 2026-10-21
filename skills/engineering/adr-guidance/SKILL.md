@@ -2,7 +2,7 @@
 name: adr-guidance
 description: Read and apply architectural decision records (ADRs) as governing project context. Use when planning, designing, implementing, reviewing, diagnosing, or handing off work that may touch architecture, data, integrations, deployment, public APIs, or durable technical conventions.
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # ADR Guidance
@@ -11,13 +11,14 @@ Use ADRs as durable constraints while planning and changing a product repo.
 
 ## Process
 
-1. Locate ADRs from `docs/agents/workflow-locations.md`; default to `docs/adr/`.
+1. Locate ADRs from the `ADR directory` line in `docs/agents/workflow-locations.md`; default to `docs/adr/`.
 2. Read relevant ADRs before technical recommendations, implementation, review, or handoff.
-3. Treat `Accepted` ADRs as governing context.
-4. Treat `Proposed` ADRs as useful context, not binding decisions.
-5. Treat `Superseded` and `Deprecated` ADRs as historical unless needed to understand migration.
-6. If work conflicts with an accepted ADR, stop or flag the conflict before proceeding.
-7. If a new durable decision appears, recommend `/record-adr`; do not write ADRs from this skill.
+3. Apply the meanings in its `ADR statuses` line when recorded; they override steps 4–6.
+4. Treat `Accepted` ADRs as governing context.
+5. Treat `Proposed` ADRs as useful context, not binding decisions.
+6. Treat `Superseded` and `Deprecated` ADRs as historical unless needed to understand migration.
+7. If work conflicts with an accepted ADR, stop or flag the conflict before proceeding.
+8. If a new durable decision appears, recommend `/record-adr`; do not write ADRs from this skill.
 
 ## What Needs ADR Attention
 

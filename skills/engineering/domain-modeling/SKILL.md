@@ -2,7 +2,7 @@
 name: domain-modeling
 description: Maintain and sharpen product domain language for a repo. Use when work introduces new business terms, ambiguous concepts, product rules, or architecture decisions that should be captured in CONTEXT.md or ADRs.
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # Domain Modeling
@@ -15,7 +15,7 @@ Keep the product language stable and useful for agents and humans.
 2. Identify new or ambiguous terms.
 3. Prefer the product's existing vocabulary over inventing new words.
 4. Challenge unclear terms with edge cases.
-5. Propose updates to `CONTEXT.md` for domain language.
+5. Propose domain-language updates to the `Glossary:` that `docs/agents/domain.md` names, else `CONTEXT.md`; never create `CONTEXT.md` beside another glossary.
 6. Recommend `/record-adr` for durable architecture decisions.
 7. Ask before writing durable docs.
 

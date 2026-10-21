@@ -3,7 +3,7 @@ name: handoff
 description: Preserve compact continuation state or create a user-selected fresh implementation task without replaying the conversation. Use for pauses, long context, or substantial approved work.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # Handoff
@@ -22,7 +22,7 @@ Record once:
 - relevant worker routes/results, failed attempts with their failure packet, pending ownership;
 - available repo tools and the exact next FeatureKit skill.
 
-Use stable paths and hashes instead of copied source, diffs, logs, repeated checks, or worker prose. Stop or coordinate active writers before transferring ownership. Write `docs/handoff/<slug>.md` only when a durable note is useful or the destination cannot receive the complete prompt directly.
+Use stable paths and hashes instead of copied source, diffs, logs, repeated checks, or worker prose. Stop or coordinate active writers before transferring ownership. Write a note at the `Handoffs` location in `docs/agents/workflow-locations.md` (default `docs/handoff/<slug>.md`) only when a durable note is useful or the destination cannot receive the complete prompt directly.
 
 ## Fresh Implementation Task
 

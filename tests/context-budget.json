@@ -5,7 +5,7 @@
       "name": "all skills",
       "kind": "glob",
       "pattern": "skills/**/SKILL.md",
-      "max_chars": 104191
+      "max_chars": 106156
     },
     {
       "name": "all skill descriptions",
@@ -32,7 +32,7 @@
       "paths": [
         "AGENTS.md"
       ],
-      "max_chars": 8969
+      "max_chars": 8995
     },
     {
       "name": "bootstrap",
@@ -69,7 +69,7 @@
         "skills/engineering/secure-design/SKILL.md",
         "skills/engineering/validate-feature/SKILL.md"
       ],
-      "max_chars": 28671
+      "max_chars": 28728
     },
     {
       "name": "implementation bundle",
@@ -104,7 +104,7 @@
         "skills/productivity/handoff/SKILL.md",
         "skills/productivity/orchestrate-work/SKILL.md"
       ],
-      "max_chars": 5578
+      "max_chars": 5661
     }
   ]
 }

@@ -37,6 +37,19 @@ Setup enables orchestration through the repo's persistent agent instructions. Th
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
+Setup records each location the skills need as a labelled line, so `record-adr`, `adr-guidance`, `handoff`, `prototype` and the knowledge index follow the repo instead of their defaults. In `docs/agents/workflow-locations.md`:
+
+```markdown
+ADR directory: `docs/decisions/`, listed in its README
+ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
+ADR template: `docs/decisions/0000-template.md`
+ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
+Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
+Prototypes: `.scratch/prototypes/<question>/`, never committed
+```
+
+In `docs/agents/domain.md`, a `Glossary:` line names where domain terms go when it is not `CONTEXT.md`, for example ``Glossary: `docs/agents/domain.md#language`; no `CONTEXT.md` ``. A missing line keeps the default: `docs/adr/`, `YYYY-MM-DD-short-decision-title.md`, `record-adr`'s own format and statuses, `docs/handoff/<slug>.md`, `.scratch/prototypes/<slug>/` and `CONTEXT.md`. Rerun setup after an upgrade to add the lines to an existing repo.
+
 Each question should cover one decision, include its own short context, use the user's words and concrete outcomes, explain what the options cause, and recommend a default based on what the agent found. Uncertainty stays unresolved and is explained and re-asked in simpler language.
 
 ## Files Setup Writes
@@ -66,7 +79,9 @@ Setup can also enable the optional knowledge index for large or unfamiliar codeb
     "PostToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "[ -f .kx/index.db ] || exit 0; exec python3 .agents/skills/using-featurekit/scripts/kx.py hook tool", "timeout": 5}]}]
   }
 }
-``` Setup also gives each `docs/agents/` file OKF-style frontmatter (`status`, `verified`, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
+```
+
+Setup also gives each `docs/agents/` file OKF-style frontmatter (`status`, `verified`, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
 
 ## What Setup Should Not Do
 

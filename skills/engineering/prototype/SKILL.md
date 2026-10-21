@@ -3,7 +3,7 @@ name: prototype
 description: Build or plan a disposable prototype to answer a concrete product, UX, architecture, state, performance, or integration uncertainty before committing to implementation. Use explicitly when discussion cannot settle a decision. User-invoked; prototype output is not production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # Prototype
@@ -18,7 +18,7 @@ Apply the target repo's `Agent Operating Principles` before building or verifyin
 2. Define the cheapest artifact that can answer it.
 3. Read relevant ADRs and `docs/agents/security.md` if present when the question touches architecture or security.
 4. Confirm what production code must not be touched.
-5. Build or outline the prototype in an isolated location.
+5. Build or outline the prototype at the `Prototypes` location in `docs/agents/workflow-locations.md` (default `.scratch/prototypes/<slug>/`), outside production code; do not commit it unless that location says to.
 6. Run only the checks needed to trust the result. Use `validate-feature` against the prototype question in the relevant runtime/platform; record simulation/hardware limitations instead of generalizing to untested environments.
 7. Summarize what was learned.
 8. Use `secure-design` if the prototype answers a security, auth, API, deployment, integration, or trust-boundary question.

@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use once before engineering work, after a workflow upgrade, or when repo conventions change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # Setup FeatureKit
@@ -21,7 +21,7 @@ Inspect the repo before asking questions. Look for:
 - `git remote -v` and `.git/config`,
 - `AGENTS.md`, `CLAUDE.md`, and other agent guidance,
 - existing `docs/agents/`,
-- `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/adr/`,
+- `CONTEXT.md`, `CONTEXT-MAP.md` or another glossary, and ADRs (`docs/adr/` or elsewhere) with their naming, template and statuses,
 - package manifests and scripts,
 - test, lint, typecheck, build, and CI config,
 - target runtimes/platforms, simulators/emulators/devices, hardware/native integrations and existing runtime tests,
@@ -67,6 +67,8 @@ Record whether the repo uses:
 - single context: `CONTEXT.md` plus `docs/adr/`,
 - multi-context: `CONTEXT-MAP.md` pointing to multiple contexts,
 - another documented layout.
+
+When domain terms do not go in `CONTEXT.md`, record where as a line in `docs/agents/domain.md`, such as ``Glossary: `docs/agents/domain.md#language`; no `CONTEXT.md` ``.
 
 ### Stack And Commands
 
@@ -129,6 +131,17 @@ Record where to save:
 - ADRs, including the ADR directory and filename/status convention,
 - prototypes,
 - handoffs.
+
+Skills and the knowledge index read these labelled lines in `docs/agents/workflow-locations.md`, one per line with its value; prose and tables may surround them. A missing line keeps the skill's default. For example:
+
+```markdown
+ADR directory: `docs/decisions/`, listed in its README
+ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
+ADR template: `docs/decisions/0000-template.md`
+ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
+Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
+Prototypes: `.scratch/prototypes/<question>/`, never committed
+```
 
 ### Knowledge Index (Optional)
 
