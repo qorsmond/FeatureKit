@@ -21,6 +21,8 @@ FILES = {
     "docs/decisions/0005-governs.md": "---\nsources:\n  - resource: app/store.py\n---\n# ADR 0005\n\nStatus: Accepted\n\n" + TERM,
     "docs/decisions/0006-names-files.md": "# ADR 0006\n\nStatus: Accepted\n\nIt applies to `scripts/frame-scan-read.py`, "
                                           "`blender/photo.py` and `util.py`.\n",
+    "docs/decisions/0007-names-commands.md": "# ADR 0007\n\nStatus: Accepted\n\nRun `scan-process --cache` nightly; "
+                                             "`process` and `sync-data` stay separate.\n",
     "docs/adr/2026-01-01-fallback.md": "# ADR: Fallback\n\nStatus: Accepted\n",
     "docs/notes/typed.md": "---\ntype: adr\nstatus: stable\n---\n# Typed\n",
     "docs/guide.md": "# Guide\n",
@@ -29,6 +31,10 @@ FILES = {
     "native/rooms/blender/photo.py": "def render():\n    pass\n",
     "app/util.py": "",
     "scripts/util.py": "",
+    "scripts/scan-process.py": "",
+    "scripts/process.py": "",
+    "jobs/sync-data.py": "",
+    "tools/sync-data.py": "",
 }
 
 
@@ -93,6 +99,10 @@ def check():
         assert "docs/decisions/0006-names-files.md" in governing("scripts/frame-scan-read.py")
         assert "docs/decisions/0006-names-files.md" in governing("native/rooms/blender/photo.py")
         assert governing("app/util.py") == "" and governing("scripts/util.py") == ""
+        # A distinctive command name (with a hyphen or underscore) links the one script with that file name;
+        # a plain word such as `process` or a name two scripts share links nothing.
+        assert "docs/decisions/0007-names-commands.md" in governing("scripts/scan-process.py")
+        assert governing("scripts/process.py") == "" and governing("jobs/sync-data.py") == ""
 
         # Untracked files that git does not ignore are indexed, so uncommitted docs count before they are committed.
         (repo / "docs/draft.md").write_text("# Draft\n")

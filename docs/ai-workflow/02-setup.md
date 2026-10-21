@@ -99,7 +99,7 @@ For Codex, add them to the repo's `.codex/hooks.json`, or to `~/.codex/hooks.jso
 }
 ```
 
-The index covers Python and Markdown/RST files that git tracks or would track, so new docs count before they are committed. A decision links to the code it governs through `sources` frontmatter or by naming a Python file in backticks.
+The index covers Python and Markdown/RST files that git tracks or would track, so new docs count before they are committed. A decision links to the code it governs through `sources` frontmatter or by naming a Python file in backticks, by path or, for a script, by its command name.
 
 Setup also gives each `docs/agents/` file OKF-style frontmatter (`type: agent-guide`, `status`, `verified` with your git user name, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
 

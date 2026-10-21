@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `kx.py` links a decision to a Python script it names by command in backticks, such as `import-orders --dry-run`. The first word must contain a hyphen or underscore and be the file name, without `.py`, of exactly one indexed module. Plain words such as `process`, and names two scripts share, link nothing. Deterministic evidence on a copy of the product repo from 0.14.0, with its current docs:
+  - Governs links rose from 10 to 15, and mentions stayed at 592.
+  - All five new links were checked by hand and are correct: three ADRs cite the pipeline command and two cite the bench command.
+  - Of 53 candidate words in its ADRs, only those two commands matched a script; the rest were environment variables and image names.
+  - Reading the pipeline script now reports its three decisions.
+  - Output on the `impact-callers` Click fixture is identical. `tests/check_kx.py` adds a command-name match, a plain-word non-match and an ambiguous non-match.
 - Docs describe 0.13.0 and 0.14.0, with no skill changes.
   - The README covers recorded repo conventions, the optional knowledge index, the small-fix exemption and what a setup refresh adds when upgrading.
   - The overview, install, main-flow, working-with-agents and local-LLM pages, the quick start and the local-LLM prompt name the recorded locations and the glossary instead of fixed paths and `CONTEXT.md`.

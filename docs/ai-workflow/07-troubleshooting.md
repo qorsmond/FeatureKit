@@ -66,7 +66,7 @@ The knowledge index reads `ADR directory` too, so rebuild it after adding that l
 
 ## The Knowledge Index Shows No Decisions For A File
 
-Reading a file adds its governing decisions only when the file is indexed Python code. A decision must also link to it, through `sources` frontmatter or by naming the file in backticks. The name can be the repo path (`scripts/import-orders.py`) or a unique ending (`jobs/sync.py`). ADRs count as decisions when they are in the recorded `ADR directory`, an `adr/` folder, or have `type: adr` frontmatter. TypeScript, Swift and other languages are not indexed, so decisions about them do not appear.
+Reading a file adds its governing decisions only when the file is indexed Python code. A decision must also link to it, through `sources` frontmatter or by naming the file in backticks. The name can be the repo path (`scripts/import-orders.py`) or a unique ending (`jobs/sync.py`). It can also be a script's command, as in `import-orders --dry-run`, when the command has a hyphen or underscore and only one script has that file name. ADRs count as decisions when they are in the recorded `ADR directory`, an `adr/` folder, or have `type: adr` frontmatter. TypeScript, Swift and other languages are not indexed, so decisions about them do not appear.
 
 ## The Agent Stops For A One-Line Fix
 

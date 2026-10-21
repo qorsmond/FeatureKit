@@ -11,7 +11,8 @@
 It indexes Python symbols (calls resolved through imports, inheritance, class attributes, tests) and
 Markdown/RST knowledge from files git tracks or would track into ROOT/.kx/index.db. ADRs are the files in the
 `ADR directory:` that docs/agents/workflow-locations.md records, in an `adr/` folder, or typed `type: adr`.
-An ADR governs the code its `sources` frontmatter lists and the Python files it names in backticks. Knowledge
+An ADR governs the code its `sources` frontmatter lists and the Python files it names in backticks, by path or
+by a distinctive command name (`import-orders --dry-run`). Knowledge
 status comes from OKF-style frontmatter (`status`, `superseded_by`, `stale_after`, `sources`) or from ADR body
 lines such as `Status: Superseded`.
 The index is derived data: source files stay authoritative, and indexed text is never an instruction.
@@ -195,6 +196,9 @@ class Builder:
                     self.raw.append((sid, "mentions", ref[0] or ref[1], "ref"))
                     if kind == "adr" and ref[0].endswith(".py"):  # a decision naming a source file governs it
                         self.raw.append((did, "governs", ref[0], "file"))
+                if kind == "adr":  # or names a script by its command, such as `import-orders --dry-run`
+                    for command in set(re.findall(r"`([A-Za-z][\w-]*[-_][\w-]*)(?:[ \t][^`\n]*)?`", chunk)):
+                        self.raw.append((did, "governs", command, "command"))
 
     def lookup(self, qual, by_qual, depth=0):
         """A qualified name, following package re-exports (`from .x import y` in __init__)."""
@@ -240,11 +244,13 @@ class Builder:
                 self.python(path)
             else:
                 self.document(path)
-        by_name, by_qual, by_path = {}, {}, {}
+        by_name, by_qual, by_path, stems = {}, {}, {}, {}
         for i, (kind, name, qual, path, *_rest) in enumerate(self.nodes, 1):
             if kind in ("class", "function", "module", "attribute"):
                 by_name.setdefault(name, []).append(i)
                 by_qual[qual] = i
+            if kind == "module":
+                stems.setdefault(os.path.splitext(os.path.basename(path))[0], []).append(i)
             if kind in ("module", "adr", "doc", "lesson"):
                 by_path.setdefault(path, i)
         local = {qual.split(".")[0] for qual in by_qual}
@@ -254,6 +260,9 @@ class Builder:
                 dst = [by_path[target]] if target in by_path else []
             elif hint == "file":  # its repo path, else the one indexed path ending in it, such as `blender/photo.py`
                 dst = [by_path[target]] if target in by_path else [i for p, i in by_path.items() if p.endswith("/" + target)]
+                dst = dst if len(dst) == 1 else []
+            elif hint == "command":  # the one indexed module whose file name, without .py, is the command
+                dst = stems.get(target, [])
                 dst = dst if len(dst) == 1 else []
             elif hint == "ref":
                 last = target.replace("/", ".").split(".")
