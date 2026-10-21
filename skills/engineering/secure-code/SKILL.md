@@ -2,7 +2,7 @@
 name: secure-code
 description: Apply secure implementation discipline while writing or reviewing generated code. Use during implementation, bug fixes, refactors, or reviews when code handles untrusted input, auth/authz, sensitive data, secrets, cryptography, storage, files, network calls, dependencies, errors, logging, or any security-sensitive behavior.
 metadata:
-  featurekit-version: "0.13.0"
+  featurekit-version: "0.14.0"
 ---
 
 # Secure Code

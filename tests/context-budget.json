@@ -5,18 +5,18 @@
       "name": "all skills",
       "kind": "glob",
       "pattern": "skills/**/SKILL.md",
-      "max_chars": 106156
+      "max_chars": 107404
     },
     {
       "name": "all skill descriptions",
       "kind": "descriptions",
-      "max_chars": 7425
+      "max_chars": 7441
     },
     {
       "name": "model-invocable descriptions",
       "kind": "descriptions",
       "model_invocable": true,
-      "max_chars": 5065
+      "max_chars": 5394
     },
     {
       "name": "setup-written invariant",
@@ -32,7 +32,7 @@
       "paths": [
         "AGENTS.md"
       ],
-      "max_chars": 8995
+      "max_chars": 9104
     },
     {
       "name": "bootstrap",
@@ -40,7 +40,7 @@
       "paths": [
         "skills/productivity/using-featurekit/SKILL.md"
       ],
-      "max_chars": 6308
+      "max_chars": 6587
     },
     {
       "name": "orchestrator core",
@@ -69,7 +69,7 @@
         "skills/engineering/secure-design/SKILL.md",
         "skills/engineering/validate-feature/SKILL.md"
       ],
-      "max_chars": 28728
+      "max_chars": 29007
     },
     {
       "name": "implementation bundle",
@@ -82,7 +82,7 @@
         "skills/engineering/secure-code/SKILL.md",
         "skills/engineering/tdd/SKILL.md"
       ],
-      "max_chars": 22497
+      "max_chars": 22776
     },
     {
       "name": "review bundle",

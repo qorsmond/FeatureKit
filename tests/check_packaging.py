@@ -53,7 +53,7 @@ def check(root):
         assert f"`{name}`" in block, f"always-on block does not name {name}"
     implicit = {
         "tdd", "secure-design", "secure-code", "secure-api", "secure-deploy",
-        "orchestrate-work", "validate-feature", "implement", "execute-slices",
+        "orchestrate-work", "validate-feature", "implement", "execute-slices", "setup-featurekit",
     }
     for path in sorted(skills):
         text = path.read_text()

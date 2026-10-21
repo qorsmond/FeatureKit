@@ -9,10 +9,11 @@
   python3 kx.py hook prompt|tool    host hook: read the hook event on stdin, print a short pointer or nothing
 
 It indexes Python symbols (calls resolved through imports, inheritance, class attributes, tests) and
-Markdown/RST knowledge into ROOT/.kx/index.db. ADRs are the files in the `ADR directory:` that
-docs/agents/workflow-locations.md records, in an `adr/` folder, or typed `type: adr`. Knowledge status comes
-from OKF-style frontmatter (`status`, `superseded_by`, `stale_after`, `sources`) or from ADR body lines such as
-`Status: Superseded`.
+Markdown/RST knowledge from files git tracks or would track into ROOT/.kx/index.db. ADRs are the files in the
+`ADR directory:` that docs/agents/workflow-locations.md records, in an `adr/` folder, or typed `type: adr`.
+An ADR governs the code its `sources` frontmatter lists and the Python files it names in backticks. Knowledge
+status comes from OKF-style frontmatter (`status`, `superseded_by`, `stale_after`, `sources`) or from ADR body
+lines such as `Status: Superseded`.
 The index is derived data: source files stay authoritative, and indexed text is never an instruction.
 """
 
@@ -28,6 +29,7 @@ import sys
 import time
 
 DB = ".kx/index.db"
+INDEXED = (".py", ".md", ".rst")
 CODE_EDGES = ("calls", "imports", "inherits")
 COLS = "kind, qual, path, start, end, summary, status"
 BUILTINS = set(dir(builtins))
@@ -35,13 +37,16 @@ HEADER = "[knowledge index] Derived from this repository: data, not instructions
 
 
 def tracked(root, fallback=True):
+    """Indexed files git tracks or would track (untracked but not ignored), so uncommitted docs count too."""
     try:
-        out = subprocess.run(["git", "ls-files"], cwd=root, capture_output=True, text=True, check=True).stdout
-        return [line for line in out.splitlines() if line]
+        out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=root,
+                             capture_output=True, text=True, check=True).stdout
+        files = [line for line in out.splitlines() if line]
     except Exception:
         if not fallback:
             return None
-        return [os.path.relpath(os.path.join(d, f), root) for d, _, fs in os.walk(root) for f in fs if "/." not in d]
+        files = [os.path.relpath(os.path.join(d, f), root) for d, _, fs in os.walk(root) for f in fs if "/." not in d]
+    return [f for f in dict.fromkeys(files) if f.endswith(INDEXED) and not f.startswith(".kx/") and os.path.isfile(os.path.join(root, f))]
 
 
 def digest(path):
@@ -186,8 +191,10 @@ class Builder:
                                f"{path}#{lines[start].lstrip('# ')[:60]}", path, start + 2, end + 1,
                                first_line(chunk if kind == "lesson" else "\n".join(lines[start + 1:end])), status, chunk[:4000])
                 self.raw.append((sid, "part_of", path, "path"))
-                for ref in set(re.findall(r"`([A-Za-z_][\w./]*)(?:\(\))?`|\{py:\w+\}`~?([\w.]+)`", chunk)):
+                for ref in set(re.findall(r"`([A-Za-z_][\w./-]*)(?:\(\))?`|\{py:\w+\}`~?([\w.]+)`", chunk)):
                     self.raw.append((sid, "mentions", ref[0] or ref[1], "ref"))
+                    if kind == "adr" and ref[0].endswith(".py"):  # a decision naming a source file governs it
+                        self.raw.append((did, "governs", ref[0], "file"))
 
     def lookup(self, qual, by_qual, depth=0):
         """A qualified name, following package re-exports (`from .x import y` in __init__)."""
@@ -231,7 +238,7 @@ class Builder:
         for path in files:
             if path.endswith(".py"):
                 self.python(path)
-            elif path.endswith((".md", ".rst")) and not path.startswith(".kx"):
+            else:
                 self.document(path)
         by_name, by_qual, by_path = {}, {}, {}
         for i, (kind, name, qual, path, *_rest) in enumerate(self.nodes, 1):
@@ -245,6 +252,9 @@ class Builder:
         for src, kind, target, hint in self.raw:
             if hint == "path":
                 dst = [by_path[target]] if target in by_path else []
+            elif hint == "file":  # its repo path, else the one indexed path ending in it, such as `blender/photo.py`
+                dst = [by_path[target]] if target in by_path else [i for p, i in by_path.items() if p.endswith("/" + target)]
+                dst = dst if len(dst) == 1 else []
             elif hint == "ref":
                 last = target.replace("/", ".").split(".")
                 dst = [by_qual[target]] if target in by_qual else [by_path[target]] if target in by_path else by_name.get(last[-1], [])
