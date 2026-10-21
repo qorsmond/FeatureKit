@@ -79,7 +79,7 @@ The agent should write or update the configured PRD or slice location from `docs
 
 ## 4. Approve Exactly What Should Be Built
 
-Production code waits for an approved written plan, PRD, or slice.
+Production code waits for an approved written plan, PRD, or slice. The only exception is a small fix you ask for directly in a repo that opted in to the small-fix exemption at setup.
 
 Approve one implementation scope in plain language:
 

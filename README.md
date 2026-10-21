@@ -26,7 +26,7 @@ idea → interview → written plan → small slices → your approval
 ```
 
 1. **Clarify.** The agent interviews you one decision at a time, grounded in your repo's docs, and explains what each choice means.
-2. **Plan.** Your answers become a written plan or PRD, split into small vertical slices. No production code is written until you approve the plan.
+2. **Plan.** Your answers become a written plan or PRD, split into small vertical slices. No production code is written until you approve the plan. A repo can opt in at setup to let a small fix you ask for directly skip the plan, within limits it records.
 3. **Build.** One slice at a time, with tests first where they fit and security guidance applied automatically. The agent follows your repo's conventions and architecture decisions.
 4. **Prove.** Every acceptance criterion is checked against real evidence. A passing build is not proof, and missing device or platform checks are reported as gaps, not glossed over.
 5. **Review.** The review is sized to the risk. A small docs change needs checks only, every code change gets at least one review, and security changes always get a deep review.
@@ -42,7 +42,7 @@ idea → interview → written plan → small slices → your approval
 
 **Smart about cost.** The agent uses a plain tool when one is enough and works directly by default. Routine work runs on the host's cheaper model and only hard work on the strongest. In trials, delegating a small task from an expensive session to a cheaper worker saved nothing, so FeatureKit runs whole slices at the needed level instead. Small reviews go to the cheapest reviewer (every planted bug still caught, at about 70% lower cost for those reviews), and a failed attempt hands its evidence to the stronger model instead of restarting (29% cheaper escalations). An [eval suite](./evals/run.py) compares FeatureKit with a bare agent on real development scenarios.
 
-**Getting started takes two steps:** install the skills, then run `/setup-featurekit` once. After that, just ask for features.
+**Getting started takes two steps:** install the skills, then run `/setup-featurekit` once (or ask the agent to set up FeatureKit). After that, just ask for features.
 
 ## Install And Initialize A Product Repo
 
@@ -62,6 +62,8 @@ Open a fresh coding-agent session in that same product repo so it loads the inst
 ```
 
 Setup previews and updates the existing `AGENTS.md` or equivalent instruction file and records repo conventions under `docs/agents/`. It saves session bootstrap, automatic orchestration and live routing feedback. The orchestrator chooses available worker models and effort; no model roster or repeated orchestration prompt is required. Future sessions need only your normal request.
+
+Setup also records where your repo keeps ADRs, handoffs, prototypes and its glossary, and how it names, templates and labels ADRs. The skills then follow your conventions instead of their defaults (`docs/adr/`, `docs/handoff/`, `.scratch/prototypes/`, `CONTEXT.md`). Where the repo already documents a topic, setup links to it instead of restating it. For large or unfamiliar codebases it can also enable an optional local [knowledge index](./docs/ai-workflow/02-setup.md#files-setup-writes). The index hands the agent a symbol's callers and tests and the decisions that govern a file, with no services or model calls.
 
 A raw feature request starts the design-tree interview automatically. You can also invoke `/grill-with-docs` directly. When you are unsure which skill fits, ask explicitly:
 
@@ -93,7 +95,7 @@ existing project rules and settled choices; do not repeat the full setup
 interview or add fixed model selections. Show the focused changes before writing.
 ```
 
-Both steps matter: installation updates the skills, while setup refreshes the instructions saved in the product repo. Setup updates existing blocks in place; repeated runs should make no unnecessary changes or duplicate sections. Use this flow after upgrades; normal work sessions load the saved policy automatically.
+Both steps matter: installation updates the skills, while setup refreshes the instructions saved in the product repo. Upgrading from before 0.13.0, the refresh records your repo's ADR, handoff, prototype and glossary locations for the skills to follow. Upgrading from before 0.14.0, it offers the small-fix exemption and project-level knowledge-index hooks for skills installs. Setup updates existing blocks in place; repeated runs should make no unnecessary changes or duplicate sections. Use this flow after upgrades; normal work sessions load the saved policy automatically.
 
 Confirm the version below. To see delegation in action once after setup, use the [read-only orchestration smoke test](./docs/ai-workflow/09-orchestration.md#read-only-smoke-test).
 

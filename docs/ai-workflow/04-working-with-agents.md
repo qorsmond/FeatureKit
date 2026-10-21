@@ -75,7 +75,7 @@ After an implementation-ready artifact is approved, focused work should continue
 
 For long work, the plan file is the durable state. Each slice's `Status`, `Evidence` and `Notes` let a new session continue from the first unfinished slice without replaying history or repeating the investigation.
 
-In a repository with the knowledge index enabled, hooks hand the agent a short pointer for the code a request names, then each searched symbol's callers, tests, and governing decisions, once per session. The index refreshes in the background when files change (seconds even for very large repos), and `python3 <using-featurekit>/scripts/kx.py node <Symbol>` expands any symbol on demand. Superseded or stale knowledge is marked or hidden. The repository stays the source of truth; the index can be deleted and rebuilt at any time.
+In a repository with the knowledge index enabled, hooks hand the agent a short pointer for the code a request names, then each searched symbol's callers, tests, and governing decisions, once per session. Reading a file adds the decisions that govern it: those whose `sources` list it or that name it in backticks. The index covers Python code and Markdown/RST docs, including docs not yet committed. It refreshes in the background when those files change (seconds even for very large repos), and `python3 <using-featurekit>/scripts/kx.py node <Symbol>` expands any symbol on demand. Superseded or stale knowledge is marked or hidden. The repository stays the source of truth; the index can be deleted and rebuilt at any time.
 
 When a task proves project knowledge wrong, such as a changed command or a moved module, the agent corrects the authoritative source (`docs/agents/`, an ADR, or the agent instructions) and says so. When the cause is FeatureKit's own workflow, it records a project-neutral proposal in `docs/agents/featurekit-feedback.md` instead of editing installed skills; FeatureKit itself changes only through a reviewed, eval-backed release.
 
@@ -154,7 +154,7 @@ FeatureKit should not assume React, Angular, Rails, Laravel, Postgres, Prisma, S
 Put those rules in the target repo:
 
 - `AGENTS.md` for stable conventions,
-- `CONTEXT.md` for domain language,
+- a glossary for domain language (`CONTEXT.md` by default, or the one `docs/agents/domain.md` names),
 - ADRs for durable technical decisions,
 - `docs/agents/security.md` for security posture, auth, sensitive data, secrets, CI/CD, and incident-response context,
 - other `docs/agents/*.md` files for FeatureKit setup.

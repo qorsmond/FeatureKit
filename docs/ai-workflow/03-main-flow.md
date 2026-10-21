@@ -10,7 +10,7 @@ At the start of FeatureKit sessions, put this in saved instructions, pinned inst
 Use `using-featurekit` before acting.
 ```
 
-`using-featurekit` is a lightweight model-invoked router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan. You should not need to manually run it and then repeat the same idea into a workflow skill.
+`using-featurekit` is a lightweight model-invoked router. It checks whether the repo is configured, points the agent at the right workflow, and hard-stops when production code is requested without an approved written plan, unless the repo's small-fix exemption covers the request. You should not need to manually run it and then repeat the same idea into a workflow skill.
 
 For raw features, the interview checks its question UI before inspecting the repository. If the native question tool exists but the current mode or permissions disable it, the agent should show a provisional ledger, explain the exact setting to change, and pause before spending context on repo discovery. After the tool is enabled—or after you explicitly accept numbered plain text—the agent discovers facts and refines the ledger.
 
@@ -62,7 +62,7 @@ If a question cannot be answered through discussion, use:
 
 Prototype when you need a runnable answer about UX, state, architecture, performance, integration behavior, or feasibility.
 
-Prototype code is disposable. Use `/handoff` to carry the learning back to the main thread.
+Prototype code is disposable. It goes in the prototype location setup recorded (`.scratch/prototypes/<slug>/` by default) and is not committed. Use `/handoff` to carry the learning back to the main thread.
 
 ## 5. Record Architectural Decisions
 
@@ -73,6 +73,8 @@ When grilling, design work, or a prototype settles a durable technical choice, u
 ```
 
 Record decisions that future work must obey: boundaries, data ownership, integration contracts, public APIs, auth/security posture, deployment/runtime constraints, or cross-cutting architecture patterns.
+
+The ADR follows the repo's recorded directory, filename pattern, template and statuses, defaulting to dated files in `docs/adr/`. It is added to the directory's index if there is one.
 
 Do not use ADRs as a scratchpad. Product decisions belong in the PRD; unresolved technical uncertainty belongs in grilling or a prototype.
 
@@ -104,7 +106,7 @@ The PRD captures:
 
 The PRD should reference accepted ADRs that constrain the feature and call out any missing ADRs.
 
-Small work can skip a full PRD if the written plan is enough, but the agent still needs to show that plan and wait for approval before coding.
+Small work can skip a full PRD if the written plan is enough, but the agent still needs to show that plan and wait for approval before coding. Only a repo that opted in at setup lets a small fix you ask for directly skip the plan, and only within the limits its `Exemption:` line records; the fix's checks still run.
 
 ## 7. Split Into Slices
 
@@ -192,7 +194,7 @@ Use this when a session is long, context is crowded, or work needs to move:
 /handoff
 ```
 
-The handoff is compact, self-contained implementation context, not a transcript. For substantial work, when the user selects a fresh implementation task and the harness supports task creation on the existing checkout, FeatureKit creates it in the same saved project and active branch without a worktree. It receives the approved artifact, scope, decisions, constraints, repository state, verification commands, and exact implementation skill. If suitable creation is unavailable, FeatureKit provides one exact prompt and a handoff note when useful.
+The handoff is compact, self-contained implementation context, not a transcript. For substantial work, when the user selects a fresh implementation task and the harness supports task creation on the existing checkout, FeatureKit creates it in the same saved project and active branch without a worktree. It receives the approved artifact, scope, decisions, constraints, repository state, verification commands, and exact implementation skill. If suitable creation is unavailable, FeatureKit provides one exact prompt and a handoff note when useful. The note goes in the handoff location setup recorded, such as a per-feature file updated in place (`docs/handoff/<slug>.md` by default).
 
 ## Session Rules
 
