@@ -14,10 +14,10 @@ Run the complete [`grilling`](../grilling/SKILL.md) interview contract with this
 
 Only after the question-tool gate clears:
 
-1. Read `AGENTS.md`, relevant `docs/agents/`, `CONTEXT.md`, accepted ADRs, and only source needed for open decisions.
+1. Read `AGENTS.md`, relevant `docs/agents/`, the `Glossary:` that `docs/agents/domain.md` names (default `CONTEXT.md`), accepted ADRs, and only source needed for open decisions.
 2. Find discoverable facts instead of asking the user. Use `orchestrate-work` only for bounded fact or coverage-audit work; the primary keeps the tree and all user decisions.
 3. Treat accepted ADRs as constraints. Use `secure-design` for auth, authorization, sensitive data, APIs, deployment, integrations, generated code, or untrusted input.
-4. Propose `CONTEXT.md` changes or `/record-adr` follow-ups when useful, but write no durable docs or production code before final approval.
+4. Propose glossary changes or `/record-adr` follow-ups when useful, but write no durable docs or production code before final approval.
 
 ## Result
 

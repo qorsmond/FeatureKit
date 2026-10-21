@@ -100,6 +100,7 @@ npx skills@latest use . --skill security-review
 npx skills@latest use . --skill orchestrate-work
 npx skills@latest use . --skill validate-feature
 python3 tests/check_packaging.py
+python3 tests/check_kx.py
 rg "featurekit-version: \"$(cat VERSION)\"" skills
 ```
 

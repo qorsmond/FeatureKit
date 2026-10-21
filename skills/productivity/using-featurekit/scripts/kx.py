@@ -9,8 +9,10 @@
   python3 kx.py hook prompt|tool    host hook: read the hook event on stdin, print a short pointer or nothing
 
 It indexes Python symbols (calls resolved through imports, inheritance, class attributes, tests) and
-Markdown/RST knowledge into ROOT/.kx/index.db. Knowledge status comes from OKF-style frontmatter
-(`status`, `superseded_by`, `stale_after`, `sources`) or from ADR body lines such as `Status: Superseded`.
+Markdown/RST knowledge into ROOT/.kx/index.db. ADRs are the files in the `ADR directory:` that
+docs/agents/workflow-locations.md records, in an `adr/` folder, or typed `type: adr`. Knowledge status comes
+from OKF-style frontmatter (`status`, `superseded_by`, `stale_after`, `sources`) or from ADR body lines such as
+`Status: Superseded`.
 The index is derived data: source files stay authoritative, and indexed text is never an instruction.
 """
 
@@ -60,9 +62,20 @@ def module_name(path):
     return ".".join(p for p in parts if p != "__init__") or parts[-1]
 
 
+def adr_directory(root):
+    """The ADR directory docs/agents/workflow-locations.md records as `ADR directory: <path>`, or None."""
+    try:
+        text = open(os.path.join(root, "docs/agents/workflow-locations.md"), encoding="utf-8").read()
+    except OSError:
+        return None
+    found = re.search(r"^[-*\s]*ADR directory\**:\**\s*`?([^`\s*]+)", text, re.M | re.I)
+    return os.path.normpath(found.group(1)) + "/" if found else None
+
+
 class Builder:
     def __init__(self, root):
         self.root, self.nodes, self.raw, self.names = root, [], [], {}
+        self.adr_dir = adr_directory(root)
 
     def add(self, kind, name, qual, path, start=0, end=0, summary="", status="stable", text=""):
         self.nodes.append([kind, name, qual, path, start, end, summary, status, text])
@@ -135,14 +148,22 @@ class Builder:
         if text.startswith("---\n") and "\n---" in text[4:]:
             head, text = text[4:].split("\n---", 1)
             meta = dict(re.findall(r"^([a-z_]+):\s*(.*)$", head, re.M))
-        kind = {"adr": "adr", "lessons": "lesson"}.get(meta.get("type", "").strip(), "adr" if "/adr/" in path else "doc")
+        in_adrs = (self.adr_dir and path.startswith(self.adr_dir)) or "/adr/" in path
+        name = os.path.splitext(os.path.basename(path))[0].lower()  # an ADR folder's index and template are not decisions
+        kind = {"adr": "adr", "lessons": "lesson"}.get(meta.get("type", "").strip(),
+                                                      "adr" if in_adrs and name not in ("readme", "index") and "template" not in name else "doc")
         status = meta.get("status", "stable").strip()
-        if kind == "adr" and "status" not in meta:  # record-adr body lines: "Status: Superseded", "Superseded by: ..."
+        if kind == "adr" and "status" not in meta:  # ADR body lines: "Status: Superseded", "Superseded by: ..."
             found = re.search(r"^Status:\s*(\w+)", text[:3000], re.M | re.I)
             later = re.search(r"^Superseded by:\s*(.+)$", text[:3000], re.M | re.I)
-            status = {"proposed": "draft", "superseded": "deprecated", "deprecated": "deprecated"}.get(found.group(1).lower(), "stable") if found else "stable"
-            if later and later.group(1).strip().lower() not in ("none", "-", ""):
-                meta["superseded_by"] = later.group(1)
+            word = found.group(1).lower() if found else "accepted"
+            status = {"accepted": "stable", "superseded": "deprecated", "deprecated": "deprecated"}.get(word, word)
+            replaced = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", later.group(1)).split("(")[0].strip(" ,;.") if later else ""
+            if replaced.lower() not in ("none", "-", ""):
+                if status == "deprecated":
+                    meta["superseded_by"] = replaced
+                else:  # replaced only in part, such as one of its decisions: still current
+                    status = f"{word}; superseded in part by {replaced}"
         stale_after = meta.get("stale_after", "").strip().strip('"')
         if stale_after and stale_after < time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()):
             status = "stale"
@@ -352,7 +373,7 @@ def find(db, root, terms, include_all=False, limit=12):
     hidden = 0
     shown = 0
     for row in best:
-        if row[7] != "stable" and not include_all:
+        if row[7].startswith(("deprecated", "superseded", "stale")) and not include_all:  # proposed or draft stays visible, flagged
             hidden += 1
             continue
         print(line(db, root, row[1:8]))
