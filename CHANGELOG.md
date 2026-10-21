@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- README adds short "Knowledge Index (Optional)" and "Learning From Evidence" sections, linking to the guide, the `using-featurekit` rule and `AGENTS.md`, and points a stale orchestration link at "Start an orchestrated session". Docs only.
+
 ## 0.14.1 - 2026-10-21
 
 - `kx.py` links a decision to a Python script it names by command in backticks, such as `import-orders --dry-run`. The first word must contain a hyphen or underscore and be the file name, without `.py`, of exactly one indexed module. Plain words such as `process`, and names two scripts share, link nothing. Deterministic evidence on a copy of the product repo from 0.14.0, with its current docs:

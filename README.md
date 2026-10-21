@@ -63,7 +63,7 @@ Open a fresh coding-agent session in that same product repo so it loads the inst
 
 Setup previews and updates the existing `AGENTS.md` or equivalent instruction file and records repo conventions under `docs/agents/`. It saves session bootstrap, automatic orchestration and live routing feedback. The orchestrator chooses available worker models and effort; no model roster or repeated orchestration prompt is required. Future sessions need only your normal request.
 
-Setup also records where your repo keeps ADRs, handoffs, prototypes and its glossary, and how it names, templates and labels ADRs. The skills then follow your conventions instead of their defaults (`docs/adr/`, `docs/handoff/`, `.scratch/prototypes/`, `CONTEXT.md`). Where the repo already documents a topic, setup links to it instead of restating it. For large or unfamiliar codebases it can also enable an optional local [knowledge index](./docs/ai-workflow/02-setup.md#files-setup-writes). The index hands the agent a symbol's callers and tests and the decisions that govern a file, with no services or model calls.
+Setup also records where your repo keeps ADRs, handoffs, prototypes and its glossary, and how it names, templates and labels ADRs. The skills then follow your conventions instead of their defaults (`docs/adr/`, `docs/handoff/`, `.scratch/prototypes/`, `CONTEXT.md`). Where the repo already documents a topic, setup links to it instead of restating it. For large or unfamiliar codebases it can also enable an optional local [knowledge index](#knowledge-index-optional). The index hands the agent a symbol's callers and tests and the decisions that govern a file, with no services or model calls.
 
 A raw feature request starts the design-tree interview automatically. You can also invoke `/grill-with-docs` directly. When you are unsure which skill fits, ask explicitly:
 
@@ -97,7 +97,7 @@ interview or add fixed model selections. Show the focused changes before writing
 
 Both steps matter: installation updates the skills, while setup refreshes the instructions saved in the product repo. Upgrading from before 0.13.0, the refresh records your repo's ADR, handoff, prototype and glossary locations for the skills to follow. Upgrading from before 0.14.0, it offers the small-fix exemption and project-level knowledge-index hooks for skills installs. Setup updates existing blocks in place; repeated runs should make no unnecessary changes or duplicate sections. Use this flow after upgrades; normal work sessions load the saved policy automatically.
 
-Confirm the version below. To see delegation in action once after setup, use the [read-only orchestration smoke test](./docs/ai-workflow/09-orchestration.md#read-only-smoke-test).
+Confirm the version below. To see delegation in action after setup, see [Start an orchestrated session](./docs/ai-workflow/09-orchestration.md#start-an-orchestrated-session).
 
 ## Confirm Version
 
@@ -126,6 +126,26 @@ All FeatureKit entries should match the installed release's [VERSION](./VERSION)
 13. Use `/handoff` when a session needs to pause or continue elsewhere.
 
 Within these workflows, `orchestrate-work` chooses a direct tool, the current agent, or a bounded worker by capability and risk, and `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional repo restrictions or explicit overrides live in `docs/agents/orchestration.md`; no model roster is required, and single-model use still works. Plan files carry each slice's status, evidence and notes, so a new session resumes where the last one stopped without repeating its investigation. See [Orchestration](./docs/ai-workflow/09-orchestration.md).
+
+## Knowledge Index (Optional)
+
+For large or unfamiliar codebases, setup can enable a local knowledge index. It is a derived `.kx/` folder, ignored by git, built by one standard-library script with no services, model calls or dependencies. It covers Python code and Markdown/RST docs, ADRs and lessons, including docs not yet committed. Two hooks deliver it without the agent having to remember:
+
+- a short pointer when your request names code;
+- a symbol's callers, tests and governing decisions when the agent searches for it;
+- the decisions that govern a file when the agent reads it.
+
+A decision links to the code it governs through `sources` frontmatter, or by naming a Python file in backticks by path or command. Superseded and stale knowledge is flagged or hidden, and the source files stay authoritative.
+
+In trials on large Python repositories, the hooks reached the agent in 13 of 13 runs, against 2 of 15 when a skill instructed it. Cost per run fell 18% on four impact-analysis tasks. The gain in correctness was within run-to-run noise. TypeScript, Swift and other languages are not indexed. See [Setup](./docs/ai-workflow/02-setup.md#files-setup-writes) for enabling it and the hooks for skills installs, [Working With Agents](./docs/ai-workflow/04-working-with-agents.md#context-hygiene) for what the agent sees, and [Troubleshooting](./docs/ai-workflow/07-troubleshooting.md#the-knowledge-index-shows-no-decisions-for-a-file).
+
+## Learning From Evidence
+
+FeatureKit improves through two loops, and both need evidence. A single unexplained run supports nothing.
+
+- **In your product repo.** A check may fail for a reason a durable control would have prevented, the same correction may be needed twice, or project guidance may prove wrong. The agent then fixes the cause once, in the cheapest durable place. That is a test or check first, then the authoritative source (`docs/agents/`, an ADR, or the agent instructions). Only a verified fact with no better home becomes a lesson in `docs/agents/lessons.md`, with its cue, evidence and confidence. A lesson never lowers a safety or approval floor. See the [`using-featurekit` rule](./skills/productivity/using-featurekit/SKILL.md#learn-from-evidence) and [Working With Agents](./docs/ai-workflow/04-working-with-agents.md#context-hygiene).
+- **Back into FeatureKit.** When FeatureKit's own workflow caused the problem, the agent never edits the installed skills. It records a project-neutral proposal in `docs/agents/featurekit-feedback.md`.
+- **In FeatureKit itself.** Shared behaviour changes only from evidence: a failing eval case, a recorded trial, or a feedback entry. Each change is tried on the affected [eval cases](./evals/run.py) against the current release and kept only if correctness is no worse. Each changelog entry is marked eval-backed or a hypothesis. For example, the 0.14.0 small-fix exemption first doubled the plan-gate case's cost, because the agent searched the repo for an exemption. The eval caught it, and the reworded rule brought the cost back down. See [Improving FeatureKit](./AGENTS.md#improving-featurekit).
 
 ## Optional Tooling Skills
 
