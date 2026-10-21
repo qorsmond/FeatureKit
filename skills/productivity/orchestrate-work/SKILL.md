@@ -2,7 +2,7 @@
 name: orchestrate-work
 description: Choose direct work, the current agent, or one bounded worker by capability, risk, and evidence. Use inside an active FeatureKit workflow when substantive work could be routed or has failed.
 metadata:
-  featurekit-version: "0.14.0"
+  featurekit-version: "0.14.1"
 ---
 
 # Orchestrate Work

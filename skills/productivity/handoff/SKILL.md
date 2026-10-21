@@ -3,7 +3,7 @@ name: handoff
 description: Preserve compact continuation state or create a user-selected fresh implementation task without replaying the conversation. Use for pauses, long context, or substantial approved work.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.14.0"
+  featurekit-version: "0.14.1"
 ---
 
 # Handoff

@@ -3,7 +3,7 @@ name: prototype
 description: Build or plan a disposable prototype to answer a concrete product, UX, architecture, state, performance, or integration uncertainty before committing to implementation. Use explicitly when discussion cannot settle a decision. User-invoked; prototype output is not production code.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.14.0"
+  featurekit-version: "0.14.1"
 ---
 
 # Prototype

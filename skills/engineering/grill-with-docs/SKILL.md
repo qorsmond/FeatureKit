@@ -3,7 +3,7 @@ name: grill-with-docs
 description: Run the FeatureKit design-tree interview with repo facts and durable docs. Use explicitly before a PRD or implementation when scope or success criteria need clarification.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.14.0"
+  featurekit-version: "0.14.1"
 ---
 
 # Grill With Docs

@@ -2,7 +2,7 @@
 name: implement
 description: Implement one approved FeatureKit plan or slice using repository conventions, tests, and runtime evidence. Use explicitly after final approval and implementation intent.
 metadata:
-  featurekit-version: "0.14.0"
+  featurekit-version: "0.14.1"
 ---
 
 # Implement
