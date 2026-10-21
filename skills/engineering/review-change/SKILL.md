@@ -2,7 +2,7 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, slice, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # Review Change

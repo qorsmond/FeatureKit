@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.13.0 - 2026-10-21
 
 - Skills now follow the conventions `setup-featurekit` records in a product repo instead of their hard-coded defaults. This came from running setup on a real product repo: numbered ADRs from a template in `docs/decisions/`, Proposed ADRs that govern work built on them, handoffs kept per feature, and no `CONTEXT.md`. Setup recorded all of it, but `record-adr`, `handoff`, `prototype`, `domain-modeling`, `grill-with-docs` and the knowledge index still used their own paths and formats.
   - The contract: labelled lines in `docs/agents/workflow-locations.md` (`ADR directory`, `ADR filename`, `ADR template`, `ADR statuses`, `Handoffs`, `Prototypes`) and a `Glossary:` line in `docs/agents/domain.md`. A missing line keeps the old default, so existing setups keep working. Rerun `/setup-featurekit` to add the lines.

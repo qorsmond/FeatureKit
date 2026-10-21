@@ -2,7 +2,7 @@
 name: adr-guidance
 description: Read and apply architectural decision records (ADRs) as governing project context. Use when planning, designing, implementing, reviewing, diagnosing, or handing off work that may touch architecture, data, integrations, deployment, public APIs, or durable technical conventions.
 metadata:
-  featurekit-version: "0.12.0"
+  featurekit-version: "0.13.0"
 ---
 
 # ADR Guidance
