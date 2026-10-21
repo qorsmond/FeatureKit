@@ -6,7 +6,7 @@ Run setup once per product repo before using the other engineering skills.
 /setup-featurekit
 ```
 
-Setup teaches FeatureKit how this repo works. It does not choose your stack for you. It records the repo's actual conventions so the other skills can follow them.
+You can also ask an agent to set up or refresh FeatureKit; it loads the same skill. Setup teaches FeatureKit how this repo works. It does not choose your stack for you. It records the repo's actual conventions so the other skills can follow them.
 
 ## What Setup Discovers
 
@@ -32,20 +32,23 @@ Setup groups these into short, clear rounds through the harness question UI when
 4. How deployment/runtime notes should be recorded.
 5. How security notes should record auth, authorization, sensitive data, APIs, secrets, dependencies, CI/CD checks, deployment security, logging, and incident contacts.
 6. Where PRDs, slices, ADRs, prototypes, and handoffs should be saved.
+7. Whether a small fix you ask for directly may skip the written plan. The default is no; if you opt in, setup records the exemption and its limits in the `Agent skills` block.
+
+Setup does not ask what it can find in the repo, such as a work tracker its remote or docs already show.
 
 Setup enables orchestration through the repo's persistent agent instructions. The orchestrator chooses available models, backends and effort at runtime; you do not need to provide a model list. Setup asks only about unresolved human constraints such as allowed providers, spending or an explicit preference. An optional `docs/agents/orchestration.md` stores those constraints or deliberate overrides; its absence does not disable delegation. Unavailable workers, authentication or permissions fall back to capable, authorized direct work or a stated prerequisite. Prefer existing authenticated routes and do not add automatic API spend. Extend `docs/agents/verification.md` with applicable runtimes, platforms, commands, fixtures, devices or simulators, environment prerequisites, and hardware limits so validation can report missing evidence explicitly.
 
 ADRs default to per-decision files in `docs/adr/` unless the repo already has a convention.
 
-Setup records each location the skills need as a labelled line, so `record-adr`, `adr-guidance`, `handoff`, `prototype` and the knowledge index follow the repo instead of their defaults. In `docs/agents/workflow-locations.md`:
+Setup records each location the skills need as a labelled line, so `record-adr`, `adr-guidance`, `handoff`, `prototype` and the knowledge index follow the repo instead of their defaults. In `docs/agents/workflow-locations.md`, as list items or plain lines:
 
 ```markdown
-ADR directory: `docs/decisions/`, listed in its README
-ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
-ADR template: `docs/decisions/0000-template.md`
-ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
-Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
-Prototypes: `.scratch/prototypes/<question>/`, never committed
+- ADR directory: `docs/decisions/`, listed in its README
+- ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
+- ADR template: `docs/decisions/0000-template.md`
+- ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
+- Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
+- Prototypes: `.scratch/prototypes/<question>/`, never committed
 ```
 
 In `docs/agents/domain.md`, a `Glossary:` line names where domain terms go when it is not `CONTEXT.md`, for example ``Glossary: `docs/agents/domain.md#language`; no `CONTEXT.md` ``. A missing line keeps the default: `docs/adr/`, `YYYY-MM-DD-short-decision-title.md`, `record-adr`'s own format and statuses, `docs/handoff/<slug>.md`, `.scratch/prototypes/<slug>/` and `CONTEXT.md`. Rerun setup after an upgrade to add the lines to an existing repo.
@@ -64,13 +67,28 @@ By default, setup writes:
 - `docs/agents/deployment.md`
 - `docs/agents/workflow-locations.md`
 
+Where the repo already documents a topic, such as its verification commands or deployment, the page summarises it in a few lines and links to it rather than restating it.
+
 It also updates the existing `AGENTS.md` or `CLAUDE.md` with a short `Agent skills` section that points to these docs.
 
 Setup also adds the `Agent Operating Principles` section so every new coding, refactoring, review, or verification session starts with explicit assumptions, simplicity, and surgical-change rules.
 
 Setup also adds the FeatureKit bootstrap, planning gate, explicit delegation instruction and live-routing feedback. Agents use `using-featurekit` at session start and after context compaction, then `orchestrate-work` for substantive work. You give ordinary requests; the orchestrator chooses worker models and explains the choices. Raw feature requests begin the design-tree interview automatically, and production code waits for final approval of the written plan, PRD or slice.
 
-Setup can also enable the optional knowledge index for large or unfamiliar codebases. It is a derived local index (`.kx/`, ignored by git) of Python code and of Markdown/RST docs, ADRs, and lessons, built by a standard-library script with no services or model calls. When it is enabled, two hooks deliver it without relying on the agent to remember: a short pointer when a prompt names code, and a symbol's callers, tests, and governing decisions when the agent searches for it or reads a governed file. Each item appears once per session, adds about 150 tokens, and costs tens of milliseconds; in repositories without `.kx/` the hooks exit immediately. The Claude Code plugin includes them. For Codex with a skills install, add them to `~/.codex/hooks.json` (and trust them in `/hooks`):
+Setup can also enable the optional knowledge index for large or unfamiliar codebases. It is a derived local index (`.kx/`, ignored by git) of Python code and of Markdown/RST docs, ADRs, and lessons, built by a standard-library script with no services or model calls. When it is enabled, two hooks deliver it without relying on the agent to remember: a short pointer when a prompt names code, and a symbol's callers, tests, and governing decisions when the agent searches for it or reads a governed file. Each item appears once per session, adds about 150 tokens, and costs tens of milliseconds; in repositories without `.kx/` the hooks exit immediately. The Claude Code plugin includes them. With a skills install, add them to the repo so they apply to this project only.
+
+For Claude Code, add them to `.claude/settings.json`. The paths use `$CLAUDE_PROJECT_DIR` because hooks run from the session's working directory, which may be a subfolder:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "[ -f \"$CLAUDE_PROJECT_DIR/.kx/index.db\" ] || exit 0; exec python3 \"$CLAUDE_PROJECT_DIR/.agents/skills/using-featurekit/scripts/kx.py\" hook prompt", "timeout": 5}]}],
+    "PostToolUse": [{"matcher": "Grep|Bash|Read", "hooks": [{"type": "command", "command": "[ -f \"$CLAUDE_PROJECT_DIR/.kx/index.db\" ] || exit 0; exec python3 \"$CLAUDE_PROJECT_DIR/.agents/skills/using-featurekit/scripts/kx.py\" hook tool", "timeout": 5}]}]
+  }
+}
+```
+
+For Codex, add them to the repo's `.codex/hooks.json`, or to `~/.codex/hooks.json` for every repo, and trust them in `/hooks`:
 
 ```json
 {
@@ -81,7 +99,9 @@ Setup can also enable the optional knowledge index for large or unfamiliar codeb
 }
 ```
 
-Setup also gives each `docs/agents/` file OKF-style frontmatter (`status`, `verified`, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
+The index covers Python and Markdown/RST files that git tracks or would track, so new docs count before they are committed. A decision links to the code it governs through `sources` frontmatter or by naming a Python file in backticks.
+
+Setup also gives each `docs/agents/` file OKF-style frontmatter (`type: agent-guide`, `status`, `verified` with your git user name, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
 
 ## What Setup Should Not Do
 
@@ -97,7 +117,7 @@ Setup should not:
 
 ## Rerunning Setup
 
-Rerun `/setup-featurekit` when a FeatureKit upgrade needs a new persistent instruction or the repo's workflow changes. Existing choices are preserved; setup drafts only the missing or changed instructions and affected docs rather than repeating the full interview. Updating installed skills alone does not rewrite the product repo's `AGENTS.md`.
+Rerun `/setup-featurekit` when a FeatureKit upgrade needs a new persistent instruction or the repo's workflow changes. Existing choices are preserved; setup drafts only the missing or changed instructions and affected docs rather than repeating the full interview. A section with the same purpose under another heading, such as `## Operating principles`, is merged and renamed in place, so a rerun never adds a duplicate. Updating installed skills alone does not rewrite the product repo's `AGENTS.md`.
 
 For small edits, update `docs/agents/*.md` directly.
 

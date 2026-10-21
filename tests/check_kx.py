@@ -19,10 +19,16 @@ FILES = {
     "docs/decisions/0004-partly.md": "# ADR 0004\n\nStatus: Accepted (chosen by the user)\n"
                                      "Superseded by: [ADR 0005](0005-governs.md), decision 3 only (the\nreason)\n\n" + TERM,
     "docs/decisions/0005-governs.md": "---\nsources:\n  - resource: app/store.py\n---\n# ADR 0005\n\nStatus: Accepted\n\n" + TERM,
+    "docs/decisions/0006-names-files.md": "# ADR 0006\n\nStatus: Accepted\n\nIt applies to `scripts/frame-scan-read.py`, "
+                                          "`blender/photo.py` and `util.py`.\n",
     "docs/adr/2026-01-01-fallback.md": "# ADR: Fallback\n\nStatus: Accepted\n",
     "docs/notes/typed.md": "---\ntype: adr\nstatus: stable\n---\n# Typed\n",
     "docs/guide.md": "# Guide\n",
     "app/store.py": "def save():\n    pass\n",
+    "scripts/frame-scan-read.py": "def read():\n    pass\n",
+    "native/rooms/blender/photo.py": "def render():\n    pass\n",
+    "app/util.py": "",
+    "scripts/util.py": "",
 }
 
 
@@ -77,9 +83,26 @@ def check():
         assert "0003-replaced.md" not in shown and "results hidden" in shown, shown
         assert "0003-replaced.md" in run(repo, "find", "ledger", "--all")
 
-        event = {"cwd": str(repo), "session_id": "s", "tool_name": "Read", "tool_input": {"file_path": str(repo / "app/store.py")}}
-        pointer = run(repo, "hook", "tool", stdin=json.dumps(event))
-        assert "decisions governing app/store.py: docs/decisions/0005-governs.md (current)" in pointer, pointer
+        # A decision governs files its `sources` list and Python files it names: by repo path (hyphens included)
+        # or by the one indexed path ending in the name; an ambiguous name links nothing.
+        def governing(path):
+            event = {"cwd": str(repo), "session_id": "s", "tool_name": "Read", "tool_input": {"file_path": str(repo / path)}}
+            return run(repo, "hook", "tool", stdin=json.dumps(event))
+
+        assert "decisions governing app/store.py: docs/decisions/0005-governs.md (current)" in governing("app/store.py")
+        assert "docs/decisions/0006-names-files.md" in governing("scripts/frame-scan-read.py")
+        assert "docs/decisions/0006-names-files.md" in governing("native/rooms/blender/photo.py")
+        assert governing("app/util.py") == "" and governing("scripts/util.py") == ""
+
+        # Untracked files that git does not ignore are indexed, so uncommitted docs count before they are committed.
+        (repo / "docs/draft.md").write_text("# Draft\n")
+        (repo / "notes.ignored.md").write_text("# Ignored\n")
+        (repo / ".gitignore").write_text(".kx/\n*.ignored.md\n")
+        run(repo, "refresh")
+        db = sqlite3.connect(repo / ".kx/index.db")
+        paths = {path for (path,) in db.execute("select path from files")}
+        db.close()
+        assert "docs/draft.md" in paths and "notes.ignored.md" not in paths and ".gitignore" not in paths, paths
 
         # A repo that records no ADR directory keeps the defaults: an adr/ folder or `type: adr` frontmatter.
         (repo / "docs/agents/workflow-locations.md").write_text("# Workflow locations\n\nPRDs: `docs/prd/<slug>.md`\n")

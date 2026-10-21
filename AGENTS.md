@@ -43,7 +43,7 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 - Model-invoked skills hold reusable discipline such as ADR guidance, TDD, secure design/code/API/deploy guidance, bug diagnosis, review, domain modeling, and codebase design.
 - `tdd` must remain model-invoked so implementation and bug-fix skills can reach for it automatically. Do not add `disable-model-invocation: true` to it.
 - `secure-design`, `secure-code`, `secure-api`, and `secure-deploy` must remain model-invoked so planning, implementation, and review skills can reach for them automatically.
-- `implement` and `execute-slices` must remain model-invoked: `using-featurekit` routes approved work to them, and an explicit-only skill is a dead end for that route (measured in `evals/`). Their own gates require explicit implementation intent and an approved artifact.
+- `implement` and `execute-slices` must remain model-invoked: `using-featurekit` routes approved work to them, and an explicit-only skill is a dead end for that route (measured in `evals/`). Their own gates require explicit implementation intent and an approved artifact. So must `setup-featurekit` (a dead end in a product-repo trial); it writes only after its draft is approved.
 - `orchestrate-work` and `validate-feature` remain model-invoked shared disciplines. The primary owns completion; model mappings belong in target-repo configuration, and required runtime evidence cannot be replaced by a successful build.
 - Prefer instructions over scripts unless deterministic execution is genuinely needed.
 - Do not hardcode a product stack, work tracker, deployment platform, database, framework, or architecture into FeatureKit core.

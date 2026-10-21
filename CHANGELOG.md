@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+Fixes the remaining friction from running `/setup-featurekit` on a real product repo.
+
+- `kx.py` links a decision to the Python files it names in backticks. The file is found by its repo path or, failing that, by the one indexed path that ends in the name; an ambiguous name links nothing. Backticked mentions now accept hyphens, so `scripts/frame-scan-synthetic.py` counts. The Read hook's "decisions governing <file>" pointer now fires there. Before, it could fire only through `sources` frontmatter, which those ADRs do not have. Deterministic evidence: on a copy of that repo, 7 ADRs now govern 10 Python files, and reading one adds its decisions with their statuses. Before, nothing was linked.
+- `kx.py` indexes untracked files that git does not ignore, so setup docs written but not yet committed count. It also hashes only the files it indexes (`.py`, `.md`, `.rst`), so edits to other files no longer trigger rebuilds. On a full copy of that repo (1,596 tracked files), a warm build took 0.6–0.8 s instead of 1.0 s, hashing 235 files with the same 2,641 nodes. Output on the `impact-callers` Click fixture is identical. `tests/check_kx.py` covers both.
+- A repo can opt in to a small-fix exemption from the plan gate. Setup asks (default no) and records the exemption and its limits under the plan rule in the `Agent skills` block. `using-featurekit` routes a covered fix directly and keeps the hard stop for anything else. The exemption line is not part of the block that evals inject, so the gate eval's default is unchanged. Hypothesis: a repo needed its own override line for this; `tests/scenarios.md` adds a "Small-fix exemption" trial, not yet run, and the `gate-no-plan` eval was not rerun.
+- `setup-featurekit` is model-invocable, so a model routing through `using-featurekit`, or a session started by another session, can load it. Its approval-before-write gate is unchanged, and `tests/check_packaging.py` now requires it to stay model-invocable.
+- Setup and its guide:
+  - The labelled lines are shown as a list; plain lines still parse.
+  - Knowledge-index hooks for skills installs go in the repo: `.claude/settings.json` with `$CLAUDE_PROJECT_DIR` paths, or `.codex/hooks.json`.
+  - A topic the repo already documents is summarised and linked, never restated.
+  - A section with the same purpose under another heading counts as the setup block; it is merged and renamed in place.
+  - `docs/agents/` frontmatter uses `type: agent-guide` and the git user name in `verified.by`.
+  - The work-tracker question is asked only when the repo does not show the answer.
+- Context budgets are raised to the measured sizes: bootstrap +185 characters (the exemption), model-invocable descriptions +329 (setup joins them), all skills +1,151, `AGENTS.md` +109.
+
 ## 0.13.0 - 2026-10-21
 
 - Skills now follow the conventions `setup-featurekit` records in a product repo instead of their hard-coded defaults. This came from running setup on a real product repo: numbered ADRs from a template in `docs/decisions/`, Proposed ADRs that govern work built on them, handoffs kept per feature, and no `CONTEXT.md`. Setup recorded all of it, but `record-adr`, `handoff`, `prototype`, `domain-modeling`, `grill-with-docs` and the knowledge index still used their own paths and formats.

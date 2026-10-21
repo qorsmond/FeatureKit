@@ -1,7 +1,6 @@
 ---
 name: setup-featurekit
-description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use once before engineering work, after a workflow upgrade, or when repo conventions change. User-invoked setup skill.
-disable-model-invocation: true
+description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use when the user asks to set up or refresh FeatureKit, after an upgrade, or when repo conventions change; writes only after approval.
 metadata:
   featurekit-version: "0.13.0"
 ---
@@ -49,7 +48,7 @@ Use the harness's structured question tool when available. Ask up to its current
 
 ### Work Tracker
 
-Record where work lives:
+Record where work lives; ask only if the repo does not show it:
 
 - GitHub Issues,
 - GitLab Issues,
@@ -132,20 +131,24 @@ Record where to save:
 - prototypes,
 - handoffs.
 
-Skills and the knowledge index read these labelled lines in `docs/agents/workflow-locations.md`, one per line with its value; prose and tables may surround them. A missing line keeps the skill's default. For example:
+Skills and the knowledge index read these labelled lines in `docs/agents/workflow-locations.md`, one per line with its value, as list items or plain lines; prose and tables may surround them. A missing line keeps the skill's default. For example:
 
 ```markdown
-ADR directory: `docs/decisions/`, listed in its README
-ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
-ADR template: `docs/decisions/0000-template.md`
-ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
-Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
-Prototypes: `.scratch/prototypes/<question>/`, never committed
+- ADR directory: `docs/decisions/`, listed in its README
+- ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
+- ADR template: `docs/decisions/0000-template.md`
+- ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
+- Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
+- Prototypes: `.scratch/prototypes/<question>/`, never committed
 ```
+
+### Small Fixes
+
+By default every production edit waits for an approved written plan. Ask whether a small fix the user asks for directly may skip it; the default is no. If the user opts in, add an exemption line under the block's plan rule, with the user's limits, such as: `Exemption: a small fix the user asks for directly (a few lines in one place that change no requirement, contract, saved format, security behaviour or ADR) may proceed without a written plan; its checks still run.`
 
 ### Knowledge Index (Optional)
 
-Offer the knowledge index when finding code by search is costly, such as a large or unfamiliar codebase. It is a derived local index of Python code and of Markdown/RST knowledge (docs, ADRs, lessons): no services, model calls, or new dependencies. In trials on large Python repositories, its brief made impact analyses complete at about the same cost. If the user opts in, run `python3 <using-featurekit skill directory>/scripts/kx.py build` from the repo root, add `.kx/` to the repo's ignore file, and record `Knowledge index: enabled (.kx/)` in `docs/agents/workflow-locations.md`. The Claude Code plugin's hooks then deliver the index automatically and stay inert in repos without `.kx/`. For Codex or skills-only installs, ask before adding the two hook entries from the setup guide to the user's hook configuration.
+Offer the knowledge index when finding code by search is costly, such as a large or unfamiliar codebase. It is a derived local index of Python code and of Markdown/RST knowledge (docs, ADRs, lessons): no services, model calls, or new dependencies. In trials on large Python repositories, its brief made impact analyses complete at about the same cost. If the user opts in, run `python3 <using-featurekit skill directory>/scripts/kx.py build` from the repo root, add `.kx/` to the repo's ignore file, and record `Knowledge index: enabled (.kx/)` in `docs/agents/workflow-locations.md`. The Claude Code plugin's hooks then deliver the index automatically and stay inert in repos without `.kx/`. For a skills install, ask before adding the setup guide's hook entries to the repo's `.claude/settings.json` (Claude Code) or `.codex/hooks.json` (Codex).
 
 ## 4. Draft Before Writing
 
@@ -168,7 +171,9 @@ Write or update:
 - `docs/agents/deployment.md`,
 - `docs/agents/workflow-locations.md`.
 
-Start each `docs/agents/*.md` file with OKF-style frontmatter so agents and the knowledge index can see its trust and freshness: `type`, `title`, `description`, `status: stable`, and `verified: {by: "human:<user>", at: "<ISO date>"}` for content the user approved. Mark replaced guidance `status: deprecated` with `superseded_by: <path>` instead of deleting it while others still link to it.
+Where the repo already documents a topic authoritatively, such as its verification commands or deployment, summarise it in a few lines and link to it; never restate or override it.
+
+Start each `docs/agents/*.md` file with OKF-style frontmatter so agents and the knowledge index can see its trust and freshness: `type: agent-guide`, `title`, `description`, `status: stable`, and `verified: {by: "human:<git user.name>", at: "<ISO date>"}` for content the user approved. Mark replaced guidance `status: deprecated` with `superseded_by: <path>` instead of deleting it while others still link to it.
 
 Write `docs/agents/orchestration.md` only when repo-specific constraints or explicit overrides are useful and confirmed. Its absence leaves automatic runtime selection enabled. If an existing configuration already owns those choices, reference it rather than duplicating the values.
 
@@ -198,7 +203,7 @@ This repo is configured for FeatureKit. Repo-specific setup lives in `docs/agent
 - Surgical changes: preserve user work, match existing style, and touch only lines required by scope.
 ```
 
-If an `Agent skills` or `Agent Operating Principles` block already exists, update it in place. Do not duplicate it.
+If an `Agent skills` or `Agent Operating Principles` block already exists, update it in place. A section with the same purpose under another heading, such as `## Operating principles`, is that block: merge into it and rename it to the block's heading, so reruns update it and never duplicate it.
 
 ## Do Not
 
