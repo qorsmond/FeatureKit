@@ -1,10 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Docs describe 0.13.0 and 0.14.0, with no skill changes.
+  - The README covers recorded repo conventions, the optional knowledge index, the small-fix exemption and what a setup refresh adds when upgrading.
+  - The overview, install, main-flow, working-with-agents and local-LLM pages, the quick start and the local-LLM prompt name the recorded locations and the glossary instead of fixed paths and `CONTEXT.md`.
+  - Troubleshooting adds entries for skills ignoring the repo's layout, a file with no governing decisions in the index, and the agent stopping for a one-line fix.
+  - The 0.14.0 entry and the troubleshooting example no longer use a product repo's file names.
+
 ## 0.14.0 - 2026-10-21
 
 Fixes the remaining friction from running `/setup-featurekit` on a real product repo.
 
-- `kx.py` links a decision to the Python files it names in backticks. The file is found by its repo path or, failing that, by the one indexed path that ends in the name; an ambiguous name links nothing. Backticked mentions now accept hyphens, so `scripts/frame-scan-synthetic.py` counts. The Read hook's "decisions governing <file>" pointer now fires there. Before, it could fire only through `sources` frontmatter, which those ADRs do not have. Deterministic evidence: on a copy of that repo, 7 ADRs now govern 10 Python files, and reading one adds its decisions with their statuses. Before, nothing was linked.
+- `kx.py` links a decision to the Python files it names in backticks. The file is found by its repo path or, failing that, by the one indexed path that ends in the name; an ambiguous name links nothing. Backticked mentions now accept hyphens, so a path such as `scripts/import-orders.py` counts. The Read hook's "decisions governing <file>" pointer now fires for such files. Before, it could fire only through `sources` frontmatter, which those ADRs do not have. Deterministic evidence: on a copy of that repo, 7 ADRs now govern 10 Python files, and reading one adds its decisions with their statuses. Before, nothing was linked.
 - `kx.py` indexes untracked files that git does not ignore, so setup docs written but not yet committed count. It also hashes only the files it indexes (`.py`, `.md`, `.rst`), so edits to other files no longer trigger rebuilds. On a full copy of that repo (1,596 tracked files), a warm build took 0.6–0.8 s instead of 1.0 s, hashing 235 files with the same 2,641 nodes. Output on the `impact-callers` Click fixture is identical. `tests/check_kx.py` covers both.
 - A repo can opt in to a small-fix exemption from the plan gate. Setup asks (default no) and records an `Exemption:` line with its limits under the plan rule in the `Agent skills` block. `using-featurekit` routes a covered fix directly and keeps the hard stop for anything else. It looks only for that line in the instructions it already has and never searches the repo for one. The line is not part of the block that evals inject, so the gate eval runs without an exemption.
   - Eval-backed on cost (`gate-no-plan`, FeatureKit arm, Sonnet, 3 runs each; about $0.93 in total). The first wording ("unless the repo's small-fix exemption covers the request") passed 3/3 but cost $0.18–0.20 per run against $0.09 before (`after-0.11.0`). In every run the agent searched `docs/agents/` and the code for an exemption before stopping. Pointing the rule at the `Exemption:` line in the loaded instructions brought two runs back to $0.093 and $0.096 (1–2 tool calls). The third cost $0.158, from reading code to propose a plan, within 0.12.0's spread ($0.10–0.39). Correctness held at 3/3 throughout.

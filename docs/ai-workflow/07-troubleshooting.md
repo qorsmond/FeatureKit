@@ -49,6 +49,29 @@ The rule is:
 - keep `CLAUDE.md` as a pointer when possible,
 - keep FeatureKit setup details in `docs/agents/*.md`.
 
+## Skills Ignore The Repo's Layout
+
+If `record-adr` writes a dated file in `docs/adr/` when the repo numbers ADRs elsewhere, or `handoff` writes `docs/handoff/<slug>.md`, check `docs/agents/workflow-locations.md` for labelled lines. The same applies if a skill proposes a `CONTEXT.md` the repo does not use; check `docs/agents/domain.md` for a `Glossary:` line. A missing line means the skill's default. Rerun `/setup-featurekit` to add the lines, or add them by hand:
+
+```markdown
+- ADR directory: `docs/decisions/`
+- ADR filename: `NNNN-title.md`, numbered after the highest on `origin/main`
+- ADR template: `docs/decisions/0000-template.md`
+- ADR statuses: Proposed, Accepted, Superseded; work built on a Proposed ADR follows it
+- Handoffs: `docs/agent-notes/<feature>/handoff.md`, updated in place
+- Prototypes: `.scratch/prototypes/<question>/`, never committed
+```
+
+The knowledge index reads `ADR directory` too, so rebuild it after adding that line.
+
+## The Knowledge Index Shows No Decisions For A File
+
+Reading a file adds its governing decisions only when the file is indexed Python code. A decision must also link to it, through `sources` frontmatter or by naming the file in backticks. The name can be the repo path (`scripts/import-orders.py`) or a unique ending (`jobs/sync.py`). ADRs count as decisions when they are in the recorded `ADR directory`, an `adr/` folder, or have `type: adr` frontmatter. TypeScript, Swift and other languages are not indexed, so decisions about them do not appear.
+
+## The Agent Stops For A One-Line Fix
+
+That is the default: every production edit waits for an approved written plan. To let small fixes you ask for directly skip it, rerun `/setup-featurekit` and opt in. Setup adds an `Exemption:` line with its limits under the plan rule in the `Agent skills` block. The agent looks only at that line, so a rule elsewhere in the repo does not count.
+
 ## The Interview Feels Noisy
 
 Tell it:

@@ -18,7 +18,7 @@ For a local model, keep context tight:
 
 1. Product repo `AGENTS.md`.
 2. Relevant `docs/agents/*.md`.
-3. Relevant `CONTEXT.md`, accepted ADRs, PRD, or slice.
+3. The relevant glossary (`CONTEXT.md` by default, or the one `docs/agents/domain.md` names), accepted ADRs, PRD, or slice.
 4. `using-featurekit` plus `grilling` for a raw feature, or one focused FeatureKit `SKILL.md`; paste `orchestrate-work` or `validate-feature` when the task needs them, and paste `secure-design`, `secure-code`, `secure-api`, or `secure-deploy` when the focused skill tells the model to use one.
 5. Your exact task.
 
@@ -35,7 +35,7 @@ Project context:
 <paste AGENTS.md>
 <paste docs/agents/domain.md>
 <paste relevant ADRs, if any>
-<paste CONTEXT.md>
+<paste the glossary (CONTEXT.md by default)>
 
 Skill:
 <paste skills/engineering/grill-with-docs/SKILL.md>

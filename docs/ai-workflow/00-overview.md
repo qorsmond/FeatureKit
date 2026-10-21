@@ -21,7 +21,7 @@ FeatureKit counters this with repeatable workflows and durable project context.
 
 FeatureKit has three layers:
 
-1. Project context: the target repo's `AGENTS.md`, `CONTEXT.md`, ADRs, and `docs/agents/` files.
+1. Project context: the target repo's `AGENTS.md`, glossary (`CONTEXT.md` by default), ADRs, and `docs/agents/` files. Setup records where these live, so skills follow the repo's own layout.
 2. Skills: small workflows under `skills/` that an agent can follow.
 3. Guide: these docs, which teach you when and how to run each skill.
 
@@ -30,6 +30,8 @@ The target product repo owns stack choices. FeatureKit owns the agent workflow.
 ## The Rule
 
 No production code starts until there is a written plan that has been shown to the user and approved.
+
+The one optional exception is set per repo at setup: a small fix you ask for directly may skip the plan, within limits the repo's `Agent skills` block records. Without that line the rule applies to every change.
 
 For small work, the plan can be a short note. For larger work, use a PRD and implementation slices. The feature interview asks self-contained questions with plain-language context and consequences, then ends by showing the complete plan and asking a clear final approval question. Earlier answers and accepted recommendations are not approval. After an implementation-ready artifact is approved, focused work continues in the current task without another question. Only substantial work offers a fresh implementation task on the same checkout and branch, the current task, or stopping after planning. If reality changes during implementation, update and approve the plan before continuing.
 
@@ -52,6 +54,8 @@ User-invoked skills are commands you intentionally run:
 - `security-review`
 - `prototype`
 - `handoff`
+
+The agent can also load `setup-featurekit`, `implement` and `execute-slices` itself when routing reaches them; each still waits for your approval before it writes.
 
 Model-invoked skills are reusable disciplines the agent may use when the task fits:
 

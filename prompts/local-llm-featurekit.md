@@ -14,7 +14,7 @@ Paste these in order:
 
 1. The target product repo's `AGENTS.md` or equivalent project rules.
 2. The target product repo's `docs/agents/` setup docs, if they exist.
-3. The target product repo's `CONTEXT.md`, accepted ADRs, PRD, or slice being worked on, if relevant.
+3. The target product repo's glossary (`CONTEXT.md` by default, or the one `docs/agents/domain.md` names), accepted ADRs, PRD, or slice being worked on, if relevant.
 4. The selected FeatureKit `SKILL.md`, or `using-featurekit` followed by the selected workflow skill.
 5. The user's current request.
 
