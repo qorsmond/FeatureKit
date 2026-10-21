@@ -57,7 +57,16 @@ Setup also adds the `Agent Operating Principles` section so every new coding, re
 
 Setup also adds the FeatureKit bootstrap, planning gate, explicit delegation instruction and live-routing feedback. Agents use `using-featurekit` at session start and after context compaction, then `orchestrate-work` for substantive work. You give ordinary requests; the orchestrator chooses worker models and explains the choices. Raw feature requests begin the design-tree interview automatically, and production code waits for final approval of the written plan, PRD or slice.
 
-JEV is separate from repo setup. `/setup-featurekit` never asks for an API key, writes one to the repo, enables provider calls, or grants source/transcript sharing. Installations remain on the normal route unless the user sets `FEATUREKIT_JEV_ROUTING=enforce`; `shadow` only records advice. See [JEV Routing](./10-jev-routing.md) for the API key and setup. Source review and Claude transcript compaction require their own explicit scopes.
+Setup can also enable the optional knowledge index for large or unfamiliar codebases. It is a derived local index (`.kx/`, ignored by git) of Python code and of Markdown/RST docs, ADRs, and lessons, built by a standard-library script with no services or model calls. When it is enabled, two hooks deliver it without relying on the agent to remember: a short pointer when a prompt names code, and a symbol's callers, tests, and governing decisions when the agent searches for it or reads a governed file. Each item appears once per session, adds about 150 tokens, and costs tens of milliseconds; in repositories without `.kx/` the hooks exit immediately. The Claude Code plugin includes them. For Codex with a skills install, add them to `~/.codex/hooks.json` (and trust them in `/hooks`):
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "[ -f .kx/index.db ] || exit 0; exec python3 .agents/skills/using-featurekit/scripts/kx.py hook prompt", "timeout": 5}]}],
+    "PostToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "[ -f .kx/index.db ] || exit 0; exec python3 .agents/skills/using-featurekit/scripts/kx.py hook tool", "timeout": 5}]}]
+  }
+}
+``` Setup also gives each `docs/agents/` file OKF-style frontmatter (`status`, `verified`, and `superseded_by` when replaced), so agents can tell current guidance from outdated guidance.
 
 ## What Setup Should Not Do
 
@@ -69,7 +78,7 @@ Setup should not:
 - overwrite existing project rules,
 - duplicate all repo instructions into `CLAUDE.md`,
 - make stack choices that belong to the product,
-- store credentials or silently enable JEV/provider integrations.
+- store credentials or silently enable provider integrations.
 
 ## Rerunning Setup
 

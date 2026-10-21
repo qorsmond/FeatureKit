@@ -1,9 +1,37 @@
-"""Run with python3 tests/check_packaging.py; no third-party dependencies."""
+"""Run with python3 tests/check_packaging.py; needs git and npx for the skills-CLI install, no Python packages."""
 
 import json
 from pathlib import Path
 import re
+import shutil
+import subprocess
+import tempfile
 from urllib.parse import unquote, urlsplit
+
+
+def check_links(paths):
+    for path in paths:
+        for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", path.read_text()):
+            link = urlsplit(target.strip("<>"))
+            if link.scheme or not link.path:
+                continue
+            assert (path.parent / unquote(link.path)).exists(), f"broken link: {path}: {target}"
+
+
+def check_install(root, names):
+    # The skills CLI copies each skill flat into .agents/skills/<name>/ and links .claude/skills/<name> to it,
+    # so a link that only resolves in the categorized source tree breaks for installed users.
+    assert shutil.which("npx"), "npx is required for the skills-CLI install check"
+    with tempfile.TemporaryDirectory() as scratch:
+        repo = Path(scratch)
+        subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+        command = ["npx", "-y", "skills@latest", "add", str(root), "-a", "codex", "-a", "claude-code", "-a", "opencode", "--skill", "*", "-y"]
+        result = subprocess.run(command, cwd=repo, capture_output=True, text=True)
+        assert result.returncode == 0, f"skills CLI install failed: {result.stderr[-500:]}"
+        for directory in (".agents/skills", ".claude/skills"):
+            installed = sorted(path.name for path in (repo / directory).iterdir())
+            assert installed == names, f"skills CLI install inventory differs in {directory}"
+        check_links(sorted((repo / ".agents/skills").glob("**/*.md")))
 
 
 def check(root):
@@ -14,21 +42,18 @@ def check(root):
     assert len(paths) == len(set(paths)), "duplicate plugin skill"
     skills = set((root / "skills").glob("**/SKILL.md"))
     assert set(paths) == skills, "plugin inventory differs from skill files"
-    mcp = json.loads((root / ".mcp.json").read_text())
-    assert set(mcp) == {"mcpServers"}, "invalid MCP manifest"
-    assert set(mcp["mcpServers"]) == {"featurekit-jev"}, "unexpected MCP server inventory"
-    server = mcp["mcpServers"]["featurekit-jev"]
-    assert server["type"] == "stdio" and server["command"] == "node", "invalid FeatureKit JEV transport"
-    script = server["args"][0].removeprefix("${CLAUDE_PLUGIN_ROOT}/")
-    assert (root / script).is_file(), "FeatureKit JEV MCP script is missing"
-    hooks = json.loads((root / "hooks/hooks.json").read_text())
-    handlers = hooks["hooks"]["UserPromptSubmit"][0]["hooks"]
-    assert len(handlers) == 1 and handlers[0]["type"] == "command", "invalid FeatureKit hook"
-    assert "route-hook.mjs" in handlers[0]["command"], "FeatureKit route hook is missing"
-    assert (root / "skills/productivity/orchestrate-work/scripts/route-hook.mjs").is_file(), "FeatureKit route hook script is missing"
+    assert not (root / ".mcp.json").exists(), "FeatureKit ships no MCP servers"
+    # The only hooks are the opt-in knowledge-index hooks, inert unless the repo has .kx/index.db.
+    for entries in json.loads((root / "hooks/hooks.json").read_text())["hooks"].values():
+        for hook in (h for entry in entries for h in entry["hooks"]):
+            assert hook["command"].startswith("[ -f .kx/index.db ] || exit 0;") and "kx.py" in hook["command"], "unexpected hook"
+    # Skills that must fire are named in the always-on block setup writes (skills only named elsewhere are rarely opened).
+    block = (root / "skills/engineering/setup-featurekit/SKILL.md").read_text().split("Use this block:", 1)[1].split("## Agent Operating Principles", 1)[0]
+    for name in ("using-featurekit", "orchestrate-work", "validate-feature"):
+        assert f"`{name}`" in block, f"always-on block does not name {name}"
     implicit = {
         "tdd", "secure-design", "secure-code", "secure-api", "secure-deploy",
-        "orchestrate-work", "validate-feature",
+        "orchestrate-work", "validate-feature", "implement", "execute-slices",
     }
     for path in sorted(skills):
         text = path.read_text()
@@ -44,13 +69,9 @@ def check(root):
     docs = [root / "README.md", root / "AGENTS.md"]
     for directory in ("skills", "docs", "prompts"):
         docs.extend((root / directory).glob("**/*.md"))
-    for path in docs:
-        for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", path.read_text()):
-            link = urlsplit(target.strip("<>"))
-            if link.scheme or not link.path:
-                continue
-            assert (path.parent / unquote(link.path)).exists(), f"broken link: {path}: {target}"
-    print(f"PASS: {len(skills)} skills, release {version}, plugin inventory and local links")
+    check_links(docs)
+    check_install(root, sorted(path.parent.name for path in skills))
+    print(f"PASS: {len(skills)} skills, release {version}, plugin inventory, local links and skills-CLI install links")
 
 
 if __name__ == "__main__":

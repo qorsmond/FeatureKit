@@ -1,6 +1,6 @@
 {
   "name": "featurekit",
-  "version": "0.10.3",
+  "version": "0.12.0",
   "skills": [
     "./skills/productivity/using-featurekit",
     "./skills/productivity/orchestrate-work",

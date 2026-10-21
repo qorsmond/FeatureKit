@@ -1,1 +1,4 @@
-.scratch/featurekit/
+evals/runs/
+evals/results/
+__pycache__/
+evals/.cache/

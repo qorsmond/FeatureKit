@@ -5,18 +5,18 @@
       "name": "all skills",
       "kind": "glob",
       "pattern": "skills/**/SKILL.md",
-      "max_chars": 100000
+      "max_chars": 104191
     },
     {
       "name": "all skill descriptions",
       "kind": "descriptions",
-      "max_chars": 7404
+      "max_chars": 7425
     },
     {
       "name": "model-invocable descriptions",
       "kind": "descriptions",
       "model_invocable": true,
-      "max_chars": 4591
+      "max_chars": 5065
     },
     {
       "name": "setup-written invariant",
@@ -24,43 +24,39 @@
       "path": "skills/engineering/setup-featurekit/SKILL.md",
       "start": "Use this block:\n\n```markdown\n",
       "end": "\n```\n",
-      "max_chars": 1200
+      "max_chars": 919
     },
     {
       "name": "authoring AGENTS",
       "kind": "paths",
-      "paths": ["AGENTS.md"],
-      "max_chars": 9209
+      "paths": [
+        "AGENTS.md"
+      ],
+      "max_chars": 8969
     },
     {
       "name": "bootstrap",
       "kind": "paths",
-      "paths": ["skills/productivity/using-featurekit/SKILL.md"],
-      "max_chars": 2500
+      "paths": [
+        "skills/productivity/using-featurekit/SKILL.md"
+      ],
+      "max_chars": 6308
     },
     {
       "name": "orchestrator core",
       "kind": "paths",
-      "paths": ["skills/productivity/orchestrate-work/SKILL.md"],
-      "max_chars": 3500
+      "paths": [
+        "skills/productivity/orchestrate-work/SKILL.md"
+      ],
+      "max_chars": 3298
     },
     {
-      "name": "orchestrator backend reference",
+      "name": "orchestrator worker reference",
       "kind": "paths",
-      "paths": ["skills/productivity/orchestrate-work/references/backends.md"],
-      "max_chars": 7651
-    },
-    {
-      "name": "host optimization reference",
-      "kind": "paths",
-      "paths": ["skills/productivity/orchestrate-work/references/hosts.md"],
-      "max_chars": 3500
-    },
-    {
-      "name": "compaction reference",
-      "kind": "paths",
-      "paths": ["skills/productivity/orchestrate-work/references/compaction.md"],
-      "max_chars": 5000
+      "paths": [
+        "skills/productivity/orchestrate-work/references/workers.md"
+      ],
+      "max_chars": 3668
     },
     {
       "name": "interview bundle",
@@ -73,7 +69,7 @@
         "skills/engineering/secure-design/SKILL.md",
         "skills/engineering/validate-feature/SKILL.md"
       ],
-      "max_chars": 24740
+      "max_chars": 28671
     },
     {
       "name": "implementation bundle",
@@ -86,7 +82,7 @@
         "skills/engineering/secure-code/SKILL.md",
         "skills/engineering/tdd/SKILL.md"
       ],
-      "max_chars": 18413
+      "max_chars": 22497
     },
     {
       "name": "review bundle",
@@ -99,7 +95,7 @@
         "skills/engineering/secure-code/SKILL.md",
         "skills/engineering/security-review/SKILL.md"
       ],
-      "max_chars": 21276
+      "max_chars": 21555
     },
     {
       "name": "handoff bundle",
@@ -108,31 +104,7 @@
         "skills/productivity/handoff/SKILL.md",
         "skills/productivity/orchestrate-work/SKILL.md"
       ],
-      "max_chars": 5800
-    },
-    {
-      "name": "JEV route request",
-      "kind": "paths",
-      "paths": ["tests/fixtures/jev/route-request.json"],
-      "max_chars": 4000
-    },
-    {
-      "name": "worker projection",
-      "kind": "paths",
-      "paths": ["tests/fixtures/jev/worker-projection.json"],
-      "max_chars": 4000
-    },
-    {
-      "name": "reviewer projection",
-      "kind": "paths",
-      "paths": ["tests/fixtures/jev/reviewer-projection.json"],
-      "max_chars": 5000
-    },
-    {
-      "name": "escalation projection",
-      "kind": "paths",
-      "paths": ["tests/fixtures/jev/escalation-projection.json"],
-      "max_chars": 4000
+      "max_chars": 5578
     }
   ]
 }

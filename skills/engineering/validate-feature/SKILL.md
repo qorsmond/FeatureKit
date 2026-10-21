@@ -2,7 +2,7 @@
 name: validate-feature
 description: Map feature acceptance criteria to actual test and runtime evidence, including platform and hardware gaps. Use when planning verification or deciding whether implementation, a bug fix, or a prototype is proven; use verify-tests separately for test quality.
 metadata:
-  featurekit-version: "0.10.3"
+  featurekit-version: "0.12.0"
 ---
 
 # Validate Feature
@@ -31,11 +31,12 @@ Establish what the evidence proves in the project's actual runtime. The primary 
 - Use `tdd` for implementation and regression loops, `verify-tests` for weak/generated/high-risk tests, and the existing security/review skills for their gates. This skill does not create a second test-quality or security-review process.
 - Compare observed results with acceptance criteria, including relevant negative/error paths. Test quality matters: a mock can prove a boundary contract without proving real hardware behavior.
 - Do not invent commands, dependencies, devices, credentials or manual results. If the necessary runtime is unavailable, mark the criterion `blocked` or `not run`, explain the prerequisite and exact remaining procedure, and continue independent checks. Obtain actual human/device evidence before recording a manual pass.
+- If documented guidance (a command, path, or prerequisite) proves wrong, find the working one, then correct the source as `using-featurekit` describes under Learn From Evidence.
 - Report a failed check as `failed`. Separate an established unrelated baseline failure with evidence; do not reclassify a new failure as unrelated merely to finish.
 
 ## Evidence And Completion
 
-Extend the existing verification section or slice ledger; create no separate report for a trivial change unless useful:
+Extend the existing verification section or the slice's `Evidence`; create no separate report for a trivial change unless useful:
 
 | Criterion | Code / runtime / platform | Command or procedure | Result | Evidence / limitation |
 | --- | --- | --- | --- | --- |

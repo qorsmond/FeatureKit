@@ -25,3 +25,8 @@ FeatureKit's wording, skill names, docs, and repo structure are written for this
 ## License Notes
 
 If FeatureKit later includes a substantial adapted or copied portion of an MIT-licensed source, add the source copyright notice and license text here before shipping.
+
+## Vendored Test Fixtures
+
+- `experiments/knowledge-large/fixtures/overlay/checks/_vendor/typing_extensions.py`: typing_extensions 4.16.0, Python Software Foundation License 2.0 (PSF-2.0). Its license text is next to it in `LICENSE.typing_extensions`. It is copied into experiment workspaces so the pinned SQLAlchemy checkout can import without network access. FeatureKit's skills do not use it.
+- `experiments/` and `evals/fetch.sh` download Click (BSD-3-Clause) and SQLAlchemy (MIT) at pinned commits into git-ignored `.cache/` folders. Neither is redistributed.

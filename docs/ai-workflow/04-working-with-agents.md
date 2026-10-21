@@ -73,7 +73,11 @@ Use `/handoff` when moving between tasks. Keep a fresh task on the same saved pr
 
 After an implementation-ready artifact is approved, focused work should continue in the current task without another question. For substantial work, FeatureKit should offer a fresh implementation task separately from plan approval. The fresh task receives the approved artifact and compact implementation context, not the planning transcript, and runs from the existing checkout and branch.
 
-For long orchestrated work, keep the local task capsule current and pass worker, reviewer, escalation, or handoff projections instead of replaying history. Reuse repository facts only through exact snapshot/hash receipts. Before a large escalation or handoff, deterministic metadata pruning may remove duplicates and recoverable referenced content while keeping authority, requirements, constraints, failures, evidence, ownership, and tool pairs. When pruning saves too little, or fails, the unpruned packet is used.
+For long work, the plan file is the durable state. Each slice's `Status`, `Evidence` and `Notes` let a new session continue from the first unfinished slice without replaying history or repeating the investigation.
+
+In a repository with the knowledge index enabled, hooks hand the agent a short pointer for the code a request names, then each searched symbol's callers, tests, and governing decisions, once per session. The index refreshes in the background when files change (seconds even for very large repos), and `python3 <using-featurekit>/scripts/kx.py node <Symbol>` expands any symbol on demand. Superseded or stale knowledge is marked or hidden. The repository stays the source of truth; the index can be deleted and rebuilt at any time.
+
+When a task proves project knowledge wrong, such as a changed command or a moved module, the agent corrects the authoritative source (`docs/agents/`, an ADR, or the agent instructions) and says so. When the cause is FeatureKit's own workflow, it records a project-neutral proposal in `docs/agents/featurekit-feedback.md` instead of editing installed skills; FeatureKit itself changes only through a reviewed, eval-backed release.
 
 ## Token-Efficient Execution
 
@@ -90,7 +94,6 @@ Implementation should discover context progressively instead of loading the repo
 
 [Serena](https://github.com/oraios/serena) and [RTK](https://github.com/rtk-ai/rtk) are optional. FeatureKit uses them when the harness exposes them and continues with portable fallbacks when it does not. Their absence should not block a slice or trigger an installation without user approval.
 
-JEV is also optional. `off` is the baseline; `shadow` advice never changes execution; `enforce` runs JEV's confident level on a harness-chosen model, as described in [Orchestration](./10-jev-routing.md#how-enforced-routing-decides). Metadata routing does not authorize source review, context sharing, or transcript compaction. The Slice 9 experiments did not justify a semantic cache or lossy compressor, so exact receipts and deterministic pruning remain the production paths.
 
 ## Agent Operating Principles
 

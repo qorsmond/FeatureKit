@@ -3,7 +3,7 @@ name: setup-featurekit
 description: Initialize or refresh a target product repo for FeatureKit by persisting session bootstrap and automatic orchestration in its agent instructions and recording repo conventions under docs/agents. Use once before engineering work, after a workflow upgrade, or when repo conventions change. User-invoked setup skill.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.3"
+  featurekit-version: "0.12.0"
 ---
 
 # Setup FeatureKit
@@ -130,6 +130,10 @@ Record where to save:
 - prototypes,
 - handoffs.
 
+### Knowledge Index (Optional)
+
+Offer the knowledge index when finding code by search is costly, such as a large or unfamiliar codebase. It is a derived local index of Python code and of Markdown/RST knowledge (docs, ADRs, lessons): no services, model calls, or new dependencies. In trials on large Python repositories, its brief made impact analyses complete at about the same cost. If the user opts in, run `python3 <using-featurekit skill directory>/scripts/kx.py build` from the repo root, add `.kx/` to the repo's ignore file, and record `Knowledge index: enabled (.kx/)` in `docs/agents/workflow-locations.md`. The Claude Code plugin's hooks then deliver the index automatically and stay inert in repos without `.kx/`. For Codex or skills-only installs, ask before adding the two hook entries from the setup guide to the user's hook configuration.
+
 ## 4. Draft Before Writing
 
 Show a draft of:
@@ -151,9 +155,9 @@ Write or update:
 - `docs/agents/deployment.md`,
 - `docs/agents/workflow-locations.md`.
 
-Write `docs/agents/orchestration.md` only when repo-specific constraints or explicit overrides are useful and confirmed. Its absence leaves automatic runtime selection enabled. If an existing configuration already owns those choices, reference it rather than duplicating the values.
+Start each `docs/agents/*.md` file with OKF-style frontmatter so agents and the knowledge index can see its trust and freshness: `type`, `title`, `description`, `status: stable`, and `verified: {by: "human:<user>", at: "<ISO date>"}` for content the user approved. Mark replaced guidance `status: deprecated` with `superseded_by: <path>` instead of deleting it while others still link to it.
 
-Keep FeatureKit's optional local capsule, route cache, and content-free traces out of version control by adding `.scratch/featurekit/` to the repo's ignore file when those features are enabled. Preserve existing ignore rules.
+Write `docs/agents/orchestration.md` only when repo-specific constraints or explicit overrides are useful and confirmed. Its absence leaves automatic runtime selection enabled. If an existing configuration already owns those choices, reference it rather than duplicating the values.
 
 Update the existing instruction file:
 

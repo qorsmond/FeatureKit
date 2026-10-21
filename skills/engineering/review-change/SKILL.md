@@ -2,7 +2,7 @@
 name: review-change
 description: Review a code change, diff, PR, or implementation against the PRD, slice, product context, ADRs, and repo conventions. Use before human review or whenever code needs risk-focused review.
 metadata:
-  featurekit-version: "0.10.3"
+  featurekit-version: "0.12.0"
 ---
 
 # Review Change
@@ -11,7 +11,7 @@ Review for bugs, security risk, scope drift, and missing verification.
 
 Apply the target repo's `Agent Operating Principles` when checking scope, simplicity, and unrelated changes.
 
-Use `orchestrate-work` review selection for one tier: small verified docs-only diff -> checks only; small code -> cheapest review; hard risk -> deep/security; else one review at the routed or baseline level. Never stack reviews; the primary decides findings.
+Size one review from `git diff --stat` plus untracked files. A verified docs-only diff of at most 20 lines in at most 2 existing files gets checks and scope inspection only. Any other diff that small gets one Routine-level review, because a passing check proves nothing about new, untested behavior. Security, authorization, privacy, destructive, or migration risk gets `security-review` at Deep. Everything else gets one Standard review. Never stack reviews; the primary decides findings.
 
 ## Process
 

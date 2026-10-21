@@ -3,7 +3,7 @@ name: to-slices
 description: Split a PRD or approved plan into small vertical implementation slices that can be built one at a time. Use explicitly after a PRD exists and the work is too large for one implementation session or PR.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.3"
+  featurekit-version: "0.12.0"
 ---
 
 # To Slices
@@ -77,7 +77,13 @@ Ownership when delegated:
 
 Depends on:
 <none | slice numbers>
+
+Status: pending
+Evidence:
+Notes:
 ```
+
+`Status` is `pending`, `in progress`, `done`, or `blocked`. Implementation updates `Status`, `Evidence` (commands and results on the final tree), and `Notes` (paths, symbols, gotchas, and decisions a later session would otherwise rediscover) at each slice boundary, so a new session resumes without repeating work.
 
 ## Done
 

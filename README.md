@@ -40,11 +40,7 @@ idea → interview → written plan → small slices → your approval
 - Anything unknown is reported as unknown.
 - It makes no branches, commits, or pushes unless you ask.
 
-**Smart about cost.** The main agent uses a plain tool when one is enough, a cheaper model for routine work, and the strongest model only for hard work. Optional [JEV routing](./docs/ai-workflow/10-jev-routing.md) makes that call from task metadata alone, never your code. The coding tool then picks the actual model from what you have available. In recorded trials ([evidence](./docs/plans/2026-09-24-jev-shadow-validation.md)):
-
-- Routine tasks run entirely on the cheaper model used no frontier-model tokens.
-- Size-matched reviews caught every planted bug at 41% lower review cost.
-- Handing a failed attempt's evidence to the stronger model cut escalation cost by 29%.
+**Smart about cost.** The agent uses a plain tool when one is enough and works directly by default. Routine work runs on the host's cheaper model and only hard work on the strongest. In trials, delegating a small task from an expensive session to a cheaper worker saved nothing, so FeatureKit runs whole slices at the needed level instead. Small reviews go to the cheapest reviewer (every planted bug still caught, at about 70% lower cost for those reviews), and a failed attempt hands its evidence to the stronger model instead of restarting (29% cheaper escalations). An [eval suite](./evals/run.py) compares FeatureKit with a bare agent on real development scenarios.
 
 **Getting started takes two steps:** install the skills, then run `/setup-featurekit` once. After that, just ask for features.
 
@@ -127,7 +123,7 @@ All FeatureKit entries should match the installed release's [VERSION](./VERSION)
 12. Use `security-review` for focused security review and `review-change` before human review.
 13. Use `/handoff` when a session needs to pause or continue elsewhere.
 
-Within these workflows, `orchestrate-work` chooses direct tools or bounded workers and selects available worker models/effort by capability, risk and known cost. `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional repo restrictions or explicit overrides live in `docs/agents/orchestration.md`; no model roster is required, and single-model use still works. Optional JEV routing has three explicit settings: `off` makes no provider call, `shadow` records advice without changing execution, and `enforce` runs each approved task at JEV's chosen level on a model the harness picks from what is available, escalating once to the normal route on failure. Plugin hosts can preflight one approved task capsule before the model; skills-only installs use the connected route tool. Long sessions retain host-native compaction; an optional Claude JEV compaction pilot has separate transcript permission and a session-level off switch. See [Orchestration](./docs/ai-workflow/09-orchestration.md) and [JEV Routing](./docs/ai-workflow/10-jev-routing.md) for the API key and setup.
+Within these workflows, `orchestrate-work` chooses a direct tool, the current agent, or a bounded worker by capability and risk, and `validate-feature` checks acceptance evidence in the relevant runtime, including mobile and hardware gaps. Optional repo restrictions or explicit overrides live in `docs/agents/orchestration.md`; no model roster is required, and single-model use still works. Plan files carry each slice's status, evidence and notes, so a new session resumes where the last one stopped without repeating its investigation. See [Orchestration](./docs/ai-workflow/09-orchestration.md).
 
 ## Optional Tooling Skills
 
@@ -154,7 +150,6 @@ The detailed usage guide is the source of truth:
 - [Troubleshooting](./docs/ai-workflow/07-troubleshooting.md)
 - [Security Workflow](./docs/ai-workflow/08-security.md)
 - [Orchestration](./docs/ai-workflow/09-orchestration.md)
-- [JEV Routing](./docs/ai-workflow/10-jev-routing.md): optional cost routing, API key, and setup
 
 ## Local LLMs
 

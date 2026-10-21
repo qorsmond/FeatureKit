@@ -3,12 +3,12 @@ name: handoff
 description: Preserve compact continuation state or create a user-selected fresh implementation task without replaying the conversation. Use for pauses, long context, or substantial approved work.
 disable-model-invocation: true
 metadata:
-  featurekit-version: "0.10.3"
+  featurekit-version: "0.12.0"
 ---
 
 # Handoff
 
-Apply the shared [workflow invariants](../orchestrate-work/references/invariants.md). Build from the approved artifact and durable evidence, never a transcript summary. When a capsule exists, use its handoff projection, stable references, and `orchestrate-work` metadata pruning.
+Apply the workflow invariants in `using-featurekit`. Build from the approved artifact and durable evidence, never a transcript summary. The plan file's slice `Status`, `Evidence` and `Notes` are the durable state; update them first, and put in the handoff only what they cannot hold.
 
 ## Capture
 
@@ -19,7 +19,7 @@ Record once:
 - changed paths/relevant symbols and repository snapshot;
 - governing decisions, ADRs, security constraints, risks and gotchas;
 - actual verification/runtime/platform evidence and gaps;
-- relevant worker routes/results, attempt-ledger state, failed attempts with their escalation packet, pending ownership;
+- relevant worker routes/results, failed attempts with their failure packet, pending ownership;
 - available repo tools and the exact next FeatureKit skill.
 
 Use stable paths and hashes instead of copied source, diffs, logs, repeated checks, or worker prose. Stop or coordinate active writers before transferring ownership. Write `docs/handoff/<slug>.md` only when a durable note is useful or the destination cannot receive the complete prompt directly.

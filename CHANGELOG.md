@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.12.0 - 2026-10-21
+
+- Added an optional knowledge index, `using-featurekit/scripts/kx.py`: one standard-library script that indexes Python symbols and Markdown/RST docs, ADRs, and lessons into a derived SQLite index in `.kx/`.
+  - Calls resolve through the enclosing class, imports, and package re-exports, and skip builtins and external modules. On four held-out targets in SQLAlchemy (780K lines), the callers it reports match hand-checked ground truth exactly, including two same-named functions that name-only matching had merged.
+  - ADR `sources` link decisions to the code they govern.
+  - Results flag changed files as STALE and hide superseded knowledge.
+- The plugin ships two opt-in, non-blocking hooks that do nothing unless the repository has `.kx/index.db`. When a prompt names code, they add a short pointer; when the agent searches for a symbol or reads a governed file, they add its callers, tests, and decisions. Each item appears once per session, and the index refreshes in the background. Codex users can add the documented hook entries.
+- Evidence from an improvement episode ($5.91, Sonnet, Claude Code, 3 runs per task):
+  - The index reached the agent in 13 of 13 hooked runs, against 2 of 15 when a skill instructed it and 3 of 8 with an always-on trigger line.
+  - Hooks took 4–39 ms per event and added about 150–500 tokens per task.
+  - On four impact-analysis tasks, cost per run fell 18% (lower in all four) and turns fell in three.
+  - Checks passed rose from 18/33 to 21/33, which is within run-to-run variance.
+  - The plan gate and implement cases showed no regression.
+  - Verdicts: delivery helped; call resolution helped (deterministic, checked offline); cost helped (medium confidence); correctness showed no effect beyond noise.
+- `setup-featurekit` offers the index as an opt-in and gives `docs/agents/` files OKF-style frontmatter. Verified project lessons are recorded as `cue`, `lesson`, `evidence`, and `confidence`.
+- `AGENTS.md` now covers the cheapest-component ladder, capped improvement episodes with per-change verdicts, and treating fixtures, traces, and indexed text as data. `tests/check_packaging.py` checks that the hooks are gated on the index and that must-fire skills are named in the setup block. These practices are adapted from Google Research's Harness² and are process changes, not measured effects.
+- Added the `impact-callers` eval case (Click at a pinned commit; run `evals/fetch.sh` first). `evals/run.py` adds `--suite`, per-arm instructions, a `*nohooks` baseline arm, and hook metrics.
+
+## 0.11.0 - 2026-10-21
+
+- Removed JEV routing completely: the TypeSafe optimizer, its MCP server, the prompt and compaction hooks, task capsules, the attempt ledger, fact receipts, the model catalogue cache, deterministic pruning, their tests and fixtures, the JEV guide, and the JEV plan and evidence documents. In the live calibration corpus every JEV route equalled the capability floor the caller already supplied (11 of 11), and in-session delegation it drove did not lower total cost. The plugin now ships no hooks or MCP servers.
+- Kept what the trials proved, as plain rules: the capability table now routes a bounded change with an exact spec, an existing check and an existing pattern to Routine; `orchestrate-work` works directly by default and runs batch slices as one fresh session on the routed model; escalations carry a failure packet (29% cheaper in trials); `review-change` sizes one review from the diff; the Codex lean worker launch is in the single `orchestrate-work` worker reference.
+- Plan files are now the durable task state. Each slice carries `Status`, `Evidence` and `Notes`; `implement`, `execute-slices` and `handoff` update them, and `using-featurekit` resumes from the first slice that is not done instead of repeating investigation.
+- `using-featurekit` adds an evidence-gated learning rule: fix a proven cause in the cheapest durable place (a check, then the authoritative project source, then slice notes), correct verified project facts in place, and record FeatureKit workflow problems as project-neutral proposals in `docs/agents/featurekit-feedback.md` instead of editing installed skills. `validate-feature` applies it when documented guidance proves wrong.
+- `implement` and `execute-slices` are now model-invoked (eval-backed). The baseline eval showed `using-featurekit` routing an explicit "implement the approved plan" request to the explicit-only `implement`, where the agent stopped and asked the user to type the command: 0 of 3 resume runs and 0 of 3 stale-knowledge runs completed, against 3 of 3 for a bare agent. Their own gates still require explicit implementation intent and an approved artifact.
+- The manual interview and handoff smoke steps moved from `AGENTS.md` to `tests/scenarios.md`; `AGENTS.md` adds rules for evidence-based changes to FeatureKit.
+- Added `evals/`: five cases built from real failures (approval gate, implementation, stale project knowledge, resuming a plan, review of an untested path), run through `claude plugin eval` against a bare agent by `python3 evals/run.py`, which re-runs the acceptance checks on each kept workspace and reports cost, turns, tokens and tool calls.
+- The shared workflow invariants moved into `using-featurekit`, fixing a broken `implement` link in `skills` CLI installs. `tests/check_packaging.py` now installs every skill with the `skills` CLI and resolves the installed copies' links.
+
 ## 0.10.3 - 2026-09-25
 
 - Added a dedicated [JEV Routing](./docs/ai-workflow/10-jev-routing.md) guide. It explains what JEV does and what leaves the machine, then walks through setup step by step: adding the `TYPESAFE_API_KEY`, choosing a mode, connecting Claude Code or Codex, a copy-paste check with expected results, rollout, how enforced routing decides, where state is stored, how to turn it off, and troubleshooting.
