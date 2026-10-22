@@ -10,14 +10,12 @@ In the product repo where you want to use FeatureKit:
 npx skills@latest add qorsmond/FeatureKit
 ```
 
-Because FeatureKit is private in v1, use an authenticated environment that can read the GitHub repo.
-
 ## Install From A Local Checkout
 
 While developing FeatureKit itself:
 
 ```bash
-git clone git@github.com:qorsmond/FeatureKit.git
+git clone https://github.com/qorsmond/FeatureKit.git
 cd FeatureKit
 npx skills@latest add . --list
 ```

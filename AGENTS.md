@@ -4,7 +4,7 @@ Canonical project context for FeatureKit. Keep this file lean: stable facts and 
 
 ## Project
 
-FeatureKit is a private, framework-agnostic agent skill harness for building real full-stack products with coding agents.
+FeatureKit is an open-source (MIT), framework-agnostic agent skill harness for building real full-stack products with coding agents.
 
 The goal is portable, plain Markdown skills that can be installed with the open `skills` CLI and used from Codex, Claude Code, OpenCode, generic agents, and local LLMs.
 
@@ -16,7 +16,6 @@ The goal is portable, plain Markdown skills that can be installed with the open 
 
 ## Product Direction
 
-- FeatureKit v1 is private.
 - Do not build a custom FeatureKit CLI in v1.
 - Use `npx skills@latest add ...` as the install and update path.
 - Keep the core stack-neutral. Stack choices live in the target product repo's `AGENTS.md`, `CONTEXT.md`, ADRs, and `docs/agents/` setup docs.

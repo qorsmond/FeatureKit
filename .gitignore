@@ -2,3 +2,7 @@ evals/runs/
 evals/results/
 __pycache__/
 evals/.cache/
+
+# Local agent tooling (machine-specific paths and logs)
+.codex/
+.serena/

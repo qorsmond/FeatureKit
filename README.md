@@ -2,7 +2,7 @@
 
 Portable agent skills for building real full-stack products with coding agents.
 
-FeatureKit is a private, framework-agnostic skill harness. It follows the Matt Pocock-style pattern: small composable skills, installed with the open `skills` CLI, then run from Codex, Claude Code, OpenCode, generic agents, or local LLMs.
+FeatureKit is an open-source, framework-agnostic skill harness, released under the [MIT License](./LICENSE). It follows the Matt Pocock-style pattern: small composable skills, installed with the open `skills` CLI, then run from Codex, Claude Code, OpenCode, generic agents, or local LLMs.
 
 Current release: see [VERSION](./VERSION) and [CHANGELOG.md](./CHANGELOG.md).
 
@@ -40,13 +40,13 @@ idea → interview → written plan → small slices → your approval
 - Anything unknown is reported as unknown.
 - It makes no branches, commits, or pushes unless you ask.
 
-**Smart about cost.** The agent uses a plain tool when one is enough and works directly by default. Routine work runs on the host's cheaper model and only hard work on the strongest. In trials, delegating a small task from an expensive session to a cheaper worker saved nothing, so FeatureKit runs whole slices at the needed level instead. Small reviews go to the cheapest reviewer (every planted bug still caught, at about 70% lower cost for those reviews), and a failed attempt hands its evidence to the stronger model instead of restarting (29% cheaper escalations). An [eval suite](./evals/run.py) compares FeatureKit with a bare agent on real development scenarios.
+**Smart about cost.** The agent uses a plain tool when one is enough and works directly by default. Routine work runs on the host's cheaper model and only hard work on the strongest. In trials, delegating a small task from an expensive session to a cheaper worker saved nothing, so FeatureKit runs whole slices at the needed level instead. Small code changes are reviewed at the cheapest level that fits, and a failed attempt hands its evidence to the stronger model instead of restarting (29% cheaper escalations in three paired trials). An [eval suite](./evals/run.py) compares FeatureKit with a bare agent on real development scenarios.
 
 **Getting started takes two steps:** install the skills, then run `/setup-featurekit` once (or ask the agent to set up FeatureKit). After that, just ask for features.
 
 ## Install And Initialize A Product Repo
 
-Run this in the **product repo where you want to use FeatureKit**, such as your app's root directory. FeatureKit is private, so your GitHub authentication must have access.
+Run this in the **product repo where you want to use FeatureKit**, such as your app's root directory.
 
 ```bash
 npx skills@latest add qorsmond/FeatureKit \
@@ -176,3 +176,7 @@ The detailed usage guide is the source of truth:
 ## Local LLMs
 
 For Gemma or another local model, use [prompts/local-llm-featurekit.md](./prompts/local-llm-featurekit.md). Paste that prompt, then paste this repo's `AGENTS.md`, the target product repo's context, and the relevant `SKILL.md`.
+
+## License
+
+FeatureKit is released under the [MIT License](./LICENSE). Attribution and the licences of vendored test fixtures are in [third-party-notices.md](./third-party-notices.md).

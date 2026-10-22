@@ -1,4 +1,0 @@
-[mcp_servers.repowise]
-command = "/Users/iso/.local/bin/repowise-codex-mcp"
-args = ["/Users/iso/Dev/FeatureKit", "get_overview,get_context,search_codebase,get_why"]
-startup_timeout_sec = 180.0
