@@ -24,6 +24,8 @@ FeatureKit's wording, skill names, docs, and repo structure are written for this
 
 ## License Notes
 
+FeatureKit itself is released under the MIT License; see [LICENSE](./LICENSE).
+
 If FeatureKit later includes a substantial adapted or copied portion of an MIT-licensed source, add the source copyright notice and license text here before shipping.
 
 ## Vendored Test Fixtures

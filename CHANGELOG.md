@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Prepared for public release. FeatureKit is now MIT-licensed (`LICENSE`, plus README and third-party notes). The README, `AGENTS.md` and the install guide drop the private-access wording, and the install guide clones over HTTPS. The README's "about 70% lower cost" figure for small reviews is removed: no recorded eval or trial supports it. Local agent-tool files (`.codex/`, `.serena/`), which held machine-specific paths and a log, are no longer tracked. No skill changes.
 - README adds short "Knowledge Index (Optional)" and "Learning From Evidence" sections, linking to the guide, the `using-featurekit` rule and `AGENTS.md`, and points a stale orchestration link at "Start an orchestrated session". Docs only.
 
 ## 0.14.1 - 2026-10-21
