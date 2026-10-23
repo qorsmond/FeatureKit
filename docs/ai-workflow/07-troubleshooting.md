@@ -17,17 +17,15 @@ If local discovery works but the agent cannot see the skill:
 
 ## Installed Skill Looks Stale
 
-Run:
-
-```bash
-npx skills@latest update
-```
+Rerun the full `add` command from [Update Later](./01-install.md#update-later). It refreshes installed skills and adds new ones; `npx skills@latest update` refreshes only skills already installed.
 
 Then restart the agent. Some agents load skills only at session start.
 
 ## Bootstrap Does Not Run Automatically
 
-FeatureKit does not use a bootstrap hook. Add this sentence to your agent's session-start prompt, saved custom instructions, or first message:
+Setup saves the bootstrap in the `Agent skills` block of `AGENTS.md` or `CLAUDE.md`, which hosts that load repo instructions read at session start. Check that the block exists and that your host loads that file; if the block is missing, rerun `/setup-featurekit`.
+
+FeatureKit uses no bootstrap hook. If your host does not load repo instructions, add this sentence to its session-start prompt, saved custom instructions, or first message:
 
 ```text
 At the start of FeatureKit sessions and after context compaction, use `using-featurekit` before acting.
@@ -37,7 +35,7 @@ If your harness cannot auto-run skills, invoke `using-featurekit` manually at th
 
 ## Work Restarts After A Reset Or Compaction
 
-Ask the agent to continue the plan. `using-featurekit` reads the plan file's slice `Status` and `Notes` and resumes at the first unfinished slice. For a plan written before slices carried a `Status`, the agent infers progress from the code and checks once, then records it.
+Ask the agent to continue the plan. `using-featurekit` reads the plan file's slice `Status` and `Notes` and resumes at the first unfinished slice. A plan whose slices have no `Status` line gives it nothing to resume from: tell the agent which slices are done, or add `Status: done` to them.
 
 ## Setup Picked The Wrong File
 
@@ -66,7 +64,7 @@ The knowledge index reads `ADR directory` too, so rebuild it after adding that l
 
 ## The Knowledge Index Shows No Decisions For A File
 
-Reading a file adds its governing decisions only when the file is indexed Python code. A decision must also link to it, through `sources` frontmatter or by naming the file in backticks. The name can be the repo path (`scripts/import-orders.py`) or a unique ending (`jobs/sync.py`). It can also be a script's command, as in `import-orders --dry-run`, when the command has a hyphen or underscore and only one script has that file name. ADRs count as decisions when they are in the recorded `ADR directory`, an `adr/` folder, or have `type: adr` frontmatter. TypeScript, Swift and other languages are not indexed, so decisions about them do not appear.
+Reading a file adds its governing decisions only when the file is indexed Python code. A decision must also link to it, through `sources` frontmatter or by naming the file in backticks. The name can be the repo path (`scripts/import-orders.py`) or a unique ending (`jobs/sync.py`). It can also be a script's command, as in `import-orders --dry-run`, when the command has a hyphen or underscore and only one script has that file name. ADRs count as decisions when they are in the recorded `ADR directory`, an `adr/` folder, or have `type: adr` frontmatter. TypeScript, Swift and other languages are not indexed, so decisions about them do not appear. The hooks also look for `.kx/` in the session's current working directory, so start the agent from the repo root.
 
 ## The Agent Stops For A One-Line Fix
 

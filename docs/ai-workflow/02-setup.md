@@ -77,7 +77,7 @@ Setup also adds the FeatureKit bootstrap, planning gate, explicit delegation ins
 
 Setup can also enable the optional knowledge index for large or unfamiliar codebases. It is a derived local index (`.kx/`, ignored by git) of Python code and of Markdown/RST docs, ADRs, and lessons, built by a standard-library script with no services or model calls. When it is enabled, two hooks deliver it without relying on the agent to remember: a short pointer when a prompt names code, and a symbol's callers, tests, and governing decisions when the agent searches for it or reads a governed file. Each item appears once per session, adds about 150 tokens, and costs tens of milliseconds; in repositories without `.kx/` the hooks exit immediately. The Claude Code plugin includes them. With a skills install, add them to the repo so they apply to this project only.
 
-For Claude Code, add them to `.claude/settings.json`. The paths use `$CLAUDE_PROJECT_DIR` because hooks run from the session's working directory, which may be a subfolder:
+For Claude Code, add them to `.claude/settings.json`. The paths use `$CLAUDE_PROJECT_DIR` so the command resolves from any directory. The script looks for `.kx/` in the session's current working directory, so start the agent from the repo root; a session working in a subfolder gets no index context:
 
 ```json
 {
@@ -125,4 +125,4 @@ For small edits, update `docs/agents/*.md` directly.
 
 - Previous: [Install](./01-install.md)
 - Index: [FeatureKit Guide](./README.md)
-- Next: [Main Flow](./03-main-flow.md)
+- Next: [Quick Start](./quick-start.md)

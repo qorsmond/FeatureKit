@@ -4,6 +4,7 @@
 
 - Prepared for public release. FeatureKit is now MIT-licensed (`LICENSE`, plus README and third-party notes). The README, `AGENTS.md` and the install guide drop the private-access wording, and the install guide clones over HTTPS. The README's "about 70% lower cost" figure for small reviews is removed: no recorded eval or trial supports it. Local agent-tool files (`.codex/`, `.serena/`), which held machine-specific paths and a log, are no longer tracked. No skill changes.
 - README adds short "Knowledge Index (Optional)" and "Learning From Evidence" sections, linking to the guide, the `using-featurekit` rule and `AGENTS.md`, and points a stale orchestration link at "Start an orchestrated session". Docs only.
+- Guide corrected against the current skills and `kx.py`. Install no longer says FeatureKit ships no hooks, and its core selection adds `prototype` and `diagnosing-bugs`, which routing reaches. The setup guide and troubleshooting say the knowledge-index hooks read `.kx/` from the session's working directory, so a session working in a subfolder gets no index context. The end-to-end example's slices and handoff carry `Status`, `Evidence` and `Notes`. Troubleshooting points at the setup block for a missing bootstrap and at the full `add` command for stale skills, and drops an unsupported claim about resuming plans without `Status`. The local-LLM page links the worker reference instead of a removed provider guide, the local prompt states the review sizing, and page navigation follows the guide index. Docs only.
 
 ## 0.14.1 - 2026-10-21
 

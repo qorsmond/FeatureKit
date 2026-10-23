@@ -116,6 +116,5 @@ If you do not know what to run, ask:
 
 ## Series Navigation
 
-- Previous: [Quick Start](./quick-start.md)
 - Index: [FeatureKit Guide](./README.md)
 - Next: [Install](./01-install.md)
