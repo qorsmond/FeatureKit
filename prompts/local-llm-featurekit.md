@@ -85,7 +85,7 @@ For a new product feature:
 13. `verify-tests` when generated or changed tests need deeper proof.
 14. `adr-guidance` whenever planning, implementation, or review touches architecture.
 15. `security-review` for focused security review.
-16. `review-change` before human review when risk or uncertainty warrants it.
+16. `review-change` before human review, sized to the change: checks only for a small docs change, at least one review for any code change, and a deep security review for security risk.
 17. `handoff` when context needs to move to another session.
 
 For a bug:

@@ -175,5 +175,6 @@ Start with `/ask-featurekit` instead of `/grill-with-docs` only when you are uns
 
 ## Series Navigation
 
+- Previous: [Setup](./02-setup.md)
 - Index: [FeatureKit Guide](./README.md)
-- Next: [Overview](./00-overview.md)
+- Next: [Main Flow](./03-main-flow.md)

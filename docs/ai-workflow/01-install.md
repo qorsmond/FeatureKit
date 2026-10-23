@@ -34,6 +34,8 @@ npx skills@latest add /absolute/path/to/FeatureKit \
   --skill implement \
   --skill execute-slices \
   --skill handoff \
+  --skill prototype \
+  --skill diagnosing-bugs \
   --skill orchestrate-work \
   --skill record-adr \
   --skill adr-guidance \
@@ -104,7 +106,7 @@ You should see the FeatureKit skills from `skills/engineering/`, `skills/product
 
 ## Session Bootstrap
 
-Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit installs no hooks or MCP servers.
+Run `/setup-featurekit` once after installation. It saves the bootstrap and orchestration policy in the repo's agent instructions, which supporting hosts load in future sessions. FeatureKit adds no MCP servers. The Claude Code plugin includes two knowledge-index hooks that do nothing unless the repo has enabled the [optional index](./02-setup.md#files-setup-writes); a skills install adds them only when setup does so at your request.
 
 Only if your host does not load repo instruction files, put this instruction in its persistent custom instructions or supply the required context manually:
 

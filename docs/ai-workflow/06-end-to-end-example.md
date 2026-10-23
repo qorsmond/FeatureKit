@@ -250,7 +250,14 @@ Security:
 - Use `secure-api` for object-level authorization and tenant-boundary checks.
 - Include negative authorization tests if the route accepts user-controlled workspace identifiers.
 
+Verification:
+- `pnpm test` covers under-limit, at-limit and cross-workspace requests; API runtime only, no UI.
+
 Depends on: none
+
+Status: pending
+Evidence:
+Notes:
 ```
 
 ```markdown
@@ -261,8 +268,17 @@ Acceptance criteria:
 - The user sees plan-aware copy explaining the limit.
 - The UI degrades cleanly if limit data is unavailable.
 
+Verification:
+- Component tests for both states, plus a browser check of the create-project page at the limit.
+
 Depends on: Slice 1
+
+Status: pending
+Evidence:
+Notes:
 ```
+
+The full template also has `Context`, `Scope`, `Out of scope`, `ADRs` and `Ownership when delegated` fields; they are omitted here. Implementation fills in `Status`, `Evidence` and `Notes` at each slice boundary, so a later session resumes from the first slice that is not `done`.
 
 Review the slice list and use its final approval question before implementation. Continue a focused slice in the current task. If substantial work needs clean context, use `/handoff` and start the fresh task from the same checkout and branch.
 
@@ -290,6 +306,7 @@ Expected implementation behavior:
 - writes a failing test first for the limit rule,
 - implements the smallest change,
 - runs the verification commands,
+- updates Slice 1's `Status`, `Evidence` and `Notes` in the plan file,
 - reports files changed and any divergence from the PRD.
 
 If both slices are approved and you explicitly want one autonomous session to run them sequentially instead:
@@ -349,7 +366,7 @@ Fix findings before opening a PR.
 
 ## Step 9: Handoff
 
-If the session needs to stop:
+If the session needs to stop, the agent first updates each slice's `Status`, `Evidence` and `Notes` in the plan file. The handoff carries only what those cannot hold:
 
 ```text
 /handoff
@@ -372,7 +389,7 @@ Approval:
 - The PRD and Slices 1-2 are approved.
 
 Done:
-- Slice 1 implemented and tested.
+- Slice 1 implemented and tested; its `Status`, `Evidence` and `Notes` are in the plan file.
 
 Next:
 - If the current task is context-constrained, start a fresh task for Slice 2 UI state on this same checkout and branch.
@@ -397,7 +414,7 @@ Verification:
 - Run the repository checks from docs/agents/verification.md.
 ```
 
-This is the pattern to reuse for Blitza, FramerHub, or any other real product.
+This is the pattern to reuse for any real product.
 
 ## Series Navigation
 

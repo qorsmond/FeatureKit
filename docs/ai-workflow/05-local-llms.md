@@ -113,7 +113,7 @@ With local LLMs:
 - ask for plans before code, and approve the written plan or slice before implementation,
 - paste or restate the Agent Operating Principles before coding, refactoring, or verification work,
 - verify outputs more aggressively,
-- use the [orchestration guide](./09-orchestration.md) for capability routing and runtime evidence, and consult the provider reference linked there for CLI mechanics,
+- use the [orchestration guide](./09-orchestration.md) for capability routing and runtime evidence, and [`orchestrate-work`'s worker reference](../../skills/productivity/orchestrate-work/references/workers.md) for fresh-session CLI commands,
 - use fresh sessions only for substantial work or when the current session is context-constrained, and reopen the same checkout and branch.
 
 The workflow still works because the skills are plain Markdown.

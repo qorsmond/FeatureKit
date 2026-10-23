@@ -204,6 +204,6 @@ Each fresh implementation, bug, refactor, review, or verification session should
 
 ## Series Navigation
 
-- Previous: [Setup](./02-setup.md)
+- Previous: [Quick Start](./quick-start.md)
 - Index: [FeatureKit Guide](./README.md)
 - Next: [Working With Agents](./04-working-with-agents.md)
